@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.LmsQuestionAnswerDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsQuestionAnswer">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="QUESTION_ID" jdbcType="BIGINT" property="questionId" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="VERIFY" jdbcType="BIT" property="verify" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, QUESTION_ID, CONTENT, VERIFY
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lms_question_answer
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from lms_question_answer
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.fit.entity.LmsQuestionAnswer">
+    insert into lms_question_answer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="questionId != null">
+        QUESTION_ID,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+      <if test="verify != null">
+        VERIFY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null">
+        #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="verify != null">
+        #{verify,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.LmsQuestionAnswer">
+    update lms_question_answer
+    <set>
+      <if test="questionId != null">
+        QUESTION_ID = #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="verify != null">
+        VERIFY = #{verify,jdbcType=BIT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="id != null and id != ''">
+         and ID = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="questionId != null and questionId != ''">
+         and QUESTION_ID = #{questionId,jdbcType=BIGINT}
+      </if>
+      <if test="content != null and content != ''">
+         and CONTENT = #{content,jdbcType=VARCHAR}
+      </if>
+      <if test="verify != null and verify != ''">
+         and VERIFY = #{verify,jdbcType=BIT}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_question_answer
+    <include refid="Base_Where_List" />
+    order by ID desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page - 1) * limit'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM lms_question_answer
+    <include refid="Base_Where_List" />
+  </select>
+  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
+    ${value}
+  </select>
+  <delete id="batchDelete" parameterType="[Ljava.lang.String;">
+    <foreach close=")" collection="array" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table lms_question_answer
+  </update>
+</mapper>

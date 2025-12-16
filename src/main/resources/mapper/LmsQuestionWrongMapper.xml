@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.LmsQuestionWrongDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsQuestionWrong">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="USER_ID" jdbcType="BIGINT" property="userId" />
+    <result column="QUESTION_ID" jdbcType="BIGINT" property="questionId" />
+    <result column="WRONG_COUNT" jdbcType="INTEGER" property="wrongCount" />
+    <result column="LAST_WRONG_TIME" jdbcType="TIMESTAMP" property="lastWrongTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, USER_ID, QUESTION_ID, WRONG_COUNT, LAST_WRONG_TIME
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lms_question_wrong
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from lms_question_wrong
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.fit.entity.LmsQuestionWrong">
+    insert into lms_question_wrong
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="questionId != null">
+        QUESTION_ID,
+      </if>
+      <if test="wrongCount != null">
+        WRONG_COUNT,
+      </if>
+      <if test="lastWrongTime != null">
+        LAST_WRONG_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null">
+        #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="wrongCount != null">
+        #{wrongCount,jdbcType=INTEGER},
+      </if>
+      <if test="lastWrongTime != null">
+        #{lastWrongTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.LmsQuestionWrong">
+    update lms_question_wrong
+    <set>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null">
+        QUESTION_ID = #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="wrongCount != null">
+        WRONG_COUNT = #{wrongCount,jdbcType=INTEGER},
+      </if>
+      <if test="lastWrongTime != null">
+        LAST_WRONG_TIME = #{lastWrongTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="id != null and id != ''">
+         and ID = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="userId != null and userId != ''">
+         and USER_ID = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="questionId != null and questionId != ''">
+         and QUESTION_ID = #{questionId,jdbcType=BIGINT}
+      </if>
+      <if test="wrongCount != null and wrongCount != ''">
+         and WRONG_COUNT = #{wrongCount,jdbcType=INTEGER}
+      </if>
+      <if test="ctime != null ">
+         and LAST_WRONG_TIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and LAST_WRONG_TIME &lt;= #{etime } 
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_question_wrong
+    <include refid="Base_Where_List" />
+    order by ID desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page - 1) * limit'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM lms_question_wrong
+    <include refid="Base_Where_List" />
+  </select>
+  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
+    ${value}
+  </select>
+  <delete id="batchDelete" parameterType="[Ljava.lang.String;">
+    <foreach close=")" collection="array" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table lms_question_wrong
+  </update>
+</mapper>

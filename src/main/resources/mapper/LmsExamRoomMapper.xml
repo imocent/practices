@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.LmsExamRoomDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsExamRoom">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="CUSER" jdbcType="BIGINT" property="cuser" />
+    <result column="UUID" jdbcType="VARCHAR" property="uuid" />
+    <result column="SUBJECT_ID" jdbcType="BIGINT" property="subjectId" />
+    <result column="SUBJECT_NAME" jdbcType="VARCHAR" property="subjectName" />
+    <result column="IMG_ID" jdbcType="BIGINT" property="imgId" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="LEVEL" jdbcType="VARCHAR" property="level" />
+    <result column="NOTES" jdbcType="VARCHAR" property="notes" />
+    <result column="ENABLED" jdbcType="BIT" property="enabled" />
+    <result column="SHARE" jdbcType="BIT" property="share" />
+    <result column="EXAM_MODE" jdbcType="INTEGER" property="examMode" />
+    <result column="TIME_MODE" jdbcType="BIT" property="timeMode" />
+    <result column="TIME_LEN" jdbcType="INTEGER" property="timeLen" />
+    <result column="TIME_ON" jdbcType="TIMESTAMP" property="timeOn" />
+    <result column="TIME_END" jdbcType="TIMESTAMP" property="timeEnd" />
+    <result column="EXAMINEE_MODE" jdbcType="INTEGER" property="examineeMode" />
+    <result column="EXAMINEE_COUNT" jdbcType="INTEGER" property="examineeCount" />
+    <result column="SUBJECT_SORT_MODE" jdbcType="BIT" property="subjectSortMode" />
+    <result column="SUBJECT_OPT_SORT_MODE" jdbcType="BIT" property="subjectOptSortMode" />
+    <result column="ADJUDGE_MODE" jdbcType="BIT" property="adjudgeMode" />
+    <result column="MARK_MODE" jdbcType="BIT" property="markMode" />
+    <result column="MARK_SHOW_MODE" jdbcType="INTEGER" property="markShowMode" />
+    <result column="MARK_TIME_MODE" jdbcType="INTEGER" property="markTimeMode" />
+    <result column="ETIME" jdbcType="TIMESTAMP" property="etime" />
+    <result column="EUSER" jdbcType="BIGINT" property="euser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, CTIME, CUSER, UUID, SUBJECT_ID, SUBJECT_NAME, IMG_ID, `NAME`, CONTENT, `LEVEL`, 
+    NOTES, ENABLED, `SHARE`, EXAM_MODE, TIME_MODE, TIME_LEN, TIME_ON, TIME_END, EXAMINEE_MODE, 
+    EXAMINEE_COUNT, SUBJECT_SORT_MODE, SUBJECT_OPT_SORT_MODE, ADJUDGE_MODE, MARK_MODE, 
+    MARK_SHOW_MODE, MARK_TIME_MODE, ETIME, EUSER
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lms_exam_room
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from lms_exam_room
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.fit.entity.LmsExamRoom">
+    insert into lms_exam_room
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="ctime != null">
+        CTIME,
+      </if>
+      <if test="cuser != null">
+        CUSER,
+      </if>
+      <if test="uuid != null">
+        UUID,
+      </if>
+      <if test="subjectId != null">
+        SUBJECT_ID,
+      </if>
+      <if test="subjectName != null">
+        SUBJECT_NAME,
+      </if>
+      <if test="imgId != null">
+        IMG_ID,
+      </if>
+      <if test="name != null">
+        `NAME`,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+      <if test="level != null">
+        `LEVEL`,
+      </if>
+      <if test="notes != null">
+        NOTES,
+      </if>
+      <if test="enabled != null">
+        ENABLED,
+      </if>
+      <if test="share != null">
+        `SHARE`,
+      </if>
+      <if test="examMode != null">
+        EXAM_MODE,
+      </if>
+      <if test="timeMode != null">
+        TIME_MODE,
+      </if>
+      <if test="timeLen != null">
+        TIME_LEN,
+      </if>
+      <if test="timeOn != null">
+        TIME_ON,
+      </if>
+      <if test="timeEnd != null">
+        TIME_END,
+      </if>
+      <if test="examineeMode != null">
+        EXAMINEE_MODE,
+      </if>
+      <if test="examineeCount != null">
+        EXAMINEE_COUNT,
+      </if>
+      <if test="subjectSortMode != null">
+        SUBJECT_SORT_MODE,
+      </if>
+      <if test="subjectOptSortMode != null">
+        SUBJECT_OPT_SORT_MODE,
+      </if>
+      <if test="adjudgeMode != null">
+        ADJUDGE_MODE,
+      </if>
+      <if test="markMode != null">
+        MARK_MODE,
+      </if>
+      <if test="markShowMode != null">
+        MARK_SHOW_MODE,
+      </if>
+      <if test="markTimeMode != null">
+        MARK_TIME_MODE,
+      </if>
+      <if test="etime != null">
+        ETIME,
+      </if>
+      <if test="euser != null">
+        EUSER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null">
+        #{cuser,jdbcType=BIGINT},
+      </if>
+      <if test="uuid != null">
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="subjectName != null">
+        #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgId != null">
+        #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
+      <if test="share != null">
+        #{share,jdbcType=BIT},
+      </if>
+      <if test="examMode != null">
+        #{examMode,jdbcType=INTEGER},
+      </if>
+      <if test="timeMode != null">
+        #{timeMode,jdbcType=BIT},
+      </if>
+      <if test="timeLen != null">
+        #{timeLen,jdbcType=INTEGER},
+      </if>
+      <if test="timeOn != null">
+        #{timeOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeEnd != null">
+        #{timeEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="examineeMode != null">
+        #{examineeMode,jdbcType=INTEGER},
+      </if>
+      <if test="examineeCount != null">
+        #{examineeCount,jdbcType=INTEGER},
+      </if>
+      <if test="subjectSortMode != null">
+        #{subjectSortMode,jdbcType=BIT},
+      </if>
+      <if test="subjectOptSortMode != null">
+        #{subjectOptSortMode,jdbcType=BIT},
+      </if>
+      <if test="adjudgeMode != null">
+        #{adjudgeMode,jdbcType=BIT},
+      </if>
+      <if test="markMode != null">
+        #{markMode,jdbcType=BIT},
+      </if>
+      <if test="markShowMode != null">
+        #{markShowMode,jdbcType=INTEGER},
+      </if>
+      <if test="markTimeMode != null">
+        #{markTimeMode,jdbcType=INTEGER},
+      </if>
+      <if test="etime != null">
+        #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="euser != null">
+        #{euser,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.LmsExamRoom">
+    update lms_exam_room
+    <set>
+      <if test="ctime != null">
+        CTIME = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null">
+        CUSER = #{cuser,jdbcType=BIGINT},
+      </if>
+      <if test="uuid != null">
+        UUID = #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectId != null">
+        SUBJECT_ID = #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="subjectName != null">
+        SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgId != null">
+        IMG_ID = #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        `NAME` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        `LEVEL` = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        NOTES = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        ENABLED = #{enabled,jdbcType=BIT},
+      </if>
+      <if test="share != null">
+        `SHARE` = #{share,jdbcType=BIT},
+      </if>
+      <if test="examMode != null">
+        EXAM_MODE = #{examMode,jdbcType=INTEGER},
+      </if>
+      <if test="timeMode != null">
+        TIME_MODE = #{timeMode,jdbcType=BIT},
+      </if>
+      <if test="timeLen != null">
+        TIME_LEN = #{timeLen,jdbcType=INTEGER},
+      </if>
+      <if test="timeOn != null">
+        TIME_ON = #{timeOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeEnd != null">
+        TIME_END = #{timeEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="examineeMode != null">
+        EXAMINEE_MODE = #{examineeMode,jdbcType=INTEGER},
+      </if>
+      <if test="examineeCount != null">
+        EXAMINEE_COUNT = #{examineeCount,jdbcType=INTEGER},
+      </if>
+      <if test="subjectSortMode != null">
+        SUBJECT_SORT_MODE = #{subjectSortMode,jdbcType=BIT},
+      </if>
+      <if test="subjectOptSortMode != null">
+        SUBJECT_OPT_SORT_MODE = #{subjectOptSortMode,jdbcType=BIT},
+      </if>
+      <if test="adjudgeMode != null">
+        ADJUDGE_MODE = #{adjudgeMode,jdbcType=BIT},
+      </if>
+      <if test="markMode != null">
+        MARK_MODE = #{markMode,jdbcType=BIT},
+      </if>
+      <if test="markShowMode != null">
+        MARK_SHOW_MODE = #{markShowMode,jdbcType=INTEGER},
+      </if>
+      <if test="markTimeMode != null">
+        MARK_TIME_MODE = #{markTimeMode,jdbcType=INTEGER},
+      </if>
+      <if test="etime != null">
+        ETIME = #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="euser != null">
+        EUSER = #{euser,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="id != null and id != ''">
+         and ID = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="ctime != null ">
+         and CTIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and CTIME &lt;= #{etime } 
+      </if>
+      <if test="cuser != null and cuser != ''">
+         and CUSER = #{cuser,jdbcType=BIGINT}
+      </if>
+      <if test="uuid != null and uuid != ''">
+         and UUID = #{uuid,jdbcType=VARCHAR}
+      </if>
+      <if test="subjectId != null and subjectId != ''">
+         and SUBJECT_ID = #{subjectId,jdbcType=BIGINT}
+      </if>
+      <if test="subjectName != null and subjectName != ''">
+         and SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR}
+      </if>
+      <if test="imgId != null and imgId != ''">
+         and IMG_ID = #{imgId,jdbcType=BIGINT}
+      </if>
+      <if test="name != null and name != ''">
+         and `NAME` = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="content != null and content != ''">
+         and CONTENT = #{content,jdbcType=VARCHAR}
+      </if>
+      <if test="level != null and level != ''">
+         and `LEVEL` = #{level,jdbcType=VARCHAR}
+      </if>
+      <if test="notes != null and notes != ''">
+         and NOTES = #{notes,jdbcType=VARCHAR}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and ENABLED = #{enabled,jdbcType=BIT}
+      </if>
+      <if test="share != null and share != ''">
+         and `SHARE` = #{share,jdbcType=BIT}
+      </if>
+      <if test="examMode != null and examMode != ''">
+         and EXAM_MODE = #{examMode,jdbcType=INTEGER}
+      </if>
+      <if test="timeMode != null and timeMode != ''">
+         and TIME_MODE = #{timeMode,jdbcType=BIT}
+      </if>
+      <if test="timeLen != null and timeLen != ''">
+         and TIME_LEN = #{timeLen,jdbcType=INTEGER}
+      </if>
+      <if test="ctime != null ">
+         and TIME_ON &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and TIME_ON &lt;= #{etime } 
+      </if>
+      <if test="ctime != null ">
+         and TIME_END &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and TIME_END &lt;= #{etime } 
+      </if>
+      <if test="examineeMode != null and examineeMode != ''">
+         and EXAMINEE_MODE = #{examineeMode,jdbcType=INTEGER}
+      </if>
+      <if test="examineeCount != null and examineeCount != ''">
+         and EXAMINEE_COUNT = #{examineeCount,jdbcType=INTEGER}
+      </if>
+      <if test="subjectSortMode != null and subjectSortMode != ''">
+         and SUBJECT_SORT_MODE = #{subjectSortMode,jdbcType=BIT}
+      </if>
+      <if test="subjectOptSortMode != null and subjectOptSortMode != ''">
+         and SUBJECT_OPT_SORT_MODE = #{subjectOptSortMode,jdbcType=BIT}
+      </if>
+      <if test="adjudgeMode != null and adjudgeMode != ''">
+         and ADJUDGE_MODE = #{adjudgeMode,jdbcType=BIT}
+      </if>
+      <if test="markMode != null and markMode != ''">
+         and MARK_MODE = #{markMode,jdbcType=BIT}
+      </if>
+      <if test="markShowMode != null and markShowMode != ''">
+         and MARK_SHOW_MODE = #{markShowMode,jdbcType=INTEGER}
+      </if>
+      <if test="markTimeMode != null and markTimeMode != ''">
+         and MARK_TIME_MODE = #{markTimeMode,jdbcType=INTEGER}
+      </if>
+      <if test="ctime != null ">
+         and ETIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and ETIME &lt;= #{etime } 
+      </if>
+      <if test="euser != null and euser != ''">
+         and EUSER = #{euser,jdbcType=BIGINT}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_exam_room
+    <include refid="Base_Where_List" />
+    order by ID desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page - 1) * limit'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM lms_exam_room
+    <include refid="Base_Where_List" />
+  </select>
+  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
+    ${value}
+  </select>
+  <delete id="batchDelete" parameterType="[Ljava.lang.String;">
+    <foreach close=")" collection="array" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table lms_exam_room
+  </update>
+</mapper>

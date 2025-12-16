@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="renderer" content="webkit|ie-comp|ie-stand" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <link rel="Bookmark" th:href="@{/favicon.ico}" />
     <link rel="Shortcut Icon" th:href="@{/favicon.ico}" />
@@ -70,6 +70,7 @@
         </ul>
     </div>
 </div>
+</div>
 
 <!-- 尾部信息 -->
 <div th:fragment="footer">
@@ -86,48 +87,48 @@
             <div class="layui-header">
                 <div class="layui-row layui-col-space20">
                     <!-- Logo -->
-                    <div class="layui-col-md2">
-                        <div class="layui-logo" style="color: #fff; font-size: 22px; height: 60px; line-height: 45px;">
-                            <img th:src="@{/images/logo.png}" alt="logo" height="30px"/>
-                            <cite>做题吧</cite>
-                        </div>
+                    <div class="layui-logo" style="color: #fff; font-size: 22px; height: 60px; line-height: 45px;">
+                        <img th:src="@{/images/logo.png}" alt="logo" height="30px"/>
+                        <cite>做题吧</cite>
                     </div>
-                    <!-- 导航菜单 -->
-                    <div class="layui-col-md7">
-                        <ul class="layui-nav" style="background: transparent;">
-                            <li class="layui-nav-item layui-this">
-                                <a href="/" style="color: #fff;">首页</a>
-                            </li>
-                            <li class="layui-nav-item LAY_TRIGGER">
-                                <a href="#" style="color: #fff;">课程中心 <i class="layui-icon">&#xe61a;</i></a>
-                            </li>
-                            <li class="layui-nav-item"><a href="#" style="color: #fff;">知识库</a></li>
-                            <li class="layui-nav-item"><a href="#" style="color: #fff;">实战项目</a></li>
-                            <li class="layui-nav-item"><a href="#" style="color: #fff;">问答社区</a></li>
-                        </ul>
-                    </div>
-                    <!-- 用户操作 -->
-                    <div class="layui-col-md3">
-                        <div class="layui-nav" style="background: transparent; float: right;">
-                            <div th:if="${session.username!= null}" class="layui-nav-item">
-                                <a>
-                                    <img th:src="@{/images/logo.png}" class="layui-nav-img" alt="头像">
-                                    <cite style="margin: 0 10px;">[[${session.username?:'用户'}]]</cite>
-                                </a>
-                                <dl class="layui-nav-child">
-                                    <dd lay-unselect><a lay-event="userInfo">基本资料</a></dd>
-                                    <dd lay-unselect><a lay-event="editPwd">修改密码</a></dd>
-                                    <hr>
-                                    <dd lay-unselect><a th:href="@{/logout}">退出</a></dd>
-                                </dl>
-                            </div>
-                            <div th:unless="${session.username!= null}" class="layui-nav-item">
-                                <a th:href="@{/login}" style="color: #fff;">
-                                    <i class="layui-icon layui-icon-username"></i> 登录
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- 导航菜单 - LayUI会自动处理手机端适配 -->
+                    <ul class="layui-nav layui-layout-left" style="background: transparent;">
+                        <li class="layui-nav-item layui-this">
+                            <a href="/" style="color: #fff;">首页</a>
+                        </li>
+                        <li class="layui-nav-item LAY_TRIGGER">
+                            <a href="#" style="color: #fff;">课程中心 <i class="layui-icon">&#xe61a;</i></a>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a href="#" style="color: #fff;">知识库</a>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a href="#" style="color: #fff;">实战项目</a>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a href="#" style="color: #fff;">问答社区</a>
+                        </li>
+                    </ul>
+                    <!-- 右侧登录 -->
+                    <ul class="layui-nav layui-layout-right" style="background: transparent;">
+                        <li class="layui-nav-item" th:if="${session.username!= null}">
+                            <a>
+                                <img th:src="@{/images/logo.png}" class="layui-nav-img" alt="头像">
+                                <cite style="margin: 0 10px;">[[${session.username?:'用户'}]]</cite>
+                            </a>
+                            <dl class="layui-nav-child">
+                                <dd lay-unselect><a lay-event="userInfo">基本资料</a></dd>
+                                <dd lay-unselect><a lay-event="editPwd">修改密码</a></dd>
+                                <hr>
+                                <dd lay-unselect><a th:href="@{/logout}">退出</a></dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item" th:unless="${session.username!= null}">
+                            <a th:href="@{/login}" style="color: #fff;">
+                                <i class="layui-icon layui-icon-username"></i> 登录
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

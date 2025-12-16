@@ -85,23 +85,14 @@
             dataType: 'JSON',
             page: true,
             toolbar: '#toolbar',
-            cols: [
-                [
-                    {type: 'checkbox'},
-                    {field: 'simpleName', title: '简称', width: 80},
-                    {field: 'fullName', title: '全称', minWidth: 80},
-                    {field: 'sort', title: '排序', minWidth: 80},
-                    {field: 'notes', title: '备注', minWidth: 160},
-                    {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
-                ]
-            ], parseData: function (res) {
-                return {
-                    "code": res.code,
-                    "msg": res.msg,
-                    "data": res.data,
-                    "count": res.total
-                };
-            }
+            cols: [ [
+                {type: 'checkbox'},
+                {field: 'simpleName', title: '简称', width: 80},
+                {field: 'fullName', title: '全称', minWidth: 80},
+                {field: 'sort', title: '排序', minWidth: 80},
+                {field: 'notes', title: '备注', minWidth: 160},
+                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+            ] ]
         });
         // 工具条点击事件
         table.on('toolbar', function (obj) {

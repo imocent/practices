@@ -39,13 +39,12 @@
                 view: {initExpandLevel: 2}
             },
             smartReloadModel: true,
-            isSimpleData: true,
+            height: 'full-160',
             page: false,
             toolbar: '#toolbar',
-            height: 'full-160',
             cols: [[
                 {type: 'checkbox'},
-                {type: "numbers", title: '序号', minWidth: 80, templet: function (index) {return index + 1;}},
+                {type: "numbers", title: '序号', minWidth: 80, templet: function(index){return index+1;}},
                 {field: 'name', title: '名称', minWidth: 100},
                 {field: 'url', title: '请求地址', minWidth: 100},
                 {field: 'sort', title: '排序', width: 30},

@@ -70,7 +70,7 @@ public class AjaxResult extends HashMap<String, Object> {
         json.put("msg", msg);
         json.put("code", code);
         json.put("data", rows);
-        json.put("total", total);
+        json.put("count", total);
         return json;
     }
 

@@ -4,7 +4,6 @@ import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.LmsTop;
 import com.fit.service.LmsTopService;
-import com.fit.service.ZtreeNodeService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -35,8 +34,6 @@ public class TopController extends BaseController {
 
     @Autowired
     private LmsTopService service;
-    @Autowired
-    private ZtreeNodeService ztreeNodeService;
 
     /**
      * 列表页面
@@ -75,18 +72,18 @@ public class TopController extends BaseController {
      */
     @PostMapping("/save")
     @ResponseBody
-    public Object save(LmsTop top) {
-        LmsTop lmsTop = this.service.get(top.getId());
+    public Object save(LmsTop bean) {
+        LmsTop entity = this.service.get(bean.getId());
         Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
-        if (null == lmsTop) {
-            top.setCtime(new Date());
-            top.setCuser(userId);
-            this.service.save(top);
+        if (null == entity) {
+            bean.setCtime(new Date());
+            bean.setCuser(userId);
+            this.service.save(bean);
         } else {
-            BeanUtil.copyProperties(top, lmsTop);
-            lmsTop.setEtime(new Date());
-            lmsTop.setEuser(userId);
-            this.service.update(lmsTop);
+            BeanUtil.copyProperties(bean, entity);
+            entity.setEtime(new Date());
+            entity.setEuser(userId);
+            this.service.update(entity);
         }
         return AjaxResult.success();
     }

@@ -75,8 +75,9 @@
     FROM sys_role_auth
     <include refid="Base_Where_List" />
     order by ID desc
-    <if test="pageNumber != null and pageSize != null">
-      limit ${pageNumber}, ${pageSize}
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page - 1) * limit'/>
+      limit ${offset.intValue()}, ${limit}
     </if>
   </select>
   <select id="findCount" resultType="java.lang.Integer">

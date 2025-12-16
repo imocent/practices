@@ -46,21 +46,12 @@
             method: 'post',
             dataType: 'JSON',
             page: true,
-            cols: [
-                [
+            cols: [ [
                     {type: 'checkbox'},
                     {field: 'fileMold', title: '类型', minWidth: 80},
                     {field: 'fileName', title: '类名', minWidth: 80},
                     {field: 'cTime', title: '时间', minWidth: 80},
-                ]
-            ], parseData: function (res) {
-                return {
-                    "code": res.code,
-                    "msg": res.msg,
-                    "data": res.data,
-                    "count": res.total
-                };
-            }
+            ] ]
         });
         form.on('submit(search)', function (form) {
             table.reload('table-list', {

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.LmsQuestionDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsQuestion">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="CUSER" jdbcType="BIGINT" property="cuser" />
+    <result column="EXAM_ROOM_ID" jdbcType="BIGINT" property="examRoomId" />
+    <result column="MOLD" jdbcType="INTEGER" property="mold" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="DIFFICULTY" jdbcType="INTEGER" property="difficulty" />
+    <result column="SHARE" jdbcType="BIT" property="share" />
+    <result column="ENABLED" jdbcType="BIT" property="enabled" />
+    <result column="ETIME" jdbcType="TIMESTAMP" property="etime" />
+    <result column="EUSER" jdbcType="BIGINT" property="euser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, CTIME, CUSER, EXAM_ROOM_ID, MOLD, CONTENT, DIFFICULTY, `SHARE`, ENABLED, ETIME, 
+    EUSER
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lms_question
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from lms_question
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.fit.entity.LmsQuestion">
+    insert into lms_question
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="ctime != null">
+        CTIME,
+      </if>
+      <if test="cuser != null">
+        CUSER,
+      </if>
+      <if test="examRoomId != null">
+        EXAM_ROOM_ID,
+      </if>
+      <if test="mold != null">
+        MOLD,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+      <if test="difficulty != null">
+        DIFFICULTY,
+      </if>
+      <if test="share != null">
+        `SHARE`,
+      </if>
+      <if test="enabled != null">
+        ENABLED,
+      </if>
+      <if test="etime != null">
+        ETIME,
+      </if>
+      <if test="euser != null">
+        EUSER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null">
+        #{cuser,jdbcType=BIGINT},
+      </if>
+      <if test="examRoomId != null">
+        #{examRoomId,jdbcType=BIGINT},
+      </if>
+      <if test="mold != null">
+        #{mold,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null">
+        #{difficulty,jdbcType=INTEGER},
+      </if>
+      <if test="share != null">
+        #{share,jdbcType=BIT},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
+      <if test="etime != null">
+        #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="euser != null">
+        #{euser,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.LmsQuestion">
+    update lms_question
+    <set>
+      <if test="ctime != null">
+        CTIME = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null">
+        CUSER = #{cuser,jdbcType=BIGINT},
+      </if>
+      <if test="examRoomId != null">
+        EXAM_ROOM_ID = #{examRoomId,jdbcType=BIGINT},
+      </if>
+      <if test="mold != null">
+        MOLD = #{mold,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null">
+        DIFFICULTY = #{difficulty,jdbcType=INTEGER},
+      </if>
+      <if test="share != null">
+        `SHARE` = #{share,jdbcType=BIT},
+      </if>
+      <if test="enabled != null">
+        ENABLED = #{enabled,jdbcType=BIT},
+      </if>
+      <if test="etime != null">
+        ETIME = #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="euser != null">
+        EUSER = #{euser,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="id != null and id != ''">
+         and ID = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="ctime != null ">
+         and CTIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and CTIME &lt;= #{etime } 
+      </if>
+      <if test="cuser != null and cuser != ''">
+         and CUSER = #{cuser,jdbcType=BIGINT}
+      </if>
+      <if test="examRoomId != null and examRoomId != ''">
+         and EXAM_ROOM_ID = #{examRoomId,jdbcType=BIGINT}
+      </if>
+      <if test="mold != null and mold != ''">
+         and MOLD = #{mold,jdbcType=INTEGER}
+      </if>
+      <if test="content != null and content != ''">
+         and CONTENT = #{content,jdbcType=VARCHAR}
+      </if>
+      <if test="difficulty != null and difficulty != ''">
+         and DIFFICULTY = #{difficulty,jdbcType=INTEGER}
+      </if>
+      <if test="share != null and share != ''">
+         and `SHARE` = #{share,jdbcType=BIT}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and ENABLED = #{enabled,jdbcType=BIT}
+      </if>
+      <if test="ctime != null ">
+         and ETIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and ETIME &lt;= #{etime } 
+      </if>
+      <if test="euser != null and euser != ''">
+         and EUSER = #{euser,jdbcType=BIGINT}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_question
+    <include refid="Base_Where_List" />
+    order by ID desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page - 1) * limit'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM lms_question
+    <include refid="Base_Where_List" />
+  </select>
+  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
+    ${value}
+  </select>
+  <delete id="batchDelete" parameterType="[Ljava.lang.String;">
+    <foreach close=")" collection="array" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table lms_question
+  </update>
+</mapper>

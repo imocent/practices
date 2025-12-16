@@ -1,47 +1,254 @@
-The provided project appears to be a comprehensive Java-based web application with a focus on administrative functionalities and user management. It uses Spring Boot, MyBatis, and Shiro for framework support, and it integrates with a database for managing entities like users, roles, permissions, and various business data.
+# LMS 做题系统（Learning & Measurement System）
 
-The project includes:
-- **Spring Boot**: For building stand-alone, production-grade applications.
-- **Apache Shiro**: For authentication and authorization.
-- **MyBatis**: As the persistence layer framework.
-- **LayUI**: For the frontend UI components.
-- **Ehcache**: For caching.
-- **Logback**: For logging.
+## 一、项目简介
 
-### Key Features:
-- **User Management**: User creation, role assignment, password management, and status modification.
-- **Role and Permission Management**: Defining roles and assigning permissions to them.
-- **Audit Logging**: Tracking operations performed in the system.
-- **Monitoring**: System information like memory, CPU, and thread usage can be monitored.
-- **CRUD Operations**: Implemented across multiple entities including exams, papers, subjects, and more.
+本项目是一个 **基于 Spring Boot + Shiro + MyBatis + Layui + MySQL** 的通用型做题 / 考试 / 练习系统，面向 **内部培训、在线学习、题库管理、能力测评** 等场景。
 
-### Technologies Used:
-- Java 8+
-- Spring Boot
-- MyBatis
-- Apache Shiro
-- LayUI (Frontend framework)
-- MySQL (Likely, based on usage of JdbcTemplate)
-- Ehcache
-- Logback
+系统以 **RBAC 权限模型为核心骨架**，通过 **资源（Resource）+ 权限（Authority）+ 角色（Role）** 的方式，将“谁能做什么”与具体业务彻底解耦，在保证安全性的同时，极大提升了系统的可扩展性。
 
-### Project Structure:
-- **Controllers**: Handle HTTP requests and responses.
-- **Services**: Business logic layer.
-- **DAOs**: Data Access Objects for database interactions.
-- **Entities**: Model classes representing database tables.
-- **Configuration**: Spring configuration files, including security and MVC setup.
-- **Utilities**: Helper classes for common tasks like JSON parsing, file handling, etc.
+> 设计目标不是“能跑”，而是：
+> **结构清晰、边界明确、易扩展、经得起复杂业务演进。**
 
-### Usage:
-To run this application, ensure that:
-1. Java and Maven are installed.
-2. A database is set up and configured in `application.yml`.
-3. Dependencies are correctly resolved via Maven.
+---
 
-Start the application using:
-```bash
-mvn spring-boot:run
+## 二、技术栈说明
+
+| 层级   | 技术选型         | 说明               |
+| ---- | ------------ | ---------------- |
+| 后端框架 | Spring Boot  | 统一配置、快速启动        |
+| 安全框架 | Apache Shiro | 认证 + 授权 + 会话管理   |
+| ORM  | MyBatis      | 精准 SQL 控制，适合复杂统计 |
+| 前端   | Layui        | 轻量、上手快、后台友好      |
+| 数据库  | MySQL        | InnoDB 事务支持      |
+| 架构模式 | MVC + RBAC   | 清晰分层             |
+
+---
+
+## 三、整体架构设计（核心亮点）
+
+```
+┌───────────┐
+│  Layui UI │
+└─────▲─────┘
+      │ REST
+┌─────┴─────┐
+│ Controller│  ← 只做参数校验与编排
+└─────▲─────┘
+      │
+┌─────┴─────┐
+│  Service  │  ← 业务规则 / 流程控制
+└─────▲─────┘
+      │
+┌─────┴─────┐
+│  Mapper   │  ← MyBatis SQL
+└─────▲─────┘
+      │
+┌─────┴─────┐
+│  MySQL    │
+└───────────┘
+
+横切关注点：
+- Shiro 权限控制
+- 操作日志（sys_operation_log）
+- 审核流 & 状态机
 ```
 
-For more detailed instructions or contributions, refer to the project's documentation or `README.md` if available in the root directory.
+---
+
+## 四、权限模型设计（设计亮点之一）
+
+### 1️⃣ 为什么选择 RBAC + Resource？
+
+传统做题系统常见问题：
+
+* 权限写死在代码中
+* 业务表中混杂权限字段
+* 新增功能必须改代码
+
+本系统采用：
+
+```
+User → Role → Authority → Resource(URL / Method)
+```
+
+**业务表完全不关心权限是谁，只关心“状态”**。
+
+---
+
+### 2️⃣ 权限控制执行流程
+
+1. 用户登录
+2. Shiro 认证（Username / Password）
+3. 加载用户角色
+4. 加载角色下的权限（Authority）
+5. 权限绑定资源（URL / 方法）
+6. 请求进入时由 Shiro 拦截校验
+
+> 结果：
+>
+> * 新增一个“题目审核”功能 = 新增资源 + 授权
+> * **无需改一行业务代码**
+
+---
+
+## 五、核心业务执行流程说明
+
+### 1️⃣ 创建答题室流程
+
+```
+用户 → 新建答题室
+     ↓
+Controller 接收请求
+     ↓
+Service 校验权限（是否有 ROOM_CREATE）
+     ↓
+写入 lms_room
+     ↓
+记录 sys_operation_log
+```
+
+特点：
+
+* 答题室是 **所有业务的逻辑边界**
+* 不同答题室之间数据天然隔离
+
+---
+
+### 2️⃣ 题目创建 & 审核流程（核心设计）
+
+```
+出题人创建题目
+     ↓
+lms_question.AUDIT_STATUS = 0（待审）
+     ↓
+审核人查看待审列表
+     ↓
+审核通过 / 驳回
+     ↓
+题目进入可用状态
+```
+
+设计优势：
+
+* 题目是否可用 ≠ 是否存在
+* 审核能力完全由权限控制
+
+---
+
+### 3️⃣ 随机组卷流程
+
+```
+用户发起答题
+     ↓
+选择试卷（随机型）
+     ↓
+Service 根据规则抽题：
+  - 学科
+  - 难度
+  - 数量
+     ↓
+生成题目快照
+     ↓
+写入 lms_paper_question
+```
+
+> 抽题结果持久化，保证：
+>
+> * 可复盘
+> * 可统计
+> * 可审计
+
+---
+
+### 4️⃣ 限时答题流程
+
+```
+进入答题
+     ↓
+记录 START_TIME
+     ↓
+前端倒计时
+     ↓
+提交 / 超时自动提交
+     ↓
+计算 USED_TIME
+     ↓
+判题 & 统计
+```
+
+---
+
+### 5️⃣ 判题 & 错题本生成流程
+
+```
+逐题判分
+     ↓
+写入 lms_answer_detail
+     ↓
+如果错误：
+  - 写入 / 更新 lms_wrong_book
+     ↓
+汇总写入 lms_user_stat
+```
+
+错题本设计特点：
+
+* 同一题只保留一条记录
+* 自动累计错误次数
+
+---
+
+## 六、数据设计理念（为什么这样设计）
+
+### 1️⃣ 状态驱动，而非权限驱动
+
+* 表中只存：
+
+    * 审核状态
+    * 可见性
+    * 是否启用
+* **是否“能操作”交给 Shiro**
+
+### 2️⃣ 可追溯性优先
+
+* 所有答题都有记录
+* 所有试卷都有快照
+* 所有操作都有日志
+
+### 3️⃣ 为扩展预留空间
+
+* 主观题 / AI 判题
+* 多级审核
+* 题目版本管理
+* 大数据统计
+
+---
+
+## 七、项目启动说明
+
+### 1️⃣ 环境要求
+
+* JDK 8+
+* MySQL 5.7+
+* Maven 3.x
+
+### 2️⃣ 启动步骤
+
+1. 创建数据库并导入 SQL
+2. 修改 `application.yml` 数据库配置
+3. 启动 Spring Boot 主类
+4. 访问系统首页
+
+---
+
+## 八、总结
+
+这个项目并不是一个“简单的做题系统”，而是：
+
+* 一个 **以权限为骨架** 的业务系统
+* 一个 **状态机驱动的题库模型**
+* 一个 **为复杂场景预留扩展空间的设计**
+
+> 如果你能看懂这个 README，
+> 那你看到的不只是代码，
+> 而是一个可以长期演进的系统架构。

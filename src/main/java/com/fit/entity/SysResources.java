@@ -47,7 +47,7 @@ public class SysResources extends BaseEntity<SysResources> {
     private String url;
 
     /**
-     * 优先权
+     * 排序
      */
     private Integer sort;
 

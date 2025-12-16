@@ -46,23 +46,14 @@
             method: 'post',
             dataType: 'JSON',
             page: true,
-            cols: [
-                [
-                    {type: 'checkbox'},
-                    {field: 'logType', title: '类型', minWidth: 80},
-                    {field: 'className', title: '类名', minWidth: 80},
-                    {field: 'method', title: '方法名', minWidth: 80},
-                    {field: 'cTime', title: '时间', minWidth: 80},
-                    {field: 'message', title: '具体消息', minWidth: 80},
-                ]
-            ], parseData: function (res) {
-                return {
-                    "code": res.code,
-                    "msg": res.msg,
-                    "data": res.data,
-                    "count": res.total
-                };
-            }
+            cols: [ [
+                {type: 'checkbox'},
+                {field: 'logType', title: '类型', minWidth: 80},
+                {field: 'className', title: '类名', minWidth: 80},
+                {field: 'method', title: '方法名', minWidth: 80},
+                {field: 'cTime', title: '时间', minWidth: 80},
+                {field: 'message', title: '具体消息', minWidth: 80},
+            ] ]
         });
         form.on('submit(search)', function (form) {
             table.reload('table-list', {

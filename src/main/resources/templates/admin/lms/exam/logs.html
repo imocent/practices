@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="include :: head('答题统计列表')"></head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="yadmin-body animated fadeIn">
+            <div class="layui-form yadmin-search-area input">
+                <form class="layui-form-item">
+                    <div class="layui-inline">
+                        <label for="name" class="layui-form-label">名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" id="name" placeholder="名称" class="layui-input"/>
+                        </div>
+                        <button lay-submit="" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                            <i class="layui-icon layui-icon-search"></i>
+                        </button>
+                        <button type="reset" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                            <i class="layui-icon layui-icon-refresh"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <table class="layui-hide" id="table-list"></table>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
+        table.render({
+            elem: '#table-list',
+            url: '/admin/lms/exam/log/list',
+            method: 'post',
+            dataType: 'JSON',
+            smartReloadModel: true,
+            page: true,
+            toolbar: '#toolbar',
+            cols: [ [
+                {type: 'checkbox'},
+                {field: 'title', title: '名称', minWidth: 80},
+                {field: 'content', title: '内容', minWidth: 80},
+                {field: 'url', title: '访问地址', minWidth: 80},
+                {field: 'visits', title: '访问量', minWidth: 80},
+                {field: 'sort', title: '排序', minWidth: 80},
+                {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
+                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+            ] ]
+        });
+        form.on('submit(search)', function (form) {
+            table.reload('table-list', {
+                where: form.field
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

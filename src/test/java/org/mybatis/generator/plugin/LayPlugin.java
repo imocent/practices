@@ -129,8 +129,9 @@ public class LayPlugin extends PluginAdapter {
         String primaryKey = introspectedTable.getPrimaryKeyColumns().get(0).getActualColumnName();
         e_select.addElement(new TextElement(String.format("order by %s desc", primaryKey)));
         XmlElement pageIf = new XmlElement("if");
-        pageIf.addAttribute(new Attribute("test", "pageNumber != null and pageSize != null"));
-        pageIf.addElement(new TextElement("limit ${pageNumber}, ${pageSize}"));
+        pageIf.addAttribute(new Attribute("test", "page != null and limit != null"));
+        pageIf.addElement(new TextElement("<bind name='offset' value='(page - 1) * limit'/>"));
+        pageIf.addElement(new TextElement("limit ${offset.intValue()}, ${limit}"));
         e_select.addElement(pageIf);
         rootElement.addElement(e_select);
         XmlElement c_select = new XmlElement("select");

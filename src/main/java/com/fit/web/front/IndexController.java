@@ -1,10 +1,10 @@
 package com.fit.web.front;
 
 import com.fit.base.BaseController;
-import com.fit.entity.LmsRoom;
+import com.fit.entity.LmsExamRoom;
 import com.fit.entity.LmsTop;
 import com.fit.entity.MenuNode;
-import com.fit.service.LmsRoomService;
+import com.fit.service.LmsExamRoomService;
 import com.fit.service.LmsTopService;
 import com.fit.service.MenuNodeService;
 import com.fit.util.WebUtil;
@@ -34,7 +34,7 @@ public class IndexController extends BaseController {
     @Autowired
     private LmsTopService topService;
     @Autowired
-    private LmsRoomService roomService;
+    private LmsExamRoomService roomService;
 
     @GetMapping(value = {"", "/", "/index"})
     public String index(HttpServletRequest request, Model model) {
@@ -45,10 +45,10 @@ public class IndexController extends BaseController {
         model.addAttribute("menus", menus);
         model.addAttribute("tops", tops);
         map.clear();
-        map.put("pageNumber", 0);
-        map.put("pageSize", 3);
+        map.put("page", 1);
+        map.put("limit", 3);
         map.put("enabled", 2);
-        List<LmsRoom> rooms = this.roomService.findList(map);
+        List<LmsExamRoom> rooms = this.roomService.findList(map);
         model.addAttribute("rooms", rooms);
         model.addAttribute("role", 5);
         return "front/index";
@@ -63,19 +63,17 @@ public class IndexController extends BaseController {
         model.addAttribute("menus", menus);
         model.addAttribute("tops", tops);
         map.clear();
-        int pageSize = 12;
-        int pageNumber = toInt(request.getParameter("pageNumber")) * pageSize;
-        map.put("pageNumber", pageNumber);
-        map.put("pageSize", pageSize);
+        map.put("page", toInt(request.getParameter("pageNumber")));
+        map.put("limit", 12);
         map.put("enabled", 2);
-        List<LmsRoom> rooms = this.roomService.findList(map);
+        List<LmsExamRoom> rooms = this.roomService.findList(map);
         model.addAttribute("rooms", rooms);
         return "front/rooms";
     }
 
     @GetMapping("/detail")
     public String detail(Model model, Long id) {
-        LmsRoom rooms = this.roomService.get(id);
+        LmsExamRoom rooms = this.roomService.get(id);
         model.addAttribute("rooms", rooms);
         return "front/detail";
     }
