@@ -73,8 +73,8 @@ public class IndexController extends BaseController {
 
     @GetMapping("/detail")
     public String detail(Model model, Long id) {
-        LmsExamRoom rooms = this.roomService.get(id);
-        model.addAttribute("rooms", rooms);
+        LmsExamRoom room = this.roomService.get(id);
+        model.addAttribute("room", room);
         return "front/detail";
     }
 }

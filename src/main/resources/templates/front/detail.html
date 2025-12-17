@@ -3,55 +3,15 @@
 <head th:include="include :: head('做题吧 - 答题室')"></head>
 <body>
 <div th:include="include :: f_header"></div>
-<div class="container layui-fluid">
+<div class="layui-container layui-fluid" style="margin-top:10px">
     <div class="layui-row layui-col-space20">
         <!-- 左侧：课程信息 -->
         <div class="layui-col-md8">
-            <!-- 课程卡片 -->
             <div class="layui-card">
                 <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <span style="color: #fff;"><i class="layui-icon layui-icon-template-1"></i> Vue3实战课程</span>
+                    <i class="layui-icon layui-icon-template-1"></i> <span style="color: #fff;" th:text="${room?.name}">实战课程</span>
                 </div>
-                <div class="layui-card-body">
-                    <h2 style="margin-bottom: 10px;">Vue 3.0 从入门到实战项目开发</h2>
-                    <div class="layui-row">
-                        <div class="layui-col-xs4">
-                            <div class="layui-card" style="text-align: center; background: #f8f8f8;">
-                                <div class="layui-card-body">
-                                    <div style="font-size: 24px; color: #333; font-weight: bold;">高级</div>
-                                    <div style="color: #666;">难度级别</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-xs4">
-                            <div class="layui-card" style="text-align: center; background: #f8f8f8;">
-                                <div class="layui-card-body">
-                                    <div style="font-size: 24px; color: #333; font-weight: bold;">128</div>
-                                    <div style="color: #666;">课时</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-xs4">
-                            <div class="layui-card" style="text-align: center; background: #f8f8f8;">
-                                <div class="layui-card-body">
-                                    <div style="font-size: 24px; color: #333; font-weight: bold;">2564</div>
-                                    <div style="color: #666;">学习人数</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="text-align: center; margin-top: 20px; padding: 20px; background: #f2f2f2; border-radius: 4px;">
-                        <span class="price-tag">¥299</span>
-                        <span style="color: #999; margin-left: 5px;">元</span>
-                    </div>
-                </div>
-            </div>
-            <!-- 课程特点 -->
-            <div class="layui-card" style="margin-top: 20px;">
-                <div class="layui-card-header">
-                    <i class="layui-icon layui-icon-star"></i> 课程特点
-                </div>
-                <div class="layui-card-body">
+                <div class="layui-card-body" th:text="${room?.content}">
                     <ul class="layui-timeline">
                         <li class="layui-timeline-item">
                             <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
