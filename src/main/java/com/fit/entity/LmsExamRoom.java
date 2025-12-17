@@ -91,12 +91,12 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
     /**
      * 结束时间
      */
-    private Date timeEnd;
+    private Date timeOff;
 
     /**
-     * 答题人员模式: 0-任何人员,1-指定人员,2-匿名答题
+     * 答题人员模式: 0-任何人员,1-指定人员
      */
-    private Integer examineeMode;
+    private Boolean examineeMode;
 
     /**
      * 答题次数
@@ -166,7 +166,7 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
         sb.append(", timeMode=").append(timeMode);
         sb.append(", timeLen=").append(timeLen);
         sb.append(", timeOn=").append(timeOn);
-        sb.append(", timeEnd=").append(timeEnd);
+        sb.append(", timeOff=").append(timeOff);
         sb.append(", examineeMode=").append(examineeMode);
         sb.append(", examineeCount=").append(examineeCount);
         sb.append(", subjectSortMode=").append(subjectSortMode);

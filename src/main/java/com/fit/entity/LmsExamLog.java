@@ -1,7 +1,6 @@
 package com.fit.entity;
 
 import com.fit.base.BaseEntity;
-import java.math.BigDecimal;
 import java.util.Date;
 import lombok.*;
 
@@ -23,24 +22,34 @@ public class LmsExamLog extends BaseEntity<LmsExamLog> {
     private Long userId;
 
     /**
+     * 用户名
+     */
+    private String userName;
+
+    /**
      * 答题室ID
      */
     private Long examRoomId;
 
     /**
+     * 答题室名
+     */
+    private String examRoomName;
+
+    /**
      * 得分
      */
-    private BigDecimal score;
+    private Integer score;
 
     /**
      * 开始时间
      */
-    private Date startTime;
+    private Date timeOn;
 
     /**
      * 结束时间
      */
-    private Date endTime;
+    private Date timeOff;
 
     /**
      * 总题数
@@ -66,10 +75,12 @@ public class LmsExamLog extends BaseEntity<LmsExamLog> {
         sb.append(", id=").append(id);
         sb.append(", ctime=").append(ctime);
         sb.append(", userId=").append(userId);
+        sb.append(", userName=").append(userName);
         sb.append(", examRoomId=").append(examRoomId);
+        sb.append(", examRoomName=").append(examRoomName);
         sb.append(", score=").append(score);
-        sb.append(", startTime=").append(startTime);
-        sb.append(", endTime=").append(endTime);
+        sb.append(", timeOn=").append(timeOn);
+        sb.append(", timeOff=").append(timeOff);
         sb.append(", totalQuestions=").append(totalQuestions);
         sb.append(", correctQuestions=").append(correctQuestions);
         sb.append(", wrongQuestions=").append(wrongQuestions);

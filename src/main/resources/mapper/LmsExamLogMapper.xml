@@ -5,17 +5,19 @@
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
     <result column="USER_ID" jdbcType="BIGINT" property="userId" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
     <result column="EXAM_ROOM_ID" jdbcType="BIGINT" property="examRoomId" />
-    <result column="SCORE" jdbcType="DECIMAL" property="score" />
-    <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="EXAM_ROOM_NAME" jdbcType="VARCHAR" property="examRoomName" />
+    <result column="SCORE" jdbcType="INTEGER" property="score" />
+    <result column="TIME_ON" jdbcType="TIMESTAMP" property="timeOn" />
+    <result column="TIME_OFF" jdbcType="TIMESTAMP" property="timeOff" />
     <result column="TOTAL_QUESTIONS" jdbcType="INTEGER" property="totalQuestions" />
     <result column="CORRECT_QUESTIONS" jdbcType="INTEGER" property="correctQuestions" />
     <result column="WRONG_QUESTIONS" jdbcType="INTEGER" property="wrongQuestions" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CTIME, USER_ID, EXAM_ROOM_ID, SCORE, START_TIME, END_TIME, TOTAL_QUESTIONS, CORRECT_QUESTIONS, 
-    WRONG_QUESTIONS
+    ID, CTIME, USER_ID, USER_NAME, EXAM_ROOM_ID, EXAM_ROOM_NAME, SCORE, TIME_ON, TIME_OFF, 
+    TOTAL_QUESTIONS, CORRECT_QUESTIONS, WRONG_QUESTIONS
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -39,17 +41,23 @@
       <if test="userId != null">
         USER_ID,
       </if>
+      <if test="userName != null">
+        USER_NAME,
+      </if>
       <if test="examRoomId != null">
         EXAM_ROOM_ID,
+      </if>
+      <if test="examRoomName != null">
+        EXAM_ROOM_NAME,
       </if>
       <if test="score != null">
         SCORE,
       </if>
-      <if test="startTime != null">
-        START_TIME,
+      <if test="timeOn != null">
+        TIME_ON,
       </if>
-      <if test="endTime != null">
-        END_TIME,
+      <if test="timeOff != null">
+        TIME_OFF,
       </if>
       <if test="totalQuestions != null">
         TOTAL_QUESTIONS,
@@ -71,17 +79,23 @@
       <if test="userId != null">
         #{userId,jdbcType=BIGINT},
       </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
       <if test="examRoomId != null">
         #{examRoomId,jdbcType=BIGINT},
       </if>
+      <if test="examRoomName != null">
+        #{examRoomName,jdbcType=VARCHAR},
+      </if>
       <if test="score != null">
-        #{score,jdbcType=DECIMAL},
+        #{score,jdbcType=INTEGER},
       </if>
-      <if test="startTime != null">
-        #{startTime,jdbcType=TIMESTAMP},
+      <if test="timeOn != null">
+        #{timeOn,jdbcType=TIMESTAMP},
       </if>
-      <if test="endTime != null">
-        #{endTime,jdbcType=TIMESTAMP},
+      <if test="timeOff != null">
+        #{timeOff,jdbcType=TIMESTAMP},
       </if>
       <if test="totalQuestions != null">
         #{totalQuestions,jdbcType=INTEGER},
@@ -103,17 +117,23 @@
       <if test="userId != null">
         USER_ID = #{userId,jdbcType=BIGINT},
       </if>
+      <if test="userName != null">
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
       <if test="examRoomId != null">
         EXAM_ROOM_ID = #{examRoomId,jdbcType=BIGINT},
       </if>
+      <if test="examRoomName != null">
+        EXAM_ROOM_NAME = #{examRoomName,jdbcType=VARCHAR},
+      </if>
       <if test="score != null">
-        SCORE = #{score,jdbcType=DECIMAL},
+        SCORE = #{score,jdbcType=INTEGER},
       </if>
-      <if test="startTime != null">
-        START_TIME = #{startTime,jdbcType=TIMESTAMP},
+      <if test="timeOn != null">
+        TIME_ON = #{timeOn,jdbcType=TIMESTAMP},
       </if>
-      <if test="endTime != null">
-        END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      <if test="timeOff != null">
+        TIME_OFF = #{timeOff,jdbcType=TIMESTAMP},
       </if>
       <if test="totalQuestions != null">
         TOTAL_QUESTIONS = #{totalQuestions,jdbcType=INTEGER},
@@ -141,23 +161,29 @@
       <if test="userId != null and userId != ''">
          and USER_ID = #{userId,jdbcType=BIGINT}
       </if>
+      <if test="userName != null and userName != ''">
+         and USER_NAME = #{userName,jdbcType=VARCHAR}
+      </if>
       <if test="examRoomId != null and examRoomId != ''">
          and EXAM_ROOM_ID = #{examRoomId,jdbcType=BIGINT}
       </if>
+      <if test="examRoomName != null and examRoomName != ''">
+         and EXAM_ROOM_NAME = #{examRoomName,jdbcType=VARCHAR}
+      </if>
       <if test="score != null and score != ''">
-         and SCORE = #{score,jdbcType=DECIMAL}
+         and SCORE = #{score,jdbcType=INTEGER}
       </if>
       <if test="ctime != null ">
-         and START_TIME &gt;= #{ctime }
+         and TIME_ON &gt;= #{ctime }
       </if>
       <if test="etime != null ">
-         and START_TIME &lt;= #{etime } 
+         and TIME_ON &lt;= #{etime } 
       </if>
       <if test="ctime != null ">
-         and END_TIME &gt;= #{ctime }
+         and TIME_OFF &gt;= #{ctime }
       </if>
       <if test="etime != null ">
-         and END_TIME &lt;= #{etime } 
+         and TIME_OFF &lt;= #{etime } 
       </if>
       <if test="totalQuestions != null and totalQuestions != ''">
          and TOTAL_QUESTIONS = #{totalQuestions,jdbcType=INTEGER}

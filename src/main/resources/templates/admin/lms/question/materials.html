@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:include="include :: head('字典列表')"></head>
+<head th:include="include :: head('题目列表')"></head>
 <body>
 <div class="layui-card">
     <div class="layui-card-body">
@@ -8,9 +8,9 @@
             <div class="layui-form yadmin-search-area input">
                 <form class="layui-form-item">
                     <div class="layui-inline">
-                        <label for="name" class="layui-form-label">通知名称</label>
+                        <label for="name" class="layui-form-label">名称</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="name" id="name" placeholder="字典名称" class="layui-input"/>
+                            <input type="text" name="name" id="name" placeholder="名称" class="layui-input"/>
                         </div>
                         <button lay-submit="" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
                             <i class="layui-icon layui-icon-search"></i>
@@ -21,6 +21,13 @@
                     </div>
                 </form>
             </div>
+            <table class="layui-hide" id="table-list"></table>
+            <script type="text/html" id="shareTpl">
+                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="公开|私有" lay-filter="status" {{d.share?"checked":""}}>
+            </script>
+            <script type="text/html" id="statusTpl">
+                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status" {{d.enabled?"checked":""}}>
+            </script>
             <script type="text/html" id="toolbar">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
                     <i class="layui-icon layui-icon-addition">新增</i>
@@ -29,7 +36,6 @@
                     <i class="layui-icon layui-icon-delete" title="删除">删除</i>
                 </button>
             </script>
-            <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="column-toolbar">
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
                     <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
@@ -38,32 +44,31 @@
         </div>
     </div>
 </div>
-<script th:inline="none">
+<script>
     layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
         table.render({
             elem: '#table-list',
-            url: '/admin/dict/list',
+            url: '/admin/lms/question/material/list',
             method: 'post',
             dataType: 'JSON',
+            smartReloadModel: true,
+            height: 'full-160',
             page: true,
             toolbar: '#toolbar',
-            smartReloadModel: true,
             cols: [ [
                 {type: 'checkbox'},
-                {type: "numbers", title: '序号', minWidth: 80, templet: function (index) {return index + 1;}},
-                {field: 'name', title: '名称', minWidth: 80},
-                {field: 'sign', title: '类型', minWidth: 80, templet: function (res) {return res.sign == "Y"? "系统类型":"类型值";}},
-                {field: 'code', title: '字典编码', minWidth: 80},
-                {field: 'sort', title: '排序', width: 30},
+                {field: 'uuid', title: 'UUID', minWidth: 80},
+                {field: 'title', title: '标题', minWidth: 80},
                 {field: 'notes', title: '备注', minWidth: 80},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+                {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
+                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', width: 100}
             ] ]
         });
 
         // 工具条点击事件
         table.on('toolbar', function (obj) {
             if (obj.event === 'add') {
-                editView("/admin/dict/edit", "添加");
+                editView("/admin/lms/question/material/edit", "添加");
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
@@ -73,7 +78,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/dict/del')
+                        changeReq(ids, '/admin/lms/question/material/del')
                         layer.close(index);
                     }
                 });
@@ -83,7 +88,7 @@
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
-                editView("/admin/dict/edit?id=" + data.id, "编辑");
+                editView("/admin/lms/question/material/edit?id=" + data.id, "编辑");
             }
         });
 

@@ -19,8 +19,8 @@
     <result column="TIME_MODE" jdbcType="BIT" property="timeMode" />
     <result column="TIME_LEN" jdbcType="INTEGER" property="timeLen" />
     <result column="TIME_ON" jdbcType="TIMESTAMP" property="timeOn" />
-    <result column="TIME_END" jdbcType="TIMESTAMP" property="timeEnd" />
-    <result column="EXAMINEE_MODE" jdbcType="INTEGER" property="examineeMode" />
+    <result column="TIME_OFF" jdbcType="TIMESTAMP" property="timeOff" />
+    <result column="EXAMINEE_MODE" jdbcType="BIT" property="examineeMode" />
     <result column="EXAMINEE_COUNT" jdbcType="INTEGER" property="examineeCount" />
     <result column="SUBJECT_SORT_MODE" jdbcType="BIT" property="subjectSortMode" />
     <result column="SUBJECT_OPT_SORT_MODE" jdbcType="BIT" property="subjectOptSortMode" />
@@ -33,7 +33,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     ID, CTIME, CUSER, UUID, SUBJECT_ID, SUBJECT_NAME, IMG_ID, `NAME`, CONTENT, `LEVEL`, 
-    NOTES, ENABLED, `SHARE`, EXAM_MODE, TIME_MODE, TIME_LEN, TIME_ON, TIME_END, EXAMINEE_MODE, 
+    NOTES, ENABLED, `SHARE`, EXAM_MODE, TIME_MODE, TIME_LEN, TIME_ON, TIME_OFF, EXAMINEE_MODE, 
     EXAMINEE_COUNT, SUBJECT_SORT_MODE, SUBJECT_OPT_SORT_MODE, ADJUDGE_MODE, MARK_MODE, 
     MARK_SHOW_MODE, MARK_TIME_MODE, ETIME, EUSER
   </sql>
@@ -101,8 +101,8 @@
       <if test="timeOn != null">
         TIME_ON,
       </if>
-      <if test="timeEnd != null">
-        TIME_END,
+      <if test="timeOff != null">
+        TIME_OFF,
       </if>
       <if test="examineeMode != null">
         EXAMINEE_MODE,
@@ -187,11 +187,11 @@
       <if test="timeOn != null">
         #{timeOn,jdbcType=TIMESTAMP},
       </if>
-      <if test="timeEnd != null">
-        #{timeEnd,jdbcType=TIMESTAMP},
+      <if test="timeOff != null">
+        #{timeOff,jdbcType=TIMESTAMP},
       </if>
       <if test="examineeMode != null">
-        #{examineeMode,jdbcType=INTEGER},
+        #{examineeMode,jdbcType=BIT},
       </if>
       <if test="examineeCount != null">
         #{examineeCount,jdbcType=INTEGER},
@@ -273,11 +273,11 @@
       <if test="timeOn != null">
         TIME_ON = #{timeOn,jdbcType=TIMESTAMP},
       </if>
-      <if test="timeEnd != null">
-        TIME_END = #{timeEnd,jdbcType=TIMESTAMP},
+      <if test="timeOff != null">
+        TIME_OFF = #{timeOff,jdbcType=TIMESTAMP},
       </if>
       <if test="examineeMode != null">
-        EXAMINEE_MODE = #{examineeMode,jdbcType=INTEGER},
+        EXAMINEE_MODE = #{examineeMode,jdbcType=BIT},
       </if>
       <if test="examineeCount != null">
         EXAMINEE_COUNT = #{examineeCount,jdbcType=INTEGER},
@@ -369,13 +369,13 @@
          and TIME_ON &lt;= #{etime } 
       </if>
       <if test="ctime != null ">
-         and TIME_END &gt;= #{ctime }
+         and TIME_OFF &gt;= #{ctime }
       </if>
       <if test="etime != null ">
-         and TIME_END &lt;= #{etime } 
+         and TIME_OFF &lt;= #{etime } 
       </if>
       <if test="examineeMode != null and examineeMode != ''">
-         and EXAMINEE_MODE = #{examineeMode,jdbcType=INTEGER}
+         and EXAMINEE_MODE = #{examineeMode,jdbcType=BIT}
       </if>
       <if test="examineeCount != null and examineeCount != ''">
          and EXAMINEE_COUNT = #{examineeCount,jdbcType=INTEGER}

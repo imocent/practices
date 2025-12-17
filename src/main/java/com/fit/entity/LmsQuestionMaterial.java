@@ -5,9 +5,9 @@ import java.util.Date;
 import lombok.*;
 
 @Data
-public class LmsQuestion extends BaseEntity<LmsQuestion> {
+public class LmsQuestionMaterial extends BaseEntity<LmsQuestionMaterial> {
     /**
-     * 题目ID
+     * 主键
      */
     private Long id;
 
@@ -21,38 +21,25 @@ public class LmsQuestion extends BaseEntity<LmsQuestion> {
      */
     private Long cuser;
 
-    /**
-     * 所属答题室ID
-     */
-    private Long examRoomId;
+    private String uuid;
 
     /**
-     * 所属答题室名
+     * 标题
      */
-    private String examRoomName;
+    private String title;
 
     /**
-     * 题类型：0-单选,1-多选,2-判断
-     */
-    private Integer mold;
-
-    /**
-     * 题目内容
+     * 正文
      */
     private String content;
 
     /**
-     * 难度等级 1-5
+     * 备注
      */
-    private Integer difficulty;
+    private String notes;
 
     /**
-     * 题目是否公开: 0-私有,1-公开
-     */
-    private Boolean share;
-
-    /**
-     * 是否启用
+     * 禁用状态: 0-禁用,1-正常
      */
     private Boolean enabled;
 
@@ -75,12 +62,10 @@ public class LmsQuestion extends BaseEntity<LmsQuestion> {
         sb.append(", id=").append(id);
         sb.append(", ctime=").append(ctime);
         sb.append(", cuser=").append(cuser);
-        sb.append(", examRoomId=").append(examRoomId);
-        sb.append(", examRoomName=").append(examRoomName);
-        sb.append(", mold=").append(mold);
+        sb.append(", uuid=").append(uuid);
+        sb.append(", title=").append(title);
         sb.append(", content=").append(content);
-        sb.append(", difficulty=").append(difficulty);
-        sb.append(", share=").append(share);
+        sb.append(", notes=").append(notes);
         sb.append(", enabled=").append(enabled);
         sb.append(", etime=").append(etime);
         sb.append(", euser=").append(euser);

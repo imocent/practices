@@ -2,10 +2,8 @@ package com.fit.web.admin.lms;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
-import com.fit.entity.LmsQuestion;
-import com.fit.entity.LmsQuestionAnswer;
-import com.fit.service.LmsQuestionAnswerService;
-import com.fit.service.LmsQuestionService;
+import com.fit.entity.LmsQuestionMaterial;
+import com.fit.service.LmsQuestionMaterialService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -29,20 +27,20 @@ import java.util.Map;
  * @DATE 2019/4/26
  */
 @Controller
-@RequestMapping("/admin/lms/question/answer")
-public class QuestionAnswerController extends BaseController {
+@RequestMapping("/admin/lms/question/material")
+public class QuestionMaterialController extends BaseController {
 
     private static String PREFIX = "/admin/lms/question/";
 
     @Autowired
-    private LmsQuestionAnswerService service;
+    private LmsQuestionMaterialService service;
 
     /**
      * 列表页面
      */
     @GetMapping("/list")
     public String index() {
-        return PREFIX + "answers";
+        return PREFIX + "materials";
     }
 
     /**
@@ -52,7 +50,7 @@ public class QuestionAnswerController extends BaseController {
     @ResponseBody
     public Object list(HttpServletRequest request) {
         Map<String, Object> params = WebUtil.getRequestMap(request);
-        List<LmsQuestionAnswer> list = this.service.findList(params);
+        List<LmsQuestionMaterial> list = this.service.findList(params);
         int count = this.service.findCount(params);
         return AjaxResult.tables(count, list);
     }
@@ -63,7 +61,7 @@ public class QuestionAnswerController extends BaseController {
     @GetMapping("/edit")
     public String editView(Long id, Model model) {
         if (OftenUtil.isNotEmpty(id)) {
-            LmsQuestionAnswer bean = this.service.get(id);
+            LmsQuestionMaterial bean = this.service.get(id);
             model.addAttribute("bean", bean);
         }
         return PREFIX + "edit";
@@ -74,13 +72,17 @@ public class QuestionAnswerController extends BaseController {
      */
     @PostMapping("/save")
     @ResponseBody
-    public Object save(LmsQuestionAnswer bean) {
-        LmsQuestionAnswer entity = this.service.get(bean.getId());
+    public Object save(LmsQuestionMaterial bean) {
+        LmsQuestionMaterial entity = this.service.get(bean.getId());
         Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
         if (null == entity) {
+            bean.setCtime(new Date());
+            bean.setCuser(userId);
             this.service.save(bean);
         } else {
             BeanUtil.copyProperties(bean, entity);
+            entity.setEtime(new Date());
+            entity.setEuser(userId);
             this.service.update(entity);
         }
         return AjaxResult.success();

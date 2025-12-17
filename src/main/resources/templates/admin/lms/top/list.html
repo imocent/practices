@@ -69,7 +69,7 @@
         // 工具条点击事件
         table.on('toolbar', function (obj) {
             if (obj.event === 'add') {
-                editView("/admin/lms/top/edit", "添加通知");
+                editView("/admin/lms/top/edit", "添加");
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
@@ -89,7 +89,7 @@
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
-                editView("/admin/lms/top/edit?id=" + data.id, "编辑通知");
+                editView("/admin/lms/top/edit?id=" + data.id, "编辑");
             }
         });
 

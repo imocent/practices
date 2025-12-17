@@ -51,19 +51,17 @@
             url: '/admin/lms/question/list',
             method: 'post',
             dataType: 'JSON',
-            tree: {
-                customName: {pid: 'pid'},
-                data: {isSimpleData: true},
-                view: {initExpandLevel: 2}
-            },
             smartReloadModel: true,
             height: 'full-160',
-            page: false,
+            page: true,
             toolbar: '#toolbar',
             cols: [ [
                 {type: 'checkbox'},
                 {type: "numbers", title: '序号', minWidth: 80, templet: function(index){return index+1;}},
-                {field: 'difficulty', title: '难度等级', minWidth: 80},
+                {field: 'examRoomName', title: '答题室名', minWidth: 80},
+                {field: 'mold', title: '题类型', width: 80,templet:function (d) {return d.mold==0 ? "单选" : d.mold==1 ? "多选" : "判断";}},
+                {field: 'content', title: '内容', minWidth: 80},
+                {field: 'difficulty', title: '难度等级', width: 80},
                 {field: 'share', title: '分享', align: 'center', templet: "#shareTpl", width: 100},
                 {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
                 {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', width: 100}
@@ -73,7 +71,7 @@
         // 工具条点击事件
         table.on('toolbar', function (obj) {
             if (obj.event === 'add') {
-                editView("/admin/lms/question/edit", "添加通知");
+                editView("/admin/lms/question/edit", "添加");
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
@@ -83,7 +81,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/lms/exam/subject/del')
+                        changeReq(ids, '/admin/lms/question/del')
                         layer.close(index);
                     }
                 });
@@ -93,7 +91,7 @@
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
-                editView("/admin/lms/question/edit?id=" + data.id, "编辑通知");
+                editView("/admin/lms/question/edit?id=" + data.id, "编辑");
             }
         });
 
