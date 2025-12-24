@@ -130,7 +130,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/user/del')
+                        deleteReq(ids, '/admin/user/del')
                         layer.close(index);
                     }
                 });

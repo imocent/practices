@@ -113,7 +113,7 @@ public abstract class BaseCrudService<D extends BaseCrudDao<T>, T extends BaseEn
      * @param ids
      */
     @Transactional
-    public int batchDelete(String[] ids) {
+    public int batchDelete(List<Long> ids) {
         return dao.batchDelete(ids);
     }
 

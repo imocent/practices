@@ -23,6 +23,10 @@ function editView(url, title) {
     openView(url, title, '45%', '65%', false);
 }
 
+function openFull(url, title) {
+    openView(url, title, '45%', '65%', true);
+}
+
 function openView(url, title, widthParam, heightParam, isFull) {
     let viewIndex = layer.open({
         content: url, title: title, area: [widthParam, heightParam], type: 2, fix: false, //不固定
@@ -34,7 +38,7 @@ function openView(url, title, widthParam, heightParam, isFull) {
 }
 
 function advices(data, tier) {
-    if (data.code == 0) {
+    if (data.code === 0) {
         layer.msg(data.msg, {icon: 6}, function () {
             let index = tier.layer.getFrameIndex(window.name);
             tier.location.replace(tier.location.href)
@@ -46,7 +50,7 @@ function advices(data, tier) {
 }
 
 function toError(answer) {
-    if (answer.status == 401) {
+    if (answer.status === 401) {
         layer.msg("登录超时", {icon: 5, time: 2000});
         parent.window.location.reload(true);//刷新当前页
     } else {
@@ -54,24 +58,26 @@ function toError(answer) {
     }
 }
 
+function deleteReq(ids, url) {
+    modifyReq(url, {ids: ids}, true)
+}
+
 function changeReq(ids, url) {
     modifyReq(url, {ids: ids}, false)
 }
 
 function modifyReq(url, dataParam, isReload) {
-    layui.jquery.ajax({
-        type: 'post', url: url, dataType: 'json', data: dataParam, success: function (data) {
-            if (data.code == 0) {
-                layer.msg(data.msg, {icon: 6, time: 1000});
-                if (isReload) {
-                    window.location.reload(true);//刷新当前页
-                }
-            } else {
-                layer.msg(data.msg, {icon: 5});
+    layui.jquery.post(url, dataParam, function (data) {
+        if (data.code === 0) {
+            layer.msg(data.msg, {icon: 6, time: 1000});
+            if (isReload) {
+                window.location.reload(true);//刷新当前页
             }
-        }, error: function (event) {
-            toError(event);
+        } else {
+            layer.msg(data.msg, {icon: 5});
         }
+    }, 'json').fail(function (event) {
+        toError(event);
     });
 }
 

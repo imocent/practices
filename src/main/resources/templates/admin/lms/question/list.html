@@ -40,6 +40,9 @@
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
                     <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
                 </button>
+                <button type="button" class="layui-btn layui-bg-orange layui-btn-xs" lay-event="answer">
+                    <i class="layui-icon layui-icon-edit" title="答案">答案</i>
+                </button>
             </script>
         </div>
     </div>
@@ -58,13 +61,13 @@
             cols: [ [
                 {type: 'checkbox'},
                 {type: "numbers", title: '序号', minWidth: 80, templet: function(index){return index+1;}},
-                {field: 'examRoomName', title: '答题室名', minWidth: 80},
-                {field: 'mold', title: '题类型', width: 80,templet:function (d) {return d.mold==0 ? "单选" : d.mold==1 ? "多选" : "判断";}},
-                {field: 'content', title: '内容', minWidth: 80},
-                {field: 'difficulty', title: '难度等级', width: 80},
+                {field: 'examRoomName', title: '答题室名', minWidth: 100},
+                {field: 'mold', title: '题类型', width: 70,templet:function (d) {return d.mold==0 ? "单选" : d.mold==1 ? "多选" : "判断";}},
+                {field: 'content', title: '内容', minWidth: 100},
+                {field: 'difficulty', title: '难度等级', width: 100},
                 {field: 'share', title: '分享', align: 'center', templet: "#shareTpl", width: 100},
                 {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', width: 100}
+                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', minWidth: 150}
             ] ]
         });
 
@@ -81,7 +84,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/lms/question/del')
+                        deleteReq(ids, '/admin/lms/question/del')
                         layer.close(index);
                     }
                 });
@@ -92,6 +95,9 @@
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
                 editView("/admin/lms/question/edit?id=" + data.id, "编辑");
+            }
+            if (event === 'answer') {
+                openFull("/admin/lms/question/answer/list?id=" + data.id, "答案");
             }
         });
 

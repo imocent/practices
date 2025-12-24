@@ -6,27 +6,29 @@
     <div class="layui-card-body">
         <div class="yadmin-body animated fadeIn">
             <div class="layui-form yadmin-search-area input">
-                <form class="layui-form-item">
+                <form class="layui-form-item" lay-filter="search">
+                    <input type="hidden" name="questionId" id="questionId" th:value="${id}">
                     <div class="layui-inline">
                         <label for="name" class="layui-form-label">名称</label>
                         <div class="layui-input-inline">
                             <input type="text" name="name" id="name" placeholder="名称" class="layui-input"/>
                         </div>
-                        <button lay-submit="" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                        <button lay-submit class="layui-btn layui-btn-sm layui-btn-primary table-action">
                             <i class="layui-icon layui-icon-search"></i>
                         </button>
-                        <button type="reset" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                        <button type="reset" class="layui-btn layui-btn-sm layui-btn-primary table-action">
                             <i class="layui-icon layui-icon-refresh"></i>
                         </button>
                     </div>
                 </form>
             </div>
-            <table class="layui-hide" id="table-list"></table>
+            <table class="layui-hide" id="tables"></table>
             <script type="text/html" id="shareTpl">
                 <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="公开|私有" lay-filter="status" {{d.share?"checked":""}}>
             </script>
             <script type="text/html" id="statusTpl">
-                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status" {{d.enabled?"checked":""}}>
+                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status"
+                       {{d.enabled?"checked":""}}>
             </script>
             <script type="text/html" id="toolbar">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
@@ -35,10 +37,8 @@
                 <button type="button" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
                     <i class="layui-icon layui-icon-delete" title="删除">删除</i>
                 </button>
-            </script>
-            <script type="text/html" id="column-toolbar">
-                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
-                    <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
+                <button type="button" class="layui-btn layui-btn-xs" lay-event="renew">
+                    <i class="layui-icon layui-icon-refresh" title="刷新">刷新</i>
                 </button>
             </script>
         </div>
@@ -46,8 +46,10 @@
 </div>
 <script>
     layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
+        form.render();
         table.render({
-            elem: '#table-list',
+            id: 'tables',
+            elem: '#tables',
             url: '/admin/lms/question/answer/list',
             method: 'post',
             dataType: 'JSON',
@@ -55,52 +57,78 @@
             height: 'full-160',
             page: true,
             toolbar: '#toolbar',
-            cols: [ [
-                {type: 'checkbox'},
-                {field: "id", title: '序号', minWidth: 80,},
-                {field: 'questionId', title: '答题室ID', minWidth: 80},
-                {field: 'content', title: '内容', width: 80},
-                {field: 'verify', title: '答案校验', align: 'center', templet: function (d) {
-                    if (d.verify == 1){
-                        return '正确';
-                    } else if(d.verify == 2 ){
-                        return '错误';
-                    }
-                    return '无';
-                }},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', width: 100}
-            ] ]
+            where: {questionId: $('#questionId').val(), name: $('#name').val()},
+            cols: [
+                [
+                    {type: 'checkbox'},
+                    {field: "id", title: '序号', minWidth: 40,},
+                    {field: 'questionId', title: '答题室ID', minWidth: 40},
+                    {field: 'content', title: '答案内容', minWidth: 80, edit: 'text'},
+                    {
+                        field: 'verify', title: '答案校验', minWidth: 40, align: 'center', templet: function (d) {
+                            if (d.verify == 1) {
+                                return '正确';
+                            } else if (d.verify == 2) {
+                                return '错误';
+                            }
+                            return '无';
+                        }
+                    },
+                ]
+            ]
         });
-
         // 工具条点击事件
-        table.on('toolbar', function (obj) {
+        table.on('toolbar(tables)', function (obj) {
             if (obj.event === 'add') {
-                editView("/admin/lms/question/answer/edit", "添加");
+                let cache = table.cache['tables'] || [];
+                cache.unshift({id: '', questionId: $("#questionId").val(), content: '', verify: 0, _isNew: true});
+                table.renderData('tables');
+                return false;
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
-                    let selectData = table.checkStatus('table-list').data;
+                    let selectData = table.checkStatus('tables').data;
                     if (selectData.length > 0) {
                         let idsArray = [];
                         for (let i = 0; i < selectData.length; i++) {
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/lms/question/answer/del')
+                        deleteReq(ids, '/admin/lms/question/answer/del')
                         layer.close(index);
                     }
                 });
+            } else if (obj.event === 'renew') {
+                console.log(obj.event)
+                table.reload('tables', {where: {questionId: $('#questionId').val(), name: $('#name').val()}});
             }
         });
 
-        table.on('tool', function (obj) {
-            let data = obj.data, event = obj.event;
-            if (event === 'edit') {
-                editView("/admin/lms/question/answer/edit?id=" + data.id, "编辑");
+        function saveField(row) {
+            $.post('/admin/lms/question/answer/save', row, function (res) {
+                if (res.code === 0) {
+                    table.reload('tables', {where: {questionId: $('#questionId').val(), name: $('#name').val()}});
+                    layer.msg('保存成功', {time: 800});
+                } else {
+                    layer.msg(res.msg || '保存失败');
+                }
+            }, 'json').fail(function () {
+                layer.msg('网络异常');
+            });
+        }
+
+        table.on('edit(tables)', function (obj) {
+            if (obj.data._isNew) {
+                layer.confirm('新增是否保存?', {icon: 3}, function (index) {
+                    layer.close(index);
+                    saveField(obj.data);
+                });
+                return;
             }
+            saveField(obj.data);
         });
 
         form.on('submit(search)', function (form) {
-            table.reload('table-list', {
+            table.reload('tables', {
                 where: form.field
             });
             return false;

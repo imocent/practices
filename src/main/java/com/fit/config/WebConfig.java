@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.resource.PathResourceResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -84,9 +83,9 @@ public class WebConfig implements WebMvcConfigurer {
         /* 是否通过请求Url的扩展名来决定media type */
         configurer.favorPathExtension(true).favorParameter(false)
                 /* 不检查Accept请求头 */.ignoreAcceptHeader(false).parameterName("mediaType")
-                /* 设置默认的media yype */.defaultContentType(MediaType.TEXT_HTML)
-                /* 请求以.html结尾的会被当成MediaType.TEXT_HTML*/.mediaType("html", MediaType.TEXT_HTML)
-                /* 请求以.json结尾的会被当成MediaType.APPLICATION_JSON*/.mediaType("json", MediaType.APPLICATION_JSON);
+                /* 设置默认的media */.defaultContentType(MediaType.TEXT_HTML)
+                /* 请求以.html*/.mediaType("html", MediaType.TEXT_HTML)
+                /* 请求以.json*/.mediaType("json", MediaType.APPLICATION_JSON);
     }
 
     @Override

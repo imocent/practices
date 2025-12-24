@@ -72,7 +72,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/role/del')
+                        deleteReq(ids, '/admin/role/del')
                         layer.close(index);
                     }
                 });

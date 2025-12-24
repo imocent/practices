@@ -81,7 +81,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/lms/exam/subject/del')
+                        deleteReq(ids, '/admin/lms/exam/subject/del')
                         layer.close(index);
                     }
                 });

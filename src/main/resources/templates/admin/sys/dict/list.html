@@ -73,7 +73,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        changeReq(ids, '/admin/dict/del')
+                        deleteReq(ids, '/admin/dict/del')
                         layer.close(index);
                     }
                 });

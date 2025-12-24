@@ -98,4 +98,6 @@ mybatis:
 logging:
   file:
     path: ./target/logs
+  level:
+    web: info
 debug: false

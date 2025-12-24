@@ -64,7 +64,7 @@ public interface BaseCrudDao<T> {
     /**
      * 批量删除
      */
-    int batchDelete(String[] ids);
+    int batchDelete(List<Long> ids);
 
     /**
      * 查询数据列表

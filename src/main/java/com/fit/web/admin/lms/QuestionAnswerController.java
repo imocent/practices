@@ -13,10 +13,7 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -41,7 +38,8 @@ public class QuestionAnswerController extends BaseController {
      * 列表页面
      */
     @GetMapping("/list")
-    public String index() {
+    public String index(Model model, Long id) {
+        model.addAttribute("id", id);
         return PREFIX + "answers";
     }
 
@@ -76,7 +74,6 @@ public class QuestionAnswerController extends BaseController {
     @ResponseBody
     public Object save(LmsQuestionAnswer bean) {
         LmsQuestionAnswer entity = this.service.get(bean.getId());
-        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
         if (null == entity) {
             this.service.save(bean);
         } else {
@@ -93,9 +90,9 @@ public class QuestionAnswerController extends BaseController {
      */
     @PostMapping("/del")
     @ResponseBody
-    public Object del(String ids) {
+    public Object del(@RequestParam("ids") List<Long> ids) {
         if (OftenUtil.isNotEmpty(ids)) {
-            this.service.batchDelete(ids.split(","));
+            this.service.batchDelete(ids);
             return AjaxResult.success();
         } else {
             return AjaxResult.error("参数异常");

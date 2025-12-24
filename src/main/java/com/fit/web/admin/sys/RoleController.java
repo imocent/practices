@@ -14,10 +14,7 @@ import com.fit.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,17 +96,14 @@ public class RoleController extends BaseController {
      */
     @PostMapping("/del")
     @ResponseBody
-    public Object del(String ids) {
+    public Object del(@RequestParam("ids") List<Long> ids) {
         if (OftenUtil.isNotEmpty(ids)) {
-            List<String> dels = Arrays.asList(ids.split(","));
-            dels.remove("1");
-            int size = dels.size();
-            if (size > 0) {
-                String[] strs = dels.toArray(new String[size]);
-                this.roleService.batchDelete(strs);
-                return AjaxResult.success();
-            } else {
+            ids.remove("1");
+            if (ids.isEmpty()) {
                 return AjaxResult.error("含有不能删角色");
+            } else {
+                this.roleService.batchDelete(ids);
+                return AjaxResult.success();
             }
         } else {
             return AjaxResult.error("参数异常");

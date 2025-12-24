@@ -116,8 +116,9 @@
   <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
     ${value}
   </select>
-  <delete id="batchDelete" parameterType="[Ljava.lang.String;">
-    <foreach close=")" collection="array" item="id" open="(" separator=",">
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from lms_question_wrong where ID in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
       #{id}
     </foreach>
   </delete>
