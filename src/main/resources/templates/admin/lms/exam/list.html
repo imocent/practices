@@ -47,11 +47,10 @@
             elem: '#table-list',
             url: '/admin/lms/exam/subject/list',
             method: 'post',
-            dataType: 'JSON',
             tree: {
                 customName: {pid: 'pid'},
                 data: {isSimpleData: true},
-                view: {initExpandLevel: 2}
+                view: {initExpandLevel: 1}
             },
             smartReloadModel: true,
             height: 'full-160',
@@ -59,7 +58,7 @@
             toolbar: '#toolbar',
             cols: [ [
                 {type: 'checkbox'},
-                {type: "numbers", title: '序号', minWidth: 80, templet: function(index){return index+1;}},
+                {type: 'numbers', title: '序号', minWidth: 80, templet: function(index){return index+1;}},
                 {field: 'name', title: '学科名称', minWidth: 100},
                 {field: 'sort', title: '排序', width: 30},
                 {field: 'levels', title: '层级', width: 30},

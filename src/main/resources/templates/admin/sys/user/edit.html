@@ -73,18 +73,7 @@
         dtree.renderSelect({
             elem: "#deptTree",
             url: "/admin/dept/tree",
-            dataStyle: "layuiStyle",
-            selectInitVal: 1,
-            width: "100%",
-            method: "post",
-            menubar: true,
-            dataFormat: "list",
-            ficon: ["1", "-1"],
-            response: {
-                statusCode: 0,
-                message: "msg",
-                title: "name"
-            }, done: function (data, obj, first) {
+            done: function (data, obj, first) {
                 if (first) {
                     dtree.dataInit("deptTree", $('#deptId').val());
                     dtree.selectVal("deptTree");
@@ -105,7 +94,7 @@
                     advices(data, parent);
                 },
                 error: function (event) {
-                    errors(event);
+                    toError(event);
                 }
             });
         });

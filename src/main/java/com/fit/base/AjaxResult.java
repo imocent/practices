@@ -75,7 +75,12 @@ public class AjaxResult extends HashMap<String, Object> {
     }
 
     public static AjaxResult tree(Object rows) {
-        return tables(200, rows);
+        AjaxResult json = new AjaxResult();
+        json.put("message", "success");
+        json.put("code", 200);
+        json.put("data", rows);
+        json.put("count", 0);
+        return json;
     }
 
     /**

@@ -6,14 +6,14 @@
     <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
     <result column="CUSER" jdbcType="BIGINT" property="cuser" />
     <result column="UUID" jdbcType="VARCHAR" property="uuid" />
-    <result column="SUBJECT_ID" jdbcType="BIGINT" property="subjectId" />
+    <result column="SUBJECT_ID" jdbcType="VARCHAR" property="subjectId" />
     <result column="SUBJECT_NAME" jdbcType="VARCHAR" property="subjectName" />
     <result column="IMG_ID" jdbcType="BIGINT" property="imgId" />
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
     <result column="LEVEL" jdbcType="VARCHAR" property="level" />
     <result column="NOTES" jdbcType="VARCHAR" property="notes" />
-    <result column="ENABLED" jdbcType="BIT" property="enabled" />
+    <result column="ENABLED" jdbcType="INTEGER" property="enabled" />
     <result column="SHARE" jdbcType="BIT" property="share" />
     <result column="EXAM_MODE" jdbcType="INTEGER" property="examMode" />
     <result column="TIME_MODE" jdbcType="BIT" property="timeMode" />
@@ -149,7 +149,7 @@
         #{uuid,jdbcType=VARCHAR},
       </if>
       <if test="subjectId != null">
-        #{subjectId,jdbcType=BIGINT},
+        #{subjectId,jdbcType=VARCHAR},
       </if>
       <if test="subjectName != null">
         #{subjectName,jdbcType=VARCHAR},
@@ -170,7 +170,7 @@
         #{notes,jdbcType=VARCHAR},
       </if>
       <if test="enabled != null">
-        #{enabled,jdbcType=BIT},
+        #{enabled,jdbcType=INTEGER},
       </if>
       <if test="share != null">
         #{share,jdbcType=BIT},
@@ -235,7 +235,7 @@
         UUID = #{uuid,jdbcType=VARCHAR},
       </if>
       <if test="subjectId != null">
-        SUBJECT_ID = #{subjectId,jdbcType=BIGINT},
+        SUBJECT_ID = #{subjectId,jdbcType=VARCHAR},
       </if>
       <if test="subjectName != null">
         SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR},
@@ -256,7 +256,7 @@
         NOTES = #{notes,jdbcType=VARCHAR},
       </if>
       <if test="enabled != null">
-        ENABLED = #{enabled,jdbcType=BIT},
+        ENABLED = #{enabled,jdbcType=INTEGER},
       </if>
       <if test="share != null">
         `SHARE` = #{share,jdbcType=BIT},
@@ -327,7 +327,7 @@
          and UUID = #{uuid,jdbcType=VARCHAR}
       </if>
       <if test="subjectId != null and subjectId != ''">
-         and SUBJECT_ID = #{subjectId,jdbcType=BIGINT}
+         and SUBJECT_ID = #{subjectId,jdbcType=VARCHAR}
       </if>
       <if test="subjectName != null and subjectName != ''">
          and SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR}
@@ -348,7 +348,7 @@
          and NOTES = #{notes,jdbcType=VARCHAR}
       </if>
       <if test="enabled != null and enabled != ''">
-         and ENABLED = #{enabled,jdbcType=BIT}
+         and ENABLED = #{enabled,jdbcType=INTEGER}
       </if>
       <if test="share != null and share != ''">
          and `SHARE` = #{share,jdbcType=BIT}

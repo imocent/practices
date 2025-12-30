@@ -22,37 +22,37 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
         LI_NAV_FIRST_LINE = "dtree-nav-first-line", LI_NAV_LINE = "dtree-nav-line", LI_NAV_LAST_LINE = "dtree-nav-last-line";
 
     // 树的公共指定
-    var NAV_THIS = "dtree-nav-this",	//当前节点
-        NAV_SHOW = "dtree-nav-show",	//显示子节点
-        NAV_HIDE = "dtree-nav-hide",	//隐藏节点
-        NAV_DIS = "dtree-disabled",		//禁用节点
-        ICON_HIDE = "dtree-icon-hide",  //隐藏图标
-        $BODY = $("body"),				//body选择器
-        $WIN = $(window),				//window窗口
-        $DOC = $(document),				//当前文档
+    var NAV_THIS = "dtree-nav-this",     //当前节点
+        NAV_SHOW = "dtree-nav-show",     //显示子节点
+        NAV_HIDE = "dtree-nav-hide",     //隐藏节点
+        NAV_DIS = "dtree-disabled",      //禁用节点
+        ICON_HIDE = "dtree-icon-hide",   //隐藏图标
+        $BODY = $("body"),                      //body选择器
+        $WIN = $(window),                       //window窗口
+        $DOC = $(document),                     //当前文档
         MOD_NAME = "dtree",				//模块名称
         VERSION = "v2.5.7",				//版本
-        OPTIONS = {},					//全局属性配置
-        DTrees = {};				    //当前被实例化的树的集合
+        OPTIONS = {},                       //全局属性配置
+        DTrees = {};                        //当前被实例化的树的集合
 
     // 树的自定义图标
-    var DTREEFONT = "dtreefont",									//默认使用图标字体
-        LI_DIV_CHECKBAR_ON = "dtree-icon-fuxuankuangxuanzhong", 	//复选框选中图标
-        LI_DIV_CHECKBAR_OUT = "dtree-icon-fuxuankuang", 			//复选框未选中图标
-        LI_DIV_CHECKBAR_NOALL = "dtree-icon-fuxuankuang-banxuan",	//复选框半选图标
-        LI_DIV_MENUBAR_DOWN = "dtree-icon-move-down", 				//menubar的展开全部的图标
-        LI_DIV_MENUBAR_UP = "dtree-icon-move-up", 					//menubar的收缩全部的图标
-        LI_DIV_MENUBAR_REFRESH = "dtree-icon-refresh",				//menubar的刷新图标
-        LI_DIV_MENUBAR_CHECKALL = "dtree-icon-roundcheckfill", 		//menubar的全选图标
-        LI_DIV_MENUBAR_UNCHECKALL = "dtree-icon-roundclosefill", 	//menubar的全不选图标
-        LI_DIV_MENUBAR_INVERTALL = "dtree-icon-roundcheck", 		//menubar的反选图标
-        LI_DIV_MENUBAR_DELETE = "dtree-icon-delete1", 				//menubar的删除图标
-        LI_DIV_MENUBAR_SEARCH = "dtree-icon-search_list_light",		//menubar的搜索图标
-        LI_DIV_TOOLBAR_PULLDOWN = "dtree-icon-pulldown", 			//toolbar的展开图标
-        LI_DIV_TOOLBAR_PULLUP = "dtree-icon-pullup", 				//toolbar的收缩图标
-        LI_DIV_TOOLBAR_ADD = "dtree-icon-roundadd", 				//toolbar的新增图标
-        LI_DIV_TOOLBAR_EDIT = "dtree-icon-bianji", 					//toolbar的编辑图标
-        LI_DIV_TOOLBAR_DEL = "dtree-icon-roundclose";				//toolbar的删除图标
+    var DTREEFONT = "dtreefont",                                    //默认使用图标字体
+        LI_DIV_CHECKBAR_ON = "dtree-icon-fuxuankuangxuanzhong",     //复选框选中图标
+        LI_DIV_CHECKBAR_OUT = "dtree-icon-fuxuankuang",             //复选框未选中图标
+        LI_DIV_CHECKBAR_NOALL = "dtree-icon-fuxuankuang-banxuan",   //复选框半选图标
+        LI_DIV_MENUBAR_DOWN = "dtree-icon-move-down",               //menubar的展开全部的图标
+        LI_DIV_MENUBAR_UP = "dtree-icon-move-up",                   //menubar的收缩全部的图标
+        LI_DIV_MENUBAR_REFRESH = "dtree-icon-refresh",              //menubar的刷新图标
+        LI_DIV_MENUBAR_CHECKALL = "dtree-icon-roundcheckfill",      //menubar的全选图标
+        LI_DIV_MENUBAR_UNCHECKALL = "dtree-icon-roundclosefill",    //menubar的全不选图标
+        LI_DIV_MENUBAR_INVERTALL = "dtree-icon-roundcheck",         //menubar的反选图标
+        LI_DIV_MENUBAR_DELETE = "dtree-icon-delete1",               //menubar的删除图标
+        LI_DIV_MENUBAR_SEARCH = "dtree-icon-search_list_light",     //menubar的搜索图标
+        LI_DIV_TOOLBAR_PULLDOWN = "dtree-icon-pulldown",            //toolbar的展开图标
+        LI_DIV_TOOLBAR_PULLUP = "dtree-icon-pullup",                //toolbar的收缩图标
+        LI_DIV_TOOLBAR_ADD = "dtree-icon-roundadd",                 //toolbar的新增图标
+        LI_DIV_TOOLBAR_EDIT = "dtree-icon-bianji",                  //toolbar的编辑图标
+        LI_DIV_TOOLBAR_DEL = "dtree-icon-roundclose";               //toolbar的删除图标
 
     // 树的非叶子节点图标集合
     var nodeIconArray = {
@@ -79,14 +79,14 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
     };
 
     // 树的自定义样式
-    var DTREE = "dtree-",			//自定义样式前缀
-        ITEMTHIS = "-item-this",	//自定义样式当前行选中后缀
-        ITEM = "-item",				//自定义样式当前行后缀
-        DFONT = "-dtreefont",		//自定义样式图标样式后缀
-        FICON = "-ficon",			//自定义样式一级图标样式后缀
-        ICON = "-icon",				//自定义样式二级图标样式后缀
-        CBOX = "-checkbox",			//自定义样式复选框样式后缀
-        CHS = "-choose";			//自定义样式复选框选中样式后缀
+    var DTREE = "dtree-",           //自定义样式前缀
+        CBOX = "-checkbox",         //自定义样式复选框样式后缀
+        CHS = "-choose",            //自定义样式复选框选中样式后缀
+        DFONT = "-dtreefont",       //自定义样式图标样式后缀
+        FICON = "-ficon",           //自定义样式一级图标样式后缀
+        ICON = "-icon",             //自定义样式二级图标样式后缀
+        ITEMTHIS = "-item-this",    //自定义样式当前行选中后缀
+        ITEM = "-item";             //自定义样式当前行后缀
 
     // 树自定义操作事件名称集合	绑定dtree-click的事件
     var eventName = {
@@ -478,7 +478,7 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
         this.iconfontStyle = this.options.iconfontStyle || OPTIONS.iconfontStyle || {}; //用于自定义树的每个关键部位使用的图标
         this.nodeIconArray = $.extend(nodeIconArray, this.options.nodeIconArray || OPTIONS.nodeIconArray) || nodeIconArray; //用户自定义非叶子节点图标集合，node
         this.leafIconArray = $.extend(leafIconArray, this.options.leafIconArray || OPTIONS.leafIconArray) || leafIconArray; //用户自定义叶子节点图标集合，leaf
-        this.skin = this.options.skin || OPTIONS.skin || "theme"; // 自定义样式
+        this.skin = this.options.skin || OPTIONS.skin || "layui"; // 自定义样式
         if (this.skin == "layui") { // layui主题
             this.line = (typeof (this.options.line) === "boolean") ? this.options.line : (typeof (OPTIONS.line) === "boolean") ? OPTIONS.line : true; //开启树线，默认开启
             this.ficon = this.options.ficon || OPTIONS.ficon || "7"; //一级图标样式，0：文件夹，1：人员，2：机构，3：报表，4：信息，5：叶子，6：勋章，7：文件，8：小圆点，9：齿轮，10：星星， -1：不显示一级图标。默认'7'
@@ -518,8 +518,8 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
         this.request = this.options.request || OPTIONS.request || {}; //用户自定义请求参数
         this.response = $.extend(this.response, this.options.response || OPTIONS.response) || this.response; //返回json格式
         this.data = this.options.data || OPTIONS.data || null; //初始化指定该参数，则不会访问异步接口
-        this.dataFormat = this.options.dataFormat || OPTIONS.dataFormat || "levelRelationship"; //用于用户配置的data数据格式，list：列表，  levelRelationship：层级关系，默认
-        this.dataStyle = this.options.dataStyle || OPTIONS.dataStyle || "defaultStyle"; //用于用户配置layui通用的json数据风格,layuiStyle:layui风格，defaultStyle：默认风格
+        this.dataFormat = this.options.dataFormat || OPTIONS.dataFormat || "list"; //用于用户配置的data数据格式，list：列表，  levelRelationship：层级关系，默认
+        this.dataStyle = this.options.dataStyle || OPTIONS.dataStyle || "layuiStyle"; //用于用户配置layui通用的json数据风格,layuiStyle:layui风格，defaultStyle：默认风格
         this.errDataShow = this.options.errDataShow || OPTIONS.errDataShow || false; //是否在递归数据出现错误后，显示错误信息，默认false
         this.withCredentials = this.options.withCredentials || OPTIONS.withCredentials || false; //是否允许跨域请求，默认false
         this.beforeSend = this.options.beforeSend || OPTIONS.beforeSend || function (ajax, XMLHttpRequest, self) {
@@ -728,8 +728,7 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
     DTree.prototype.selectSetting = function () {
         /** select模式参数*/
         this.select = true; //配置成select模式
-
-        this.selectInitVal = this.obj.attr("data-value") || this.options.selectInitVal || "";	//输入框的值
+        this.selectInitVal = this.obj.attr("data-value") || this.options.selectInitVal || "0";	//输入框的值
         this.selectTreeDiv = this.obj[0].id + "_tree_div";		// 上级DIV节点
         this.selectCardDiv = this.obj[0].id + "_select_card_div";	// 上级layui卡片节点
         this.selectDiv = this.obj[0].id + "_select_div";		// 模拟的select节点
@@ -737,7 +736,6 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
         this.selectTips = this.options.selectTips || "请选择";			// 输入框的提示语
         this.selectCardHeight = this.options.selectCardHeight || "350";			// 下拉面板的高度
         this.selectInputName = this.options.selectInputName || {nodeId: this.obj[0].id + "_select_nodeId"};  // select表单中的元素
-
         // 调取下拉树的特殊处理页面元素标识
         this.renderSelectDom();
     }
@@ -5372,7 +5370,6 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
                     param: _this.selectVal()
                 });
             });
-
         }
     };
 
@@ -5381,7 +5378,6 @@ layui.define(['jquery', 'layer', 'form'], function (exports) {
         $("div." + LI_DIV_TOOLBAR).find(".layui-show").removeClass('layui-anim-fadein layui-show');
         // $("div[dtree-id][dtree-select]").removeClass("layui-form-selected");
         // $("div[dtree-id][dtree-card]").removeClass("dtree-select-show layui-anim layui-anim-upbit");
-
     });
 
     // 解绑浏览器事件

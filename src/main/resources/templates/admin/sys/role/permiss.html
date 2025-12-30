@@ -75,7 +75,7 @@ layui.use(['jquery', 'dtree', 'form', 'layer', 'laydate'], function ($, dtree, f
                 advices(data, parent);
             },
             error: function (event) {
-                errors(event);
+                toError(event);
             }
         });
     });

@@ -6,30 +6,29 @@
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${bean?.id}"/>
         <div class="layui-form-item">
-            <label for="dTree" class="layui-form-label"><span class="yadmin-red">*</span>上级名称</label>
+            <label for="uuid" class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <ul id="dTree" class="dtree" data-id="-1" data-value="选择上级名称"></ul>
-                <input type="hidden" id="pid" name="pid" th:value="${bean?.pid}">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>名称</label>
-            <div class="layui-input-block">
-                <input type="text" id="name" placeholder="请输入名称" name="name" th:value="${bean?.name}"
+                <input type="text" id="uuid" placeholder="请输入名称，例如：状态标识" name="uuid" th:value="${bean?.uuid}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="levels" class="layui-form-label">层级</label>
+            <label for="title" class="layui-form-label"><span class="yadmin-red">*</span>标题</label>
             <div class="layui-input-block">
-                <input type="text" id="levels" name="levels" lay-affix="number" placeholder="层级时长"
-                       step="1" min="1" max="200" th:value="${bean?.levels}" class="layui-input"/>
+                <input type="text" id="title" placeholder="请输入标题" name="title" th:value="${bean?.title}"
+                       lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="sort" class="layui-form-label">排序</label>
+            <label for="content" class="layui-form-label">其它信息：</label>
             <div class="layui-input-block">
-                <input type="text" id="sort" placeholder="请输入序号" name="sort" th:value="${bean?.sort}" autocomplete="off"
+                <textarea id="content" name="content" placeholder="" class="layui-textarea" th:text="${bean?.content}"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="notes" class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <input type="text" id="notes" placeholder="请输入备注" name="notes" th:value="${bean?.notes}" autocomplete="off"
                        class="layui-input">
             </div>
         </div>
@@ -48,35 +47,20 @@
     </div>
 </div>
 <script>
-    layui.use(['jquery', 'form', 'dtree'], function ($, form, dtree) {
-        $('input:radio[name=enabled][value="[[${bean?.enabled}]]"]').prop('checked', true);
-        form.render('radio');
-
-        dtree.on("node('dTree')", function (obj) {
-            let typeDom = $('#pid');
-            if (typeDom.val() === obj.param.nodeId) {
-                typeDom.val('');
-                $("input[dtree-id='pid']").val('请选择');
-            } else {
-                typeDom.val(obj.param.nodeId)
-            }
-        });
-
-        dtree.renderSelect({
-            elem: "#dTree",
-            url: "/admin/lms/exam/subject/tree",
-            done: function (data, obj, first) {
-                if (first) {
-                    dtree.dataInit("dTree", $('#pid').val());
-                    dtree.selectVal("dTree");
-                }
-            }
+    layui.use(['jquery', 'form', 'layer', 'layEditor'], function ($, form, layer, editor) {
+        editor.init({
+            elem: '#content',
+            uploadUrl: 'https://upload-z1.qiniup.com',
+            videoUploadUrl : 'https://upload-z1.qiniup.com',
+            videoUploadSize: '102400',
+            uploadSize: '',
+            style: 'fangge',
         });
 
         form.on('submit(submit-form)', function (obj) {
             $.ajax({
                 type: "POST",
-                url: '/admin/lms/exam/subject/save',
+                url: '/admin/lms/question/material/save',
                 data: obj.field,
                 dataType: 'json',
                 cache: false,

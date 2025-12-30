@@ -34,6 +34,9 @@
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
                     <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
                 </button>
+                <button type="button" class="layui-btn layui-btn-xs" lay-event="desc">
+                    <i class="layui-icon layui-icon-edit" title="答题室说明">说明</i>
+                </button>
             </script>
         </div>
     </div>
@@ -50,29 +53,32 @@
             toolbar: '#toolbar',
             cols: [ [
                 {type: 'checkbox', fixed: 'left'},
-                {field: 'subjectName', title: '业务分类', width: 100, fixed: 'left'},
+                {field: 'subjectName', title: '业务分类', minWidth: 100, fixed: 'left'},
                 {field: 'name', title: '答题室标题', width: 100, fixed: 'left'},
-                {field: 'notes', title: '答题室说明', width: 100},
-                {field: 'enabled', title: '答题室状态', align: 'center', width: 100},
-                {field: 'examMode', title: '答卷模式', align: 'center', width: 100},
-                {field: 'timeMode', title: '时间类型', align: 'center', width: 120,templet: function (d) {return d.timeMode ? "限时" : "永久";}},
-                {field: 'timeLen', title: '答题时长', align: 'center', width: 100},
-                {field: 'timeOn', title: '开始时间', align: 'center', width: 120},
-                {field: 'timeOff', title: '结束时间', align: 'center', width: 120},
-                {field: 'examineeCount', title: '答题次数', align: 'center', width: 100},
-                {field: 'examineeMode', title: '人员类型', align: 'center', width: 110,templet: function (d) {return d.examineeMode ? "任何人员" : "指定人员";}},
-                {field: 'subjectSortMode', title: '题目顺序', width: 90,align: 'center',templet: function (d) {return d.subjectSortMode ? "随机" : "固定";}},
-                {field: 'subjectOptSortMode', title: '选项顺序', width: 90,align: 'center',templet: function (d) {return d.subjectOptSortMode ? "随机" : "固定";}},
-                {field: 'markMode', title: '阅卷类型', align: 'center', width: 100,templet: function (d) {return d.markMode ? "人工" : "自动";}},
-                {field: 'adjudgeMode', title: '判卷类型', align: 'center', width: 100,templet: function (d) {return d.adjudgeMode ? "全场收卷后" : "用户交卷后";}},
-                {field: 'markShowMode', title: '发布成绩时间', align: 'center', width: 120,templet: function (d) {
+                {field: 'enabled', title: '答题室状态', width: 100},
+                {field: 'examMode', title: '答卷模式', width: 100},
+                {field: 'timeMode', title: '时间类型', width: 120,templet: function (d) {return d.timeMode ? "限时" : "永久";}},
+                {field: 'timeLen', title: '答题时长', width: 100},
+                {field: 'timeOn', title: '开始时间', width: 120},
+                {field: 'timeOff', title: '结束时间', width: 120},
+                {field: 'examineeCount', title: '答题次数', width: 100},
+                {field: 'examineeMode', title: '人员类型', width: 100,templet: function (d) {return d.examineeMode ? "任何人员" : "指定人员";}},
+                {field: 'subjectSortMode', title: '题目顺序', width: 100,align: 'center',templet: function (d) {
+                    return d.subjectSortMode ? "随机" : "固定";
+                }},
+                {field: 'subjectOptSortMode', title: '选项顺序', width: 100,align: 'center',templet: function (d) {
+                    return d.subjectOptSortMode ? "随机" : "固定";
+                }},
+                {field: 'markMode', title: '阅卷类型', width: 100,templet: function (d) {return d.markMode ? "人工" : "自动";}},
+                {field: 'adjudgeMode', title: '判卷类型', width: 100,templet: function (d) {return d.adjudgeMode ? "全场收卷后" : "用户交卷后";}},
+                {field: 'markShowMode', title: '发布成绩时间', width: 120,templet: function (d) {
                     return d.markShowMode == 1 ? "得分" : d.markShowMode == 2 ? "答卷" : "得分&答卷";
                 }},
-                {field: 'markTimeMode', title: '发布成绩类型', align: 'center', width: 120,templet: function (d) {
+                {field: 'markTimeMode', title: '发布成绩类型', width: 120,templet: function (d) {
                     return d.markTimeMode == 1 ? "全场阅卷后" : d.markTimeMode == 2 ? "答卷阅卷后" : "不发布";
                 }},
-                {field: 'uuid', title: 'UUID', align: 'center', width: 300},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+                {field: 'uuid', title: 'UUID', width: 300},
+                {fixed: 'right', title: '操作', align: 'center', width: 150, toolbar: '#column-toolbar'}
             ] ]
         });
 
@@ -100,6 +106,8 @@
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
                 editView("/admin/lms/exam/room/edit?id=" + data.id, "编辑");
+            } else if (event === 'desc') {
+                openHtml('答题室说明', data.notes);
             }
         });
 

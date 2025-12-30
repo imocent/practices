@@ -70,18 +70,8 @@
             elem: "#deptTree",
             url: "/admin/dept/tree",
             width: "60%",
-            method: "post",
-            dataStyle: "layuiStyle",
             toolbar: false,  // 右键工具栏
             menubar: true,  // 树上方工具栏, 展开、收缩、刷新、搜索等
-            dataFormat: "list",
-            ficon: ["1", "-1"],
-            response: {
-                statusCode: 0,
-                message: "msg",
-                level: "level",
-                title: "name"
-            }
         });
 
         dtree.on("node('deptTree')", function (obj) {

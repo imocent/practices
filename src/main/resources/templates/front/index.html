@@ -105,20 +105,19 @@
             indicator: 'outside'     // 指示器位置
         });
 
-        dropdown.render({
-            elem: '.LAY_TRIGGER',
-            trigger: 'click',
-            data: [{
-                title: 'menu item 1',
-                id: 100
-            }, {
-                title: 'menu item 2',
-                id: 101
-            }, {
-                title: 'menu item 3',
-                id: 102
-            }]
-        });
+        $.get('/subjects', function (res) {
+            dropdown.render({
+                elem: '.LAY_TRIGGER',
+                trigger: 'click',
+                data: res.data || [],
+                click: function (data, othis, event) {
+                    console.log(data);
+                    console.log(othis);
+                    console.log(this.elem);
+                    console.log(event);
+                }
+            });
+        }, 'json');
 
         $('.rooms').on('click', '.layui-btn', function (e) {
             e.stopPropagation();

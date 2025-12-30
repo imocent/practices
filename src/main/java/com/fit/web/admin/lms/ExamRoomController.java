@@ -61,7 +61,7 @@ public class ExamRoomController extends BaseController {
             LmsExamRoom bean = this.service.get(id);
             model.addAttribute("bean", bean);
         }
-        return PREFIX + "edit";
+        return PREFIX + "room";
     }
 
     /**

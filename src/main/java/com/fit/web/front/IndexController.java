@@ -1,5 +1,6 @@
 package com.fit.web.front;
 
+import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.LmsExamRoom;
 import com.fit.entity.LmsTop;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -54,14 +56,20 @@ public class IndexController extends BaseController {
         return "front/index";
     }
 
+    @GetMapping("/subjects")
+    @ResponseBody
+    public Object getSubject() {
+        return AjaxResult.success(this.menuService.getSubjectsDropdown());
+    }
+
     @GetMapping("/rooms")
     public String rooms(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
-        List<MenuNode> menus = menuService.getUserMenuNodes(Arrays.asList(Long.valueOf("1")), request);
         map.put("mold", 2);
         List<LmsTop> tops = topService.findList(map);
-        model.addAttribute("menus", menus);
         model.addAttribute("tops", tops);
+        List<MenuNode> menus = menuService.getUserMenuNodes(Arrays.asList(Long.valueOf("1")), request);
+        model.addAttribute("menus", menus);
         map.clear();
         map.put("page", toInt(request.getParameter("pageNumber")));
         map.put("limit", 12);

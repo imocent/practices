@@ -42,7 +42,7 @@
             height: 'full-160',
             page: false,
             toolbar: '#toolbar',
-            cols: [[
+            cols: [ [
                 {type: 'checkbox'},
                 {type: "numbers", title: '序号', minWidth: 80, templet: function(index){return index+1;}},
                 {field: 'name', title: '名称', minWidth: 100},
@@ -52,7 +52,7 @@
                 {field: 'ismenu', title: '类型', width: 30, templet: function (res) { return res.ismenu == "Y" ? "目录" : "菜单";}},
                 {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
                 {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', width: 100}
-            ]],
+            ] ],
             done: function (res, curr, count) {
                 treeTable.expandNode('test', {index: 0, expandFlag: true});
             }

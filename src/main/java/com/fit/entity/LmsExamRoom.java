@@ -26,7 +26,7 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
     /**
      * 所属学科ID
      */
-    private Long subjectId;
+    private String subjectId;
 
     /**
      * 所属学科名
@@ -61,7 +61,7 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
     /**
      * 答题室状态: 0-停用,1-新建,2-发布,3-结束,4-归档'
      */
-    private Boolean enabled;
+    private Integer enabled;
 
     /**
      * 是否公开 0-公开 1-私有

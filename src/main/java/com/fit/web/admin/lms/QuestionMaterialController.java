@@ -61,7 +61,7 @@ public class QuestionMaterialController extends BaseController {
             LmsQuestionMaterial bean = this.service.get(id);
             model.addAttribute("bean", bean);
         }
-        return PREFIX + "edit";
+        return PREFIX + "material";
     }
 
     /**

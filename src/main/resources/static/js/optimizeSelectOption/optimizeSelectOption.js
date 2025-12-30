@@ -25,10 +25,7 @@
         });
     }
 }(function (modelName) {
-    var version = '0.2.0';
-    var $ = layui.$;
-    var form = layui.form;
-    var layer = layui.layer;
+    var version = '0.2.0', $ = layui.$, form = layui.form;
 
     var filePath = layui.cache.modules.optimizeSelectOption
         .substr(0, layui.cache.modules.optimizeSelectOption.lastIndexOf('/'));

@@ -20,17 +20,20 @@ function copy_to_clipboard(txt_str) {
 }
 
 function editView(url, title) {
-    openView(url, title, '45%', '65%', false);
+    openView(2, title, '45%', '65%', false, url);
 }
 
 function openFull(url, title) {
-    openView(url, title, '45%', '65%', true);
+    openView(2, title, '45%', '65%', true, url);
 }
 
-function openView(url, title, widthParam, heightParam, isFull) {
+function openHtml(title, html) {
+    openView(1, title, '45%', '65%', false, `<div class="layui-card layui-card-body">${html || 暂无内容}</div>`);
+}
+
+function openView(opType, title, widthParam, heightParam, isFull, in_content) {
     let viewIndex = layer.open({
-        content: url, title: title, area: [widthParam, heightParam], type: 2, fix: false, //不固定
-        maxmin: false, shadeClose: true
+        title: title, area: [widthParam, heightParam], fix: false, maxmin: false, shadeClose: true, type: opType, content: in_content
     });
     if (isFull) {
         layer.full(viewIndex);
@@ -84,7 +87,7 @@ function modifyReq(url, dataParam, isReload) {
 layui.config({
     base: rootPath
 }).extend({
-    dtree: 'layDtree', iconPicker: 'layIconPicker', layAdmin: 'layAdmin'
+    layAdmin: 'layAdmin', layChoice: 'layChoice', dtree: 'layDtree', layEditor: 'layEditor', iconPicker: 'layIconPicker'
 }).use(['table', "layAdmin"], function () {
     // 渲染 tab 右键菜单.
     layui.layAdmin.tabPopup({

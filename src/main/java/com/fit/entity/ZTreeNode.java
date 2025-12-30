@@ -24,7 +24,7 @@ public class ZTreeNode {
     /**
      * 节点名称
      */
-    private String name;
+    private String title;
 
     /**
      * 自定义码
@@ -74,11 +74,11 @@ public class ZTreeNode {
     /**
      * 创建ztree的父级节点
      */
-    public static ZTreeNode createParent(String zname, Long zid, Long pid) {
+    public static ZTreeNode createParent(String title, Long zid, Long pid) {
         ZTreeNode zTreeNode = new ZTreeNode();
         zTreeNode.setChecked(false);
         zTreeNode.setId(zid);
-        zTreeNode.setName(zname);
+        zTreeNode.setTitle(title);
         zTreeNode.setOpen(true);
         zTreeNode.setParentId(pid);
         zTreeNode.setLevels(0);

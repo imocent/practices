@@ -65,18 +65,7 @@
     dtree.renderSelect({
         elem: "#dicTree",
         url: "/admin/dict/tree",
-        dataStyle: "layuiStyle",
-        selectInitVal: 0,
-        width: "100%",
-        method: "post",
-        menubar: true,
-        dataFormat: "list",
-        ficon: ["1", "-1"],
-        response: {
-            statusCode: 0,
-            message: "msg",
-            title: "name"
-        }, done: function (data, obj, first) {
+        done: function (data, obj, first) {
             if (first) {
                 dtree.dataInit("dicTree", $('#pid').val());
                 dtree.selectVal("dicTree");
@@ -97,7 +86,7 @@
                 advices(data, parent);
             },
             error: function (event) {
-                errors(event);
+                toError(event);
             }
         });
     });

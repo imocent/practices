@@ -21,13 +21,8 @@ public class DictService {
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-    public List<Map<String, Object>> getExamTypes() {
-        String sb = "SELECT t.`ID`,t.`NAME` FROM `lms_exam_type` t";
+    public List<Map<String, Object>> getExamSubjects() {
+        String sb = "SELECT t.`ID`,t.`TITLE` as name FROM `lms_exam_subject` t";
         return JdbcTemplateUtil.queryForListMap(jdbcTemplate, sb);
-    }
-
-    public String getExamTypeName(Long id) {
-        String sb = "SELECT t.`NAME` FROM `lms_exam_type` t where t.`ID` = ?";
-        return JdbcTemplateUtil.queryForObject(jdbcTemplate, sb, String.class, id);
     }
 }
