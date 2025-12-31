@@ -93,47 +93,5 @@
 </div>
 <!-- 底部信息 -->
 <div th:include="include :: f_footer"></div>
-<script>
-    layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
-        carousel.render({
-            elem: '#banner',        // 绑定容器
-            width: '100%',           // 宽度自适应
-            height: '300px',         // 高度可调
-            interval: 3000,          // 切换间隔
-            anim: 'fade',            // 动画效果（可选：fade/updown）
-            arrow: 'hover',          // 箭头显示方式
-            indicator: 'outside'     // 指示器位置
-        });
-
-        $.get('/subjects', function (res) {
-            dropdown.render({
-                elem: '.LAY_TRIGGER',
-                trigger: 'click',
-                data: res.data || [],
-                click: function (data, othis, event) {
-                    console.log(data);
-                    console.log(othis);
-                    console.log(this.elem);
-                    console.log(event);
-                }
-            });
-        }, 'json');
-
-        $('.rooms').on('click', '.layui-btn', function (e) {
-            e.stopPropagation();
-            var $btn = $(this);
-            var $card = $btn.closest('.layui-card');
-            var roomId = $card.parent().data('roomId');
-            if ($btn.hasClass('layui-border-purple')) {
-                console.log("答题室" + roomId)
-                location.href = "/detail?id=" + roomId;
-            } else if ($btn.hasClass('layui-border-orange')) {
-                console.log("报告" + roomId)
-            } else if ($btn.hasClass('layui-border-red')) {
-                console.log("阅卷" + roomId)
-            }
-        });
-    });
-</script>
 </body>
 </html>

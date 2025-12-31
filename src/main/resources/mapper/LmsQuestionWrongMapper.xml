@@ -105,7 +105,7 @@
     <include refid="Base_Where_List" />
     order by ID desc
     <if test="page != null and limit != null">
-      <bind name='offset' value='(page - 1) * limit'/>
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
       limit ${offset.intValue()}, ${limit}
     </if>
   </select>

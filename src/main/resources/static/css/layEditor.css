@@ -1,11 +1,9 @@
-
 /* 全局 */
-html,body{overflow-x: hidden;font-size: 16px;line-height: 1.6;}
+html,body{overflow-x: hidden;}
 /* html body{margin-top: 61px;} */
 html{background-color: #F2F2F2;}
 
 i{font-style: normal;}
-
 
 /* 辅助 */
 a:hover{color: #009688; transition: all .3s;}

@@ -130,7 +130,7 @@ public class LayPlugin extends PluginAdapter {
         e_select.addElement(new TextElement(String.format("order by %s desc", primaryKey)));
         XmlElement pageIf = new XmlElement("if");
         pageIf.addAttribute(new Attribute("test", "page != null and limit != null"));
-        pageIf.addElement(new TextElement("<bind name='offset' value='(page - 1) * limit'/>"));
+        pageIf.addElement(new TextElement("<bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>"));
         pageIf.addElement(new TextElement("limit ${offset.intValue()}, ${limit}"));
         e_select.addElement(pageIf);
         rootElement.addElement(e_select);

@@ -82,7 +82,7 @@
 </div>
 
 <div th:fragment="f_header">
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-bottom: 20px;">
         <div class="layui-container">
             <div class="layui-header">
                 <div class="layui-row">
@@ -92,21 +92,21 @@
                         <cite>做题吧</cite>
                     </div>
                     <!-- 导航菜单 - LayUI会自动处理手机端适配 -->
-                    <ul class="layui-nav layui-layout-left" style="background: transparent;">
-                        <li class="layui-nav-item layui-this">
+                    <ul class="layui-nav layui-layout-left" style="background: transparent;" id="mainNav">
+                        <li class="layui-nav-item" data-page="home">
                             <a href="/" style="color: #fff;">首页</a>
                         </li>
-                        <li class="layui-nav-item LAY_TRIGGER">
-                            <a href="#" style="color: #fff;">课程中心 <i class="layui-icon">&#xe61a;</i></a>
+                        <li class="layui-nav-item LAY_TRIGGER" data-page="rooms">
+                            <a href="/rooms" style="color: #fff;">课程中心 <i class="layui-icon">&#xe61a;</i></a>
                         </li>
-                        <li class="layui-nav-item">
-                            <a href="#" style="color: #fff;">知识库</a>
+                        <li class="layui-nav-item" data-page="knowledge">
+                            <a href="/knowledge" style="color: #fff;">知识库</a>
                         </li>
-                        <li class="layui-nav-item">
-                            <a href="#" style="color: #fff;">实战项目</a>
+                        <li class="layui-nav-item" data-page="projects">
+                            <a href="/projects" style="color: #fff;">实战项目</a>
                         </li>
-                        <li class="layui-nav-item">
-                            <a href="#" style="color: #fff;">问答社区</a>
+                        <li class="layui-nav-item" data-page="community">
+                            <a href="/community" style="color: #fff;">问答社区</a>
                         </li>
                     </ul>
                     <!-- 右侧登录 -->
@@ -190,5 +190,71 @@
             </div>
         </div>
     </div>
+    <script>
+        layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
+
+            var pageMap = {
+                '/': 'home',
+                '/index.html': 'home',
+                '/index': 'home',
+                '/rooms': 'rooms',
+                '/rooms.html': 'rooms',
+                '/knowledge': 'knowledge',
+                '/knowledge.html': 'knowledge',
+                '/projects': 'projects',
+                '/projects.html': 'projects',
+                '/community': 'community',
+                '/community.html': 'community'
+            };
+            // 获取当前页面标识
+            var currentPath = window.location.pathname;
+            var currentPageKey = pageMap[currentPath] || 'home';
+            // 移除所有active状态
+            $('.layui-nav-item').removeClass('layui-this');
+            // 设置当前active状态
+            $('#mainNav .layui-nav-item[data-page="' + currentPageKey + '"]').addClass('layui-this');
+            // 重新渲染
+            element.init();
+
+            carousel.render({
+                elem: '#banner',        // 绑定容器
+                width: '100%',           // 宽度自适应
+                height: '300px',         // 高度可调
+                interval: 3000,          // 切换间隔
+                anim: 'fade',            // 动画效果（可选：fade/updown）
+                arrow: 'hover',          // 箭头显示方式
+                indicator: 'outside'     // 指示器位置
+            });
+
+            $.get('/subjects', function (res) {
+                dropdown.render({
+                    elem: '.LAY_TRIGGER',
+                    trigger: 'click',
+                    data: res.data || [],
+                    click: function (data, othis, event) {
+                        console.log(data);
+                        console.log(othis);
+                        console.log(this.elem);
+                        console.log(event);
+                    }
+                });
+            }, 'json');
+
+            $('.rooms').on('click', '.layui-btn', function (e) {
+                e.stopPropagation();
+                var $btn = $(this);
+                var $card = $btn.closest('.layui-card');
+                var roomId = $card.parent().data('roomId');
+                if ($btn.hasClass('layui-border-purple')) {
+                    console.log("答题室" + roomId)
+                    location.href = "/detail?id=" + roomId;
+                } else if ($btn.hasClass('layui-border-orange')) {
+                    console.log("报告" + roomId)
+                } else if ($btn.hasClass('layui-border-red')) {
+                    console.log("阅卷" + roomId)
+                }
+            });
+        });
+    </script>
 </div>
 </html>
