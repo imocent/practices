@@ -57,12 +57,12 @@
                 {type: "numbers", title: '序号', minWidth: 80, templet: function (index) {return index + 1;}},
                 {field: 'title', title: '名称', minWidth: 80},
                 {field: 'content', title: '内容', minWidth: 80},
-                {field: 'mold', title: '类型', minWidth: 30, templet: function (res) {return res.mold == 1 ? '' : '横幅';}},
                 {field: 'url', title: '访问地址', minWidth: 80},
-                {field: 'visits', title: '访问量', minWidth: 80},
-                {field: 'sort', title: '排序', minWidth: 80},
-                {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+                {field: 'mold', title: '类型', width: 30, templet: function (res) {return res.mold == 1 ? '' : '横幅';}},
+                {field: 'visits', title: '访问量', width: 80},
+                {field: 'sort', title: '排序', width: 70},
+                {field: 'enabled', title: '状态', width: 100, align: 'center', templet: "#statusTpl"},
+                {fixed: 'right', title: '操作', width: 100, align: 'center', toolbar: '#column-toolbar'}
             ] ]
         });
 

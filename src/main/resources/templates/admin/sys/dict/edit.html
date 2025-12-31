@@ -65,6 +65,7 @@
     dtree.renderSelect({
         elem: "#dicTree",
         url: "/admin/dict/tree",
+        menubar: true,
         done: function (data, obj, first) {
             if (first) {
                 dtree.dataInit("dicTree", $('#pid').val());
@@ -76,18 +77,10 @@
     });
     
     form.on('submit(submit-form)', function (obj) {
-        $.ajax({
-            type: "POST",
-            url: '/admin/dict/save',
-            data: obj.field,
-            dataType: 'json',
-            cache: false,
-            success: function (data) {
-                advices(data, parent);
-            },
-            error: function (event) {
-                toError(event);
-            }
+        $.post('/admin/dict/save', obj.field, function (data) {
+            advices(data, parent);
+        }, 'json').fail(function (event) {
+            toError(event);
         });
     });
 });

@@ -59,7 +59,7 @@ public class TopController extends BaseController {
     public String editView(Long id, Model model) {
         if (OftenUtil.isNotEmpty(id)) {
             LmsTop top = this.service.get(id);
-            model.addAttribute("top", top);
+            model.addAttribute("bean", top);
         }
         return PREFIX + "edit";
     }

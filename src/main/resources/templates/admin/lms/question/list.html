@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:include="include :: head('题目列表')"></head>
+<head th:include="include :: head('题库列表')"></head>
 <body>
 <div class="layui-card">
     <div class="layui-card-body">
@@ -67,7 +67,7 @@
                 {field: 'difficulty', title: '难度等级', width: 100},
                 {field: 'share', title: '分享', align: 'center', templet: "#shareTpl", width: 100},
                 {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', minWidth: 100}
+                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', width: 150}
             ] ]
         });
 
@@ -95,8 +95,7 @@
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
                 editView("/admin/lms/question/edit?id=" + data.id, "编辑");
-            }
-            if (event === 'answer') {
+            }else if (event === 'answer') {
                 openFull("/admin/lms/question/answer/list?id=" + data.id, "答案");
             }
         });

@@ -3,11 +3,7 @@ package com.fit.web.admin.sys;
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.SysDept;
-import com.fit.entity.SysDict;
-import com.fit.entity.SysUser;
-import com.fit.entity.ZTreeNode;
 import com.fit.service.SysDeptService;
-import com.fit.service.ZtreeNodeService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -35,8 +31,6 @@ public class DeptController extends BaseController {
 
     @Autowired
     private SysDeptService deptService;
-    @Autowired
-    private ZtreeNodeService ztreeNodeService;
 
     /**
      * 列表页面
@@ -56,17 +50,6 @@ public class DeptController extends BaseController {
         List<SysDept> list = deptService.findList(map);
         int count = deptService.findCount(map);
         return AjaxResult.tables(count, list);
-    }
-
-    /**
-     * 获取部门的tree列表
-     */
-    @RequestMapping("/tree")
-    @ResponseBody
-    public AjaxResult tree() {
-        List<ZTreeNode> tree = this.ztreeNodeService.deptZtree();
-        tree.add(ZTreeNode.createParent());
-        return AjaxResult.tree(tree);
     }
 
     /**

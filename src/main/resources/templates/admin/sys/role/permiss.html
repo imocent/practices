@@ -32,28 +32,18 @@ layui.use(['jquery', 'dtree', 'form', 'layer', 'laydate'], function ($, dtree, f
     dtree.render({
         elem: "#menuTree",
         url: "/admin/res/tree",
-        method: "post",
+        initLevel: 2,
+        menubar: true,
+        menubarTips: {
+            toolbar: ["moveDown", "moveUp"],
+            group: []
+        },
         checkbar: "true",
         checkbarFun: {
             chooseDone: function (checkbarNodesParam) {
                 $('#menus').val(dtree.getCheckedIds("menuTree"));
                 return;
             }
-        },
-        initLevel: 2,
-        dataStyle: "layuiStyle",
-        dataFormat: "list",
-        ficon: ["1", "1"],
-        response: {
-            statusCode: 0,
-            message: "msg",
-            title: "name",
-            CheckArr: "data"
-        },
-        menubar: true,
-        menubarTips: {
-            toolbar: ["moveDown", "moveUp"],
-            group: []
         },
         done: function (data, obj, first) {
             if (first) {
@@ -64,19 +54,10 @@ layui.use(['jquery', 'dtree', 'form', 'layer', 'laydate'], function ($, dtree, f
     });
     
     form.on('submit(submit-form)', function (obj) {
-        console.log(obj.field)
-        $.ajax({
-            type: "POST",
-            url: '/admin/role/saveAssign',
-            data: obj.field,
-            dataType: 'json',
-            cache: false,
-            success: function (data) {
-                advices(data, parent);
-            },
-            error: function (event) {
-                toError(event);
-            }
+        $.post('/admin/role/saveAssign', obj.field, function (data) {
+            advices(data, parent);
+        }, 'json').fail(function (event) {
+            toError(event);
         });
     });
 });

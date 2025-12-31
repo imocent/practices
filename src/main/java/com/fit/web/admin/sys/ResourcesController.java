@@ -3,8 +3,6 @@ package com.fit.web.admin.sys;
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.SysResources;
-import com.fit.entity.ZTreeNode;
-import com.fit.service.ZtreeNodeService;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
 import com.fit.service.SysResourcesService;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +32,6 @@ public class ResourcesController extends BaseController {
 
     @Autowired
     private SysResourcesService resourcesService;
-    @Autowired
-    private ZtreeNodeService ztreeNodeService;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -66,16 +61,5 @@ public class ResourcesController extends BaseController {
             model.addAttribute("menu", resources);
         }
         return PREFIX + "edit";
-    }
-
-    /**
-     * 获取栏目的tree列表
-     */
-    @RequestMapping(value = "/tree")
-    @ResponseBody
-    public Object tree() {
-        List<ZTreeNode> tree = this.ztreeNodeService.menuZtree();
-        tree.add(ZTreeNode.createParent());
-        return AjaxResult.tree(tree);
     }
 }

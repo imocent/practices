@@ -3,9 +3,7 @@ package com.fit.web.admin.lms;
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.LmsExamSubject;
-import com.fit.entity.ZTreeNode;
 import com.fit.service.LmsExamSubjectService;
-import com.fit.service.ZtreeNodeService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -33,8 +31,6 @@ public class ExamSubjectController extends BaseController {
 
     @Autowired
     private LmsExamSubjectService service;
-    @Autowired
-    private ZtreeNodeService ztreeNodeService;
 
     /**
      * 列表页面
@@ -54,14 +50,6 @@ public class ExamSubjectController extends BaseController {
         List<LmsExamSubject> list = this.service.findList(params);
         int count = this.service.findCount(params);
         return AjaxResult.tables(count, list);
-    }
-
-    @RequestMapping("/tree")
-    @ResponseBody
-    public AjaxResult tree() {
-        List<ZTreeNode> tree = this.ztreeNodeService.subjectZtree();
-        tree.add(ZTreeNode.createParent());
-        return AjaxResult.tree(tree);
     }
 
     /**

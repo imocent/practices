@@ -4,7 +4,6 @@ import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.SysRole;
 import com.fit.entity.SysRoleAuth;
-import com.fit.entity.ZTreeNode;
 import com.fit.service.SysRoleAuthService;
 import com.fit.service.SysRoleService;
 import com.fit.service.ZtreeNodeService;
@@ -108,18 +107,6 @@ public class RoleController extends BaseController {
         } else {
             return AjaxResult.error("参数异常");
         }
-    }
-
-    /**
-     * 获取部门的tree列表
-     */
-    @RequestMapping(value = "/tree")
-    @ResponseBody
-    public Object tree() {
-
-        List<ZTreeNode> tree = this.ztreeNodeService.roleZtree();
-        tree.add(ZTreeNode.createParent());
-        return AjaxResult.success(tree);
     }
 
     /**

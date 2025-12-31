@@ -3,10 +3,7 @@ package com.fit.web.admin.sys;
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.SysDict;
-import com.fit.entity.SysUser;
-import com.fit.entity.ZTreeNode;
 import com.fit.service.SysDictService;
-import com.fit.service.ZtreeNodeService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -34,8 +31,6 @@ public class DictController extends BaseController {
 
     @Autowired
     private SysDictService dictService;
-    @Autowired
-    private ZtreeNodeService ztreeNodeService;
 
     /**
      * 列表页面
@@ -57,17 +52,7 @@ public class DictController extends BaseController {
         return AjaxResult.tables(count, list);
     }
 
-    /**
-     * @AUTO 获取字典的tree列表
-     * @DATE 2019/5/23
-     */
-    @RequestMapping("/tree")
-    @ResponseBody
-    public Object tree() {
-        List<ZTreeNode> tree = this.ztreeNodeService.dictZtree();
-        tree.add(ZTreeNode.createParent());
-        return AjaxResult.success(tree);
-    }
+
 
     /**
      * 添加编辑页面

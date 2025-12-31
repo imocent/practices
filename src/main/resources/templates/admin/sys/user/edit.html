@@ -84,18 +84,10 @@
         });
 
         form.on('submit(submit-form)', function (obj) {
-            $.ajax({
-                type: "POST",
-                url: '/admin/user/save',
-                data: obj.field,
-                dataType: 'json',
-                cache: false,
-                success: function (data) {
-                    advices(data, parent);
-                },
-                error: function (event) {
-                    toError(event);
-                }
+            $.post('/admin/user/save', obj.field, function (data) {
+                advices(data, parent);
+            }, 'json').fail(function (event) {
+                toError(event);
             });
         });
     });
