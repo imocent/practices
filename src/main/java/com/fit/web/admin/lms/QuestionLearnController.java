@@ -2,8 +2,8 @@ package com.fit.web.admin.lms;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
-import com.fit.entity.LmsQuestionMaterial;
-import com.fit.service.LmsQuestionMaterialService;
+import com.fit.entity.LmsQuestionLearn;
+import com.fit.service.LmsQuestionLearnService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -24,20 +24,20 @@ import java.util.Map;
  * @DATE 2019/4/26
  */
 @Controller
-@RequestMapping("/admin/lms/question/material")
-public class QuestionMaterialController extends BaseController {
+@RequestMapping("/admin/lms/question/learn")
+public class QuestionLearnController extends BaseController {
 
     private static String PREFIX = "/admin/lms/question/";
 
     @Autowired
-    private LmsQuestionMaterialService service;
+    private LmsQuestionLearnService service;
 
     /**
      * 列表页面
      */
     @GetMapping("/list")
     public String index() {
-        return PREFIX + "materials";
+        return PREFIX + "learns";
     }
 
     /**
@@ -47,7 +47,7 @@ public class QuestionMaterialController extends BaseController {
     @ResponseBody
     public Object list(HttpServletRequest request) {
         Map<String, Object> params = WebUtil.getRequestMap(request);
-        List<LmsQuestionMaterial> list = this.service.findList(params);
+        List<LmsQuestionLearn> list = this.service.findList(params);
         int count = this.service.findCount(params);
         return AjaxResult.tables(count, list);
     }
@@ -58,10 +58,10 @@ public class QuestionMaterialController extends BaseController {
     @GetMapping("/edit")
     public String editView(Long id, Model model) {
         if (OftenUtil.isNotEmpty(id)) {
-            LmsQuestionMaterial bean = this.service.get(id);
+            LmsQuestionLearn bean = this.service.get(id);
             model.addAttribute("bean", bean);
         }
-        return PREFIX + "material";
+        return PREFIX + "learn";
     }
 
     /**
@@ -69,8 +69,8 @@ public class QuestionMaterialController extends BaseController {
      */
     @PostMapping("/save")
     @ResponseBody
-    public Object save(LmsQuestionMaterial bean) {
-        LmsQuestionMaterial entity = this.service.get(bean.getId());
+    public Object save(LmsQuestionLearn bean) {
+        LmsQuestionLearn entity = this.service.get(bean.getId());
         Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
         if (null == entity) {
             bean.setCtime(new Date());

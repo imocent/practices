@@ -2,14 +2,14 @@
 <!-- 头部信息 -->
 <head th:fragment="head(title)">
     <title th:text="${title}"></title>
-    <meta charset="utf-8" />
-    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <link rel="Bookmark" th:href="@{/favicon.ico}" />
-    <link rel="Shortcut Icon" th:href="@{/favicon.ico}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/layui.css}" media="all" />
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="Bookmark" th:href="@{/favicon.ico}"/>
+    <link rel="Shortcut Icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/layui.css}" media="all"/>
     <script type="text/javascript" charset="utf-8" th:src="@{/js/layui.js}"></script>
     <script type="text/javascript" charset="utf-8" th:src="@{/js/lay-config.js}"></script>
     <!--[if lt IE 9]>
@@ -23,7 +23,7 @@
     <div class="layui-header">
         <!-- logo 区域 -->
         <div class="layui-logo">
-            <img th:src="@{/images/logo.png}" alt="logo" style="margin-left: -5px;" />
+            <img th:src="@{/images/logo.png}" alt="logo" style="margin-left: -5px;"/>
             <cite>管理系统</cite>
         </div>
         <!-- 头部区域 -->
@@ -99,8 +99,8 @@
                         <li class="layui-nav-item LAY_TRIGGER" data-page="rooms">
                             <a href="/rooms" style="color: #fff;">课程中心 <i class="layui-icon">&#xe61a;</i></a>
                         </li>
-                        <li class="layui-nav-item" data-page="knowledge">
-                            <a href="/knowledge" style="color: #fff;">知识库</a>
+                        <li class="layui-nav-item LAY_TRIG" data-page="learn">
+                            <a href="/learn" style="color: #fff;">知识库 <i class="layui-icon">&#xe61a;</i></a>
                         </li>
                         <li class="layui-nav-item" data-page="projects">
                             <a href="/projects" style="color: #fff;">实战项目</a>
@@ -229,6 +229,17 @@
             $.get('/subjects', function (res) {
                 dropdown.render({
                     elem: '.LAY_TRIGGER',
+                    trigger: 'click',
+                    data: res.data || [],
+                    click: function (data, othis, event) {
+                        console.log(data);
+                        console.log(othis);
+                        console.log(this.elem);
+                        console.log(event);
+                    }
+                });
+                dropdown.render({
+                    elem: '.LAY_TRIG',
                     trigger: 'click',
                     data: res.data || [],
                     click: function (data, othis, event) {

@@ -58,7 +58,7 @@
         });
 
         form.on('submit(submit-form)', function (obj) {
-            $.post('/admin/lms/question/material/save', obj.field, function (data) {
+            $.post('/admin/lms/question/learn/save', obj.field, function (data) {
                 advices(data, parent);
             }, 'json').fail(function (event) {
                 toError(event);

@@ -52,7 +52,7 @@ public class LmsQuestion extends BaseEntity<LmsQuestion> {
     private Boolean share;
 
     /**
-     * 禁用状态: 0-禁用,1-正常
+     * 是否启用
      */
     private Boolean enabled;
 

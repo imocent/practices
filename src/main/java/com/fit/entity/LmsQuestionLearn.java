@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.*;
 
 @Data
-public class LmsQuestionMaterial extends BaseEntity<LmsQuestionMaterial> {
+public class LmsQuestionLearn extends BaseEntity<LmsQuestionLearn> {
     /**
      * 主键
      */

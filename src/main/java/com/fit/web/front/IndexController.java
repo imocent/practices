@@ -85,4 +85,9 @@ public class IndexController extends BaseController {
         model.addAttribute("room", room);
         return "front/detail";
     }
+
+    @GetMapping("/learns")
+    public String learns(HttpServletRequest request, Model model) {
+        return "front/learns";
+    }
 }

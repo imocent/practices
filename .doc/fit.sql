@@ -1,6 +1,6 @@
 /*
 SQLyog v10.2 
-MySQL - 5.7.9 : Database - fit
+MySQL - 5.6.40-log : Database - fit
 *********************************************************************
 */
 
@@ -148,11 +148,11 @@ CREATE TABLE `lms_question_answer` (
 
 insert  into `lms_question_answer`(`ID`,`QUESTION_ID`,`CONTENT`,`VERIFY`) values (1,1,'是',0),(2,1,'否',0);
 
-/*Table structure for table `lms_question_material` */
+/*Table structure for table `lms_question_learn` */
 
-DROP TABLE IF EXISTS `lms_question_material`;
+DROP TABLE IF EXISTS `lms_question_learn`;
 
-CREATE TABLE `lms_question_material` (
+CREATE TABLE `lms_question_learn` (
   `ID` bigint(30) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `CTIME` datetime DEFAULT NULL COMMENT '创建时间',
   `CUSER` bigint(30) DEFAULT NULL COMMENT '创建人',
@@ -166,9 +166,9 @@ CREATE TABLE `lms_question_material` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='题库材料';
 
-/*Data for the table `lms_question_material` */
+/*Data for the table `lms_question_learn` */
 
-insert  into `lms_question_material`(`ID`,`CTIME`,`CUSER`,`UUID`,`TITLE`,`CONTENT`,`NOTES`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,'1dbb53f6-ceba-11f0-8745-f8cab851439b','演示材料','<p>\r\n	白日依山尽，\r\n</p>\r\n<p>\r\n	黄河入海流。\r\n</p>\r\n<p>\r\n	欲穷千里目，\r\n</p>\r\n<p>\r\n	更上一层楼。\r\n</p>','演示材料',1,NULL,NULL),(2,'2017-11-11 00:00:00',1,'2df6c93e-cebc-11f0-8745-f8cab851439b','望庐山瀑布','<p>\r\n	日照香炉生紫烟，\r\n</p>\r\n<p>\r\n	遥看瀑布挂前川。\r\n</p>\r\n<p>\r\n	飞流直下三千尺，\r\n</p>\r\n<p>\r\n	疑是银河落九天。\r\n</p>',NULL,0,'2025-12-01 22:06:04',1);
+insert  into `lms_question_learn`(`ID`,`CTIME`,`CUSER`,`UUID`,`TITLE`,`CONTENT`,`NOTES`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,'1dbb53f6-ceba-11f0-8745-f8cab851439b','演示材料','<p>\r\n	白日依山尽，\r\n</p>\r\n<p>\r\n	黄河入海流。\r\n</p>\r\n<p>\r\n	欲穷千里目，\r\n</p>\r\n<p>\r\n	更上一层楼。\r\n</p>','演示材料',1,NULL,NULL),(2,'2017-11-11 00:00:00',1,'2df6c93e-cebc-11f0-8745-f8cab851439b','望庐山瀑布','<p>\r\n	日照香炉生紫烟，\r\n</p>\r\n<p>\r\n	遥看瀑布挂前川。\r\n</p>\r\n<p>\r\n	飞流直下三千尺，\r\n</p>\r\n<p>\r\n	疑是银河落九天。\r\n</p>',NULL,0,'2025-12-01 22:06:04',1);
 
 /*Table structure for table `lms_question_wrong` */
 
@@ -368,7 +368,7 @@ CREATE TABLE `sys_resources` (
 
 /*Data for the table `sys_resources` */
 
-insert  into `sys_resources`(`ID`,`CTIME`,`CUSER`,`PID`,`NAME`,`ICON`,`TYPE`,`URL`,`SORT`,`NOTES`,`LEVELS`,`ISMENU`,`ENABLED`,`ISYS`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',NULL,0,'后台管理',NULL,'U','#',1,'用户登陆后台跳转页',1,'Y',1,0,NULL,NULL),(2,'2017-11-11 00:00:00',NULL,1,'系统管理',NULL,'U','#',1,'系统管理',2,'Y',1,0,NULL,NULL),(3,'2017-11-11 00:00:00',NULL,2,'用户列表',NULL,'U','/admin/user/list',1,'用户管理列表页',3,'Y',1,0,NULL,NULL),(4,'2017-11-11 00:00:00',NULL,3,'用户保存',NULL,'U','/admin/user/save',1,'用户管理保存更新',4,'N',1,0,NULL,NULL),(5,'2017-11-11 00:00:00',NULL,2,'角色列表',NULL,'U','/admin/role/list',2,'角色管理的列表',3,'Y',1,0,NULL,NULL),(6,'2017-11-11 00:00:00',NULL,5,'角色保存',NULL,'U','/admin/role/save',1,'角色保存与更新',4,'N',1,0,NULL,NULL),(7,'2017-11-11 00:00:00',NULL,2,'资源列表',NULL,'U','/admin/res/list',3,'资源管理列表',3,'Y',1,0,NULL,NULL),(8,'2017-11-11 00:00:00',NULL,7,'资源保存',NULL,'U','/admin/res/save',1,'资源管理的保存',4,'N',1,0,NULL,NULL),(9,'2017-11-11 00:00:00',NULL,2,'部门列表',NULL,'U','/admin/dept/list',4,'部门管理列表',3,'Y',1,0,NULL,NULL),(10,'2017-11-11 00:00:00',NULL,9,'部门保存',NULL,'U','/admin/dept/save',1,'部门保存与更新',4,'N',1,0,NULL,NULL),(11,'2017-11-11 00:00:00',NULL,2,'字典列表',NULL,'U','/admin/dict/list',5,'字典管理列表',3,'Y',1,0,NULL,NULL),(12,'2017-11-11 00:00:00',NULL,11,'字典保存',NULL,'U','/admin/dict/save',1,'字典保存与更新',4,'N',1,0,NULL,NULL),(13,'2017-11-11 00:00:00',NULL,2,'日志列表',NULL,'U','/admin/log/list',6,'日志列表列表',3,'Y',1,0,NULL,NULL),(14,'2017-11-11 00:00:00',NULL,1,'首页管理',NULL,'U','#',2,'首页管理',2,'Y',1,0,NULL,NULL),(15,'2017-11-11 00:00:00',NULL,14,'顶部列表',NULL,'U','/admin/lms/top/list',1,'模型列表',3,'Y',1,0,NULL,NULL),(16,'2017-11-11 00:00:00',NULL,1,'题库管理',NULL,'U','#',4,'题库管理',2,'Y',1,0,NULL,NULL),(17,'2017-11-11 00:00:00',NULL,16,'题库列表',NULL,'U','/admin/lms/question/list',1,'题库列表',3,'Y',1,0,NULL,NULL),(18,'2017-11-11 00:00:00',NULL,16,'答案列表',NULL,'U','/admin/lms/question/answer/list',2,'题库答案列表',3,'Y',1,0,NULL,NULL),(19,'2017-11-11 00:00:00',NULL,16,'错题科目',NULL,'U','/admin/lms/question/wrong/list',3,'题库错题列表',3,'Y',1,0,NULL,NULL),(20,'2017-11-11 00:00:00',NULL,16,'题库材料',NULL,'U','/admin/lms/question/material/list',4,'题库材料列表',3,'Y',1,0,NULL,NULL),(21,'2017-11-11 00:00:00',NULL,1,'答题室管理',NULL,'U','#',5,'答题室管理',2,'Y',1,0,NULL,NULL),(22,'2017-11-11 00:00:00',NULL,21,'答题室列表',NULL,'U','/admin/lms/exam/room/list',1,'答题室列表',3,'Y',1,0,NULL,NULL),(23,'2017-11-11 00:00:00',NULL,21,'统计列表',NULL,'U','/admin/lms/exam/log/list',2,'答题统计列表',3,'Y',1,0,NULL,NULL),(24,'2017-11-11 00:00:00',NULL,21,'分类列表',NULL,'U','/admin/lms/exam/subject/list',3,'学科分类列表',3,'Y',1,0,NULL,NULL);
+insert  into `sys_resources`(`ID`,`CTIME`,`CUSER`,`PID`,`NAME`,`ICON`,`TYPE`,`URL`,`SORT`,`NOTES`,`LEVELS`,`ISMENU`,`ENABLED`,`ISYS`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',NULL,0,'后台管理',NULL,'U','#',1,'用户登陆后台跳转页',1,'Y',1,0,NULL,NULL),(2,'2017-11-11 00:00:00',NULL,1,'系统管理',NULL,'U','#',1,'系统管理',2,'Y',1,0,NULL,NULL),(3,'2017-11-11 00:00:00',NULL,2,'用户列表',NULL,'U','/admin/user/list',1,'用户管理列表页',3,'Y',1,0,NULL,NULL),(4,'2017-11-11 00:00:00',NULL,3,'用户保存',NULL,'U','/admin/user/save',1,'用户管理保存更新',4,'N',1,0,NULL,NULL),(5,'2017-11-11 00:00:00',NULL,2,'角色列表',NULL,'U','/admin/role/list',2,'角色管理的列表',3,'Y',1,0,NULL,NULL),(6,'2017-11-11 00:00:00',NULL,5,'角色保存',NULL,'U','/admin/role/save',1,'角色保存与更新',4,'N',1,0,NULL,NULL),(7,'2017-11-11 00:00:00',NULL,2,'资源列表',NULL,'U','/admin/res/list',3,'资源管理列表',3,'Y',1,0,NULL,NULL),(8,'2017-11-11 00:00:00',NULL,7,'资源保存',NULL,'U','/admin/res/save',1,'资源管理的保存',4,'N',1,0,NULL,NULL),(9,'2017-11-11 00:00:00',NULL,2,'部门列表',NULL,'U','/admin/dept/list',4,'部门管理列表',3,'Y',1,0,NULL,NULL),(10,'2017-11-11 00:00:00',NULL,9,'部门保存',NULL,'U','/admin/dept/save',1,'部门保存与更新',4,'N',1,0,NULL,NULL),(11,'2017-11-11 00:00:00',NULL,2,'字典列表',NULL,'U','/admin/dict/list',5,'字典管理列表',3,'Y',1,0,NULL,NULL),(12,'2017-11-11 00:00:00',NULL,11,'字典保存',NULL,'U','/admin/dict/save',1,'字典保存与更新',4,'N',1,0,NULL,NULL),(13,'2017-11-11 00:00:00',NULL,2,'日志列表',NULL,'U','/admin/log/list',6,'日志列表列表',3,'Y',1,0,NULL,NULL),(14,'2017-11-11 00:00:00',NULL,1,'首页管理',NULL,'U','#',2,'首页管理',2,'Y',1,0,NULL,NULL),(15,'2017-11-11 00:00:00',NULL,14,'顶部列表',NULL,'U','/admin/lms/top/list',1,'模型列表',3,'Y',1,0,NULL,NULL),(16,'2017-11-11 00:00:00',NULL,1,'题库管理',NULL,'U','#',4,'题库管理',2,'Y',1,0,NULL,NULL),(17,'2017-11-11 00:00:00',NULL,16,'题库列表',NULL,'U','/admin/lms/question/list',1,'题库列表',3,'Y',1,0,NULL,NULL),(18,'2017-11-11 00:00:00',NULL,16,'答案列表',NULL,'U','/admin/lms/question/answer/list',2,'题库答案列表',3,'Y',1,0,NULL,NULL),(19,'2017-11-11 00:00:00',NULL,16,'错题科目',NULL,'U','/admin/lms/question/wrong/list',3,'题库错题列表',3,'Y',1,0,NULL,NULL),(20,'2017-11-11 00:00:00',NULL,16,'题库材料',NULL,'U','/admin/lms/question/learn/list',4,'题库知识列表',3,'Y',1,0,NULL,NULL),(21,'2017-11-11 00:00:00',NULL,1,'答题室管理',NULL,'U','#',5,'答题室管理',2,'Y',1,0,NULL,NULL),(22,'2017-11-11 00:00:00',NULL,21,'答题室列表',NULL,'U','/admin/lms/exam/room/list',1,'答题室列表',3,'Y',1,0,NULL,NULL),(23,'2017-11-11 00:00:00',NULL,21,'统计列表',NULL,'U','/admin/lms/exam/log/list',2,'答题统计列表',3,'Y',1,0,NULL,NULL),(24,'2017-11-11 00:00:00',NULL,21,'分类列表',NULL,'U','/admin/lms/exam/subject/list',3,'学科分类列表',3,'Y',1,0,NULL,NULL);
 
 /*Table structure for table `sys_role` */
 
@@ -447,13 +447,13 @@ DELIMITER $$
 
 DELIMITER ;
 
-/* Trigger structure for table `lms_question_material` */
+/* Trigger structure for table `lms_question_learn` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_question_material` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_question_material` BEFORE INSERT ON `lms_question_material` FOR EACH ROW BEGIN
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_question_material` BEFORE INSERT ON `lms_question_learn` FOR EACH ROW BEGIN
 	SET NEW.`UUID` = UUID();
     END */$$
 

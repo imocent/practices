@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('做题吧 - 首页')"></head>
+<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+<body>
+<div th:include="include :: f_header"></div>
+<div class="layui-container layui-fluid">
+    <div class="layui-row layui-card">
+        <div class="layui-card-header" style="background-color: #E2E2E2">分类筛选</div>
+        <div class="layui-card-body layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">科目分类：</label>
+                <div class="layui-input-block">
+                    <span class="filter-tag active">全部</span>
+                    <span class="filter-tag">美国</span>
+                    <span class="filter-tag">日本</span>
+                    <span class="filter-tag">韩国</span>
+                    <span class="filter-tag">香港</span>
+                    <span class="filter-tag">台湾</span>
+                    <span class="filter-tag">英国</span>
+                    <span class="filter-tag">法国</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space20">
+        <div class="layui-col-md4 layui-col-sm6" th:each="room : ${rooms}">
+            <div class="layui-card" style="border: 1px solid #EEEEEE">
+                <div class="layui-card-header" style="background: #E2E2E2; color: black;">
+                    <i class="layui-icon layui-icon-component"></i> <span th:text="${room?.name}">答题室标题</span>
+                    <span class="layui-badge" style="float: right; color: white;"
+                          th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
+                </div>
+                <div class="layui-card-body layui-row fixed-content-height">
+                    <div class="layui-col-md8">
+                        <div class="layui-row">
+                            <p class="content-area" th:text="${room?.content}">答题室内容</p>
+                            <div class="layui-col-xs12">
+                                <span class="layui-badge layui-bg-blue">标准答题</span>
+                                <span class="layui-border-red" th:text="${room?.timeLen}">15</span>分钟
+                            </div>
+                            <span style="margin-top: 5px;" class="layui-badge layui-bg-green">进行中</span>
+                            <span style="color: #666; margin: 5px 0 0 10px;">考试分类</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <img src="/images/logo.png" style="height: 120px;padding: 8px;display: flex;"/>
+                    </div>
+                    <hr/>
+                    <div class="layui-row layui-col-space5" style="margin-top: 10px;">
+                        <div class="layui-col-xs6">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red">
+                                <i class="layui-icon layui-icon-edit"></i> 阅卷
+                            </button>
+                        </div>
+                        <div class="layui-col-xs6">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange">
+                                <i class="layui-icon layui-icon-file-b"></i> 报告
+                            </button>
+                        </div>
+                    </div>
+                    <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple">
+                        <i class="layui-icon layui-icon-play"></i> 进入答题室
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center" id="demo-laypage-theme"></div>
+</div>
+<!-- 底部信息 -->
+<div th:include="include :: f_footer"></div>
+<script>
+    layui.use(['element', 'form', 'laypage',], function (element, form, laypage) {
+        laypage.render({
+            elem: 'demo-laypage-theme',
+            count: 100,
+            theme: '#B55AD0',
+            first: '首页',
+            last: '尾页',
+            prev: '<em>←</em>',
+            next: '<em>→</em>'
+        });
+    });
+</script>
+</body>
+</html>

@@ -48,7 +48,7 @@
     layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
         table.render({
             elem: '#table-list',
-            url: '/admin/lms/question/material/list',
+            url: '/admin/lms/question/learn/list',
             method: 'post',
             dataType: 'JSON',
             smartReloadModel: true,
@@ -68,7 +68,7 @@
         // 工具条点击事件
         table.on('toolbar', function (obj) {
             if (obj.event === 'add') {
-                editView("/admin/lms/question/material/edit", "添加");
+                editView("/admin/lms/question/learn/edit", "添加");
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
@@ -78,7 +78,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        deleteReq(ids, '/admin/lms/question/material/del')
+                        deleteReq(ids, '/admin/lms/question/learn/del')
                         layer.close(index);
                     }
                 });
@@ -88,7 +88,7 @@
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
-                editView("/admin/lms/question/material/edit?id=" + data.id, "编辑");
+                editView("/admin/lms/question/learn/edit?id=" + data.id, "编辑");
             }
         });
 
