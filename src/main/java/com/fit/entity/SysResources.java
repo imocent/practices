@@ -67,14 +67,14 @@ public class SysResources extends BaseEntity<SysResources> {
     private String ismenu;
 
     /**
-     * 是否被禁用 0禁用1正常
+     * 是否被禁用: 0-禁用,1-正常
      */
-    private Integer enabled;
+    private Boolean enabled;
 
     /**
-     * 是否是超级权限 0非1是
+     * 是否是超级权限: 0-非,1-是
      */
-    private Integer isys;
+    private Boolean isys;
 
     /**
      * 修改时间

@@ -99,14 +99,11 @@
                         <li class="layui-nav-item LAY_TRIGGER" data-page="rooms">
                             <a href="/rooms" style="color: #fff;">课程中心 <i class="layui-icon">&#xe61a;</i></a>
                         </li>
-                        <li class="layui-nav-item LAY_TRIG" data-page="learn">
-                            <a href="/learn" style="color: #fff;">知识库 <i class="layui-icon">&#xe61a;</i></a>
+                        <li class="layui-nav-item LAY_TRIG" data-page="learns">
+                            <a href="/learns" style="color: #fff;">知识库 <i class="layui-icon">&#xe61a;</i></a>
                         </li>
-                        <li class="layui-nav-item" data-page="projects">
-                            <a href="/projects" style="color: #fff;">实战项目</a>
-                        </li>
-                        <li class="layui-nav-item" data-page="community">
-                            <a href="/community" style="color: #fff;">问答社区</a>
+                        <li class="layui-nav-item" data-page="comments">
+                            <a href="/comments" style="color: #fff;">问答社区</a>
                         </li>
                     </ul>
                     <!-- 右侧登录 -->
@@ -194,25 +191,17 @@
         layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
 
             var pageMap = {
-                '/': 'home',
-                '/index.html': 'home',
-                '/index': 'home',
-                '/rooms': 'rooms',
-                '/rooms.html': 'rooms',
-                '/knowledge': 'knowledge',
-                '/knowledge.html': 'knowledge',
-                '/projects': 'projects',
-                '/projects.html': 'projects',
-                '/community': 'community',
-                '/community.html': 'community'
+                '/': 'home', '/index': 'home', '/index.html': 'home',
+                '/rooms': 'rooms', '/rooms.html': 'rooms',
+                '/learns': 'learns', '/learns.html': 'learns',
+                '/comments': 'comments', '/comments.html': 'comments'
             };
             // 获取当前页面标识
-            var currentPath = window.location.pathname;
-            var currentPageKey = pageMap[currentPath] || 'home';
+            var dataPageKey = pageMap[window.location.pathname] || 'home';
             // 移除所有active状态
             $('.layui-nav-item').removeClass('layui-this');
             // 设置当前active状态
-            $('#mainNav .layui-nav-item[data-page="' + currentPageKey + '"]').addClass('layui-this');
+            $('#mainNav .layui-nav-item[data-page="' + dataPageKey + '"]').addClass('layui-this');
             // 重新渲染
             element.init();
 
@@ -232,10 +221,8 @@
                     trigger: 'click',
                     data: res.data || [],
                     click: function (data, othis, event) {
-                        console.log(data);
-                        console.log(othis);
-                        console.log(this.elem);
-                        console.log(event);
+                        var sid = data.pid + '/' + data.id
+                        location.href = "/rooms?sid=" + sid;
                     }
                 });
                 dropdown.render({
@@ -243,10 +230,8 @@
                     trigger: 'click',
                     data: res.data || [],
                     click: function (data, othis, event) {
-                        console.log(data);
-                        console.log(othis);
-                        console.log(this.elem);
-                        console.log(event);
+                        var sid = data.pid + '/' + data.id
+                        location.href = "/learns?sid=" + sid;
                     }
                 });
             }, 'json');
@@ -258,7 +243,7 @@
                 var roomId = $card.parent().data('roomId');
                 if ($btn.hasClass('layui-border-purple')) {
                     console.log("答题室" + roomId)
-                    location.href = "/detail?id=" + roomId;
+                    location.href = "/room?id=" + roomId;
                 } else if ($btn.hasClass('layui-border-orange')) {
                     console.log("报告" + roomId)
                 } else if ($btn.hasClass('layui-border-red')) {

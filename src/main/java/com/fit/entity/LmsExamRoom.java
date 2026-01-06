@@ -41,7 +41,7 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
     /**
      * 答题室名称
      */
-    private String name;
+    private String title;
 
     /**
      * 答题室说明
@@ -156,7 +156,7 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
         sb.append(", subjectId=").append(subjectId);
         sb.append(", subjectName=").append(subjectName);
         sb.append(", imgId=").append(imgId);
-        sb.append(", name=").append(name);
+        sb.append(", title=").append(title);
         sb.append(", content=").append(content);
         sb.append(", level=").append(level);
         sb.append(", notes=").append(notes);

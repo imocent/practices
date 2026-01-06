@@ -40,8 +40,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
      * 根据请求动态决定 loginUrl（只支持 /admin/login 与 /login 两种）
      */
     private String resolveLoginUrl(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        if (uri != null && (uri.startsWith("/admin") || uri.startsWith("/admin/"))) {
+        if (this.isAdminRequest(request)) {
             return WebUtil.ADMIN_LOGIN_URL; // e.g. "/admin/login"
         }
         return WebUtil.LOGIN_URL; // e.g. "/login"
@@ -49,9 +48,13 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
 
     @Override
     protected boolean isLoginRequest(ServletRequest req, ServletResponse resp) {
-        HttpServletRequest request = (HttpServletRequest) req;
-        String loginUrl = resolveLoginUrl(request); // 使用动态 loginUrl 判定
-        return pathsMatch(loginUrl, req);
+        super.setLoginUrl(resolveLoginUrl((HttpServletRequest) req));
+        return super.isLoginRequest(req, resp);
+    }
+
+    private HttpSession getSession(HttpServletRequest req) {
+        HttpSession s = req.getSession(false);
+        return (s != null) ? s : req.getSession(true);
     }
 
     /**
@@ -66,17 +69,17 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         String loginPwd = this.getPassword(request); // 登录用户密码
         boolean rememberMe = this.isRememberMe(request);// 记住我
         String captcha = WebUtils.getCleanParam(request, DEFAULT_CAPTCHA_PARAM);
-        log.info("准备登录用户 => {}, IP => {}", loginName, ip);
+        log.info("Access Username => {}, IP => {}", loginName, ip);
         // 错误次数
         Integer errorCount = (Integer) session.getAttribute(CAPTCHA_ERROR_COUNT_KEY);
         if (errorCount == null) errorCount = 0;
         // 提前保存 SavedRequest（因为我们可能会 logout() 清掉原 session）
-        SavedRequest oldSavedRequest = WebUtils.getSavedRequest(request);
+        SavedRequest oldSavedRequest = WebUtils.getAndClearSavedRequest(request);
         // 构建 token（包含 RSA / 私钥逻辑）
         DefaultVerifyToken token = getToken(loginName, loginPwd, rememberMe, session);
         try {
             if (token == null) {
-                throw new IllegalStateException("createToken method returned null");
+                throw new IllegalStateException("CreateToken method returned null");
             }
             // 验证码校验（仅管理员登录需要）
             if (isAdminRequest(request)) {
@@ -102,11 +105,11 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
             if (oldSavedRequest != null) {
                 try {
                     subject.getSession().setAttribute(WebUtils.SAVED_REQUEST_KEY, oldSavedRequest);
-                    subject.getSession().setAttribute("username", loginName);
                 } catch (Exception ex) {
                     log.warn("恢复 SavedRequest 失败: {}", ex.getMessage(), ex);
                 }
             }
+            subject.getSession().setAttribute("username", loginName);
             // 调用父类登录成功处理（会触发 issueSuccessRedirect）
             return super.onLoginSuccess(token, subject, request, servletResponse);
         } catch (AuthenticationException ae) {
@@ -140,11 +143,6 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
             token = new DefaultVerifyToken(username, reqPwd, rememberMe);
         }
         return token;
-    }
-
-    private HttpSession getSession(HttpServletRequest req) {
-        HttpSession s = req.getSession(false);
-        return (s != null) ? s : req.getSession(true);
     }
 
     /**
@@ -183,10 +181,8 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
      * 规则：如果原始请求是后台路径，统一跳转到后台首页 /admin/index
      */
     @Override
-    protected void issueSuccessRedirect(ServletRequest req, ServletResponse resp) throws Exception {
+    protected void issueSuccessRedirect(ServletRequest request, ServletResponse response) throws Exception {
         log.debug("=== 登录成功重定向 ===");
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) resp;
         // 1. 优先使用 redirect 参数
         String redirectUrl = request.getParameter("redirect");
         if (StringUtils.hasLength(redirectUrl) && isValidRedirectUrl(redirectUrl)) {
@@ -212,7 +208,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         }
         // 3. 根据当前请求判断是否是后台登录，设置默认成功页
         String successUrl = getSuccessUrl();
-        if (isAdminRequest(request)) {
+        if (isAdminPath(successUrl)) {
             successUrl = WebUtil.ADMIN_URL + WebUtil.ADMIN_MAIN_URL;
         }
         WebUtils.redirectToSavedRequest(request, response, successUrl);
@@ -259,11 +255,9 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         // 保存原始请求（Shiro 会在 session 中保存 SavedRequest）
-        saveRequest(request);
-
+        super.saveRequest(request);
         // 获取刚保存的请求
         SavedRequest savedRequest = WebUtils.getSavedRequest(request);
-
         // 动态 loginUrl
         String loginUrl = resolveLoginUrl(httpRequest);
 
@@ -272,8 +266,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
             if (StringUtils.hasLength(requestUrl) && !requestUrl.contains("/login")) {
                 try {
                     String encodedUrl = java.net.URLEncoder.encode(requestUrl, "UTF-8");
-                    // 对 admin 请求使用 admin loginUrl 否则使用普通 loginUrl（resolveLoginUrl 已处理）
-                    if (requestUrl.startsWith("/admin") || requestUrl.startsWith("/admin/")) {
+                    if (this.isAdminRequest(httpRequest)) {
                         loginUrl = WebUtil.ADMIN_LOGIN_URL + "?redirect=" + encodedUrl;
                     } else {
                         loginUrl = WebUtil.LOGIN_URL + "?redirect=" + encodedUrl;

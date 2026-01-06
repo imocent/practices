@@ -23,8 +23,7 @@
             </div>
             <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="statusTpl">
-                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status"
-                       {{d.enabled?"checked":""}}>
+                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status" {{d.enabled?"checked":""}}>
             </script>
             <script type="text/html" id="toolbar">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
@@ -91,6 +90,10 @@
             if (event === 'edit') {
                 editView("/admin/lms/top/edit?id=" + data.id, "编辑");
             }
+        });
+
+        form.on('switch(status)', function (obj) {
+            modifyReq('/admin/lms/top/setState', {id: obj.value}, false);
         });
 
         form.on('submit(search)', function (form) {

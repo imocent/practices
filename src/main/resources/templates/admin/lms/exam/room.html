@@ -15,9 +15,9 @@
                 <div class="layui-tab-item layui-show">
                     <div class="layui-form" lay-filter="">
                         <div class="layui-form-item">
-                            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>考场标题</label>
+                            <label for="title" class="layui-form-label"><span class="yadmin-red">*</span>考场标题</label>
                             <div class="layui-input-block">
-                                <input type="text" id="name" placeholder="请输入名称" name="name" th:value="${bean?.name}"
+                                <input type="text" id="title" placeholder="请输入名称" name="name" th:value="${bean?.title}"
                                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
                             </div>
                         </div>
@@ -204,11 +204,7 @@
             $('#EXAM_TYPE_NAME').val($(data.elem).find('option:selected').text());
         });
 
-        choice.render({
-            elem: '#STI',
-            labelElem: '#ETI',
-            url: '/subjects',
-        });
+        choice.render({elem: '#STI', labelElem: '#ETI', url: '/subjects',});
 
         upload.render({
             elem: '#ID-upload-btn',  //绑定元素

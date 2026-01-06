@@ -15,8 +15,7 @@
             </script>
             <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="statusTpl">
-                <input type="checkbox" value="{{d.userId}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="status" {{
-                       d.enabled=="1"?"checked":"" }}>
+                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="status" {{d.enabled?"checked":""}}>
             </script>
             <script type="text/html" id="column-toolbar">
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
@@ -27,7 +26,7 @@
     </div>
 </div>
 <script th:inline="none">
-    layui.use(['treeTable', 'layer'], function (treeTable, layer) {
+    layui.use(['form', 'treeTable', 'layer'], function (form, treeTable, layer) {
         treeTable.render({
             id: 'test',
             elem: '#table-list',
@@ -75,6 +74,10 @@
                     }
                 });
             }
+        });
+
+        form.on('switch(status)', function (obj) {
+            modifyReq('/admin/res/setState', {id: obj.value}, false);
         });
 
         treeTable.on('tool', function (obj) {

@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author AIM
@@ -129,7 +126,9 @@ public class RoleController extends BaseController {
     @ResponseBody
     public Object saveAssign(final String roleId, String menus) {
         try {
-            this.roleAuthService.selectBySQL("DELETE FROM `sys_role_auth` WHERE ROLE_ID =" + roleId);
+            Map<String, Object> param = new HashMap<>();
+            param.put("roleId", roleId);
+            this.roleAuthService.selectBySQL("DELETE FROM `sys_role_auth` WHERE ROLE_ID =#{params.roleId}", param);
             final List<String> list = Arrays.asList(menus.split(","));
             for (String s : list) {
                 SysRoleAuth auth = new SysRoleAuth();

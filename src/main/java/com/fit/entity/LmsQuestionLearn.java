@@ -21,7 +21,25 @@ public class LmsQuestionLearn extends BaseEntity<LmsQuestionLearn> {
      */
     private Long cuser;
 
+    /**
+     * 学科ID
+     */
+    private String subjectId;
+
+    /**
+     * 学科名
+     */
+    private String subjectName;
+
+    /**
+     * UUID
+     */
     private String uuid;
+
+    /**
+     * 作者
+     */
+    private String author;
 
     /**
      * 标题
@@ -62,7 +80,10 @@ public class LmsQuestionLearn extends BaseEntity<LmsQuestionLearn> {
         sb.append(", id=").append(id);
         sb.append(", ctime=").append(ctime);
         sb.append(", cuser=").append(cuser);
+        sb.append(", subjectId=").append(subjectId);
+        sb.append(", subjectName=").append(subjectName);
         sb.append(", uuid=").append(uuid);
+        sb.append(", author=").append(author);
         sb.append(", title=").append(title);
         sb.append(", content=").append(content);
         sb.append(", notes=").append(notes);

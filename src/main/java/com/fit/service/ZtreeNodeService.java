@@ -72,7 +72,7 @@ public class ZtreeNodeService {
 
     public List<ZTreeNode> roomsZtree() {
         StringBuffer sb = new StringBuffer();
-        sb.append("SELECT t.`ID`,0 AS `PID`, t.`NAME` AS `title`, t.`ID` AS `CODE`,'true' AS OPEN");
+        sb.append("SELECT t.`ID`,0 AS `PID`, t.`title`, t.`ID` AS `CODE`,'true' AS OPEN");
         sb.append(" FROM `lms_exam_room` t WHERE t.`ENABLED` = 2");
         return JdbcTemplateUtil.queryForListBean(jdbcTemplate, sb.toString(), ZTreeNode.class);
     }

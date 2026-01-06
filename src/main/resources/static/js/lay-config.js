@@ -84,18 +84,38 @@ function modifyReq(url, dataParam, isReload) {
     });
 }
 
+function layPage(id, count, curr, limit) {
+    layui.laypage.render({
+        elem: id,
+        count: count,
+        curr: curr || 1,
+        limit: limit || 12,
+        theme: '#B55AD0',
+        first: '首页',
+        last: '尾页',
+        prev: '<em>←</em>',
+        next: '<em>→</em>',
+        jump: function (obj, first) {
+            if (!first) {
+                console.log(window.location.pathname)
+                // window.location.href = window.location.pathname
+            }
+        }
+    });
+}
+
 layui.config({
     base: rootPath
 }).extend({
     layAdmin: 'layAdmin', layChoice: 'layChoice', dtree: 'layDtree', layEditor: 'layEditor', iconPicker: 'layIconPicker'
-}).use(['table', "layAdmin"], function () {
+}).use(['jquery', "layAdmin"], function ($, layAdmin) {
     // 渲染 tab 右键菜单.
-    layui.layAdmin.tabPopup({
+    layAdmin.tabPopup({
         filter: "lay-tab", pintabIDs: ["main", "home"], width: 110,
     });
 
-    layui.jquery("body").on("click", function (event) {
-        layui.jquery("div[dtree-id][dtree-select]").removeClass("layui-form-selected");
-        layui.jquery("div[dtree-id][dtree-card]").removeClass("dtree-select-show layui-anim layui-anim-upbit");
+    $("body").on("click", function (event) {
+        $("div[dtree-id][dtree-select]").removeClass("layui-form-selected");
+        $("div[dtree-id][dtree-card]").removeClass("dtree-select-show layui-anim layui-anim-upbit");
     });
 });

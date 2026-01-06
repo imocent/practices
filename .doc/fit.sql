@@ -1,6 +1,6 @@
 /*
 SQLyog v10.2 
-MySQL - 5.6.40-log : Database - fit
+MySQL - 5.7.9 : Database - fit
 *********************************************************************
 */
 
@@ -16,6 +16,27 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`fit` /*!40100 DEFAULT CHARACTER SET utf
 
 USE `fit`;
 
+/*Table structure for table `lms_comments` */
+
+DROP TABLE IF EXISTS `lms_comments`;
+
+CREATE TABLE `lms_comments` (
+  `ID` bigint(30) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `CTIME` datetime DEFAULT NULL COMMENT '创建时间',
+  `USER_ID` bigint(30) DEFAULT NULL COMMENT '用户ID',
+  `USERNAME` varchar(50) NOT NULL COMMENT '用户名',
+  `CONTENT` text COMMENT '内容',
+  `MODE` varchar(20) DEFAULT NULL COMMENT '留言方式: web-网页, android-安卓, ios-苹果',
+  `LIKE_COUNT` int(20) DEFAULT '0' COMMENT '点赞计数',
+  `VOTE_COUNT` int(20) DEFAULT '0' COMMENT '投票计数',
+  `ENABLED` tinyint(1) DEFAULT '0' COMMENT '审核状态: 0-禁用,1-显示',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='留言表';
+
+/*Data for the table `lms_comments` */
+
+insert  into `lms_comments`(`ID`,`CTIME`,`USER_ID`,`USERNAME`,`CONTENT`,`MODE`,`LIKE_COUNT`,`VOTE_COUNT`,`ENABLED`) values (1,'2026-01-06 15:10:47',NULL,'aim','1111','网页',0,0,1),(2,'2026-01-06 15:11:45',1,'admin','222222','安卓',0,0,1),(3,'2026-01-06 15:44:01',1,'admin','33333',NULL,0,0,0);
+
 /*Table structure for table `lms_exam_log` */
 
 DROP TABLE IF EXISTS `lms_exam_log`;
@@ -24,7 +45,7 @@ CREATE TABLE `lms_exam_log` (
   `ID` bigint(30) NOT NULL AUTO_INCREMENT COMMENT '记录ID',
   `CTIME` datetime DEFAULT NULL COMMENT '创建时间',
   `USER_ID` bigint(30) NOT NULL COMMENT '用户ID',
-  `USER_NAME` varchar(50) DEFAULT NULL COMMENT '用户名',
+  `USERNAME` varchar(50) DEFAULT NULL COMMENT '用户名',
   `EXAM_ROOM_ID` bigint(30) NOT NULL COMMENT '答题室ID',
   `EXAM_ROOM_NAME` varchar(50) DEFAULT NULL COMMENT '答题室名',
   `SCORE` int(4) DEFAULT '0' COMMENT '得分',
@@ -40,7 +61,7 @@ CREATE TABLE `lms_exam_log` (
 
 /*Data for the table `lms_exam_log` */
 
-insert  into `lms_exam_log`(`ID`,`CTIME`,`USER_ID`,`USER_NAME`,`EXAM_ROOM_ID`,`EXAM_ROOM_NAME`,`SCORE`,`TIME_ON`,`TIME_OFF`,`TOTAL_QUESTIONS`,`CORRECT_QUESTIONS`,`WRONG_QUESTIONS`) values (1,'2017-11-11 00:00:00',1,'admin',2,'答题室1',100,NULL,NULL,1,1,0);
+insert  into `lms_exam_log`(`ID`,`CTIME`,`USER_ID`,`USERNAME`,`EXAM_ROOM_ID`,`EXAM_ROOM_NAME`,`SCORE`,`TIME_ON`,`TIME_OFF`,`TOTAL_QUESTIONS`,`CORRECT_QUESTIONS`,`WRONG_QUESTIONS`) values (1,'2017-11-11 00:00:00',1,'admin',2,'答题室1',100,NULL,NULL,1,1,0);
 
 /*Table structure for table `lms_exam_room` */
 
@@ -54,7 +75,7 @@ CREATE TABLE `lms_exam_room` (
   `SUBJECT_ID` varchar(30) NOT NULL COMMENT '所属学科ID',
   `SUBJECT_NAME` varchar(100) DEFAULT NULL COMMENT '所属学科名',
   `IMG_ID` bigint(30) DEFAULT NULL COMMENT '考场图标ID',
-  `NAME` varchar(100) NOT NULL COMMENT '答题室名称',
+  `TITLE` varchar(100) NOT NULL COMMENT '答题室名称',
   `CONTENT` text COMMENT '答题室说明',
   `LEVEL` varchar(20) DEFAULT NULL COMMENT '难度等级',
   `NOTES` varchar(255) DEFAULT NULL COMMENT '答题室描述',
@@ -81,7 +102,7 @@ CREATE TABLE `lms_exam_room` (
 
 /*Data for the table `lms_exam_room` */
 
-insert  into `lms_exam_room`(`ID`,`CTIME`,`CUSER`,`UUID`,`SUBJECT_ID`,`SUBJECT_NAME`,`IMG_ID`,`NAME`,`CONTENT`,`LEVEL`,`NOTES`,`ENABLED`,`SHARE`,`EXAM_MODE`,`TIME_MODE`,`TIME_LEN`,`TIME_ON`,`TIME_OFF`,`EXAMINEE_MODE`,`EXAMINEE_COUNT`,`SUBJECT_SORT_MODE`,`SUBJECT_OPT_SORT_MODE`,`ADJUDGE_MODE`,`MARK_MODE`,`MARK_SHOW_MODE`,`MARK_TIME_MODE`,`ETIME`,`EUSER`) values (1,'2020-08-27 17:03:11',1,'e1301575-d682-11f0-9a07-fcaa144eb7f0','1','演示学类',NULL,'默认答题室','答题室内容说明',NULL,'默认答题室备注',2,0,0,0,3,NULL,NULL,0,0,0,0,0,0,NULL,NULL,NULL,NULL),(2,'2020-08-27 17:03:11',1,'361eaefa-d683-11f0-9a07-fcaa144eb7f0','2','演示科目',NULL,'答题室1','答题室1',NULL,'答题室1备注',2,0,0,0,5,NULL,NULL,0,0,0,0,0,0,NULL,NULL,NULL,NULL),(3,'2020-08-27 17:03:11',1,'d2dfd589-d684-11f0-9a07-fcaa144eb7f0','3','演示数学',NULL,'演示数学','演示数学',NULL,'演示数学',2,0,0,0,10,NULL,NULL,0,0,0,0,0,0,NULL,NULL,NULL,NULL),(4,'2020-08-27 17:03:11',1,'ea596647-d684-11f0-9a07-fcaa144eb7f0','4,22','语文 / 二年级',NULL,'演示语文','演示语文内容',NULL,'演示语文',1,0,0,0,10,NULL,NULL,0,1,0,0,0,0,0,2,'2025-12-30 17:47:18',1);
+insert  into `lms_exam_room`(`ID`,`CTIME`,`CUSER`,`UUID`,`SUBJECT_ID`,`SUBJECT_NAME`,`IMG_ID`,`TITLE`,`CONTENT`,`LEVEL`,`NOTES`,`ENABLED`,`SHARE`,`EXAM_MODE`,`TIME_MODE`,`TIME_LEN`,`TIME_ON`,`TIME_OFF`,`EXAMINEE_MODE`,`EXAMINEE_COUNT`,`SUBJECT_SORT_MODE`,`SUBJECT_OPT_SORT_MODE`,`ADJUDGE_MODE`,`MARK_MODE`,`MARK_SHOW_MODE`,`MARK_TIME_MODE`,`ETIME`,`EUSER`) values (1,'2020-08-27 17:03:11',1,'e1301575-d682-11f0-9a07-fcaa144eb7f0','1','演示学类',NULL,'默认答题室','答题室内容说明',NULL,'默认答题室备注',2,0,0,0,3,NULL,NULL,0,0,0,0,0,0,NULL,NULL,NULL,NULL),(2,'2020-08-27 17:03:11',1,'361eaefa-d683-11f0-9a07-fcaa144eb7f0','2','演示科目',NULL,'答题室1','答题室1',NULL,'答题室1备注',2,0,0,0,5,NULL,NULL,0,0,0,0,0,0,NULL,NULL,NULL,NULL),(3,'2020-08-27 17:03:11',1,'d2dfd589-d684-11f0-9a07-fcaa144eb7f0','3','演示数学',NULL,'演示数学','演示数学',NULL,'演示数学',2,0,0,0,10,NULL,NULL,0,0,0,0,0,0,NULL,NULL,NULL,NULL),(4,'2020-08-27 17:03:11',1,'ea596647-d684-11f0-9a07-fcaa144eb7f0','4,22','语文 / 二年级',NULL,'演示语文','演示语文内容',NULL,'演示语文',1,0,0,0,10,NULL,NULL,0,1,0,0,0,0,0,2,'2025-12-30 17:47:18',1);
 
 /*Table structure for table `lms_exam_subject` */
 
@@ -120,7 +141,7 @@ CREATE TABLE `lms_question` (
   `CONTENT` text NOT NULL COMMENT '题目内容',
   `DIFFICULTY` int(1) DEFAULT '1' COMMENT '难度等级 1-5',
   `SHARE` tinyint(1) DEFAULT '1' COMMENT '题目是否公开: 0-私有,1-公开',
-  `ENABLED` tinyint(1) DEFAULT '1' COMMENT '是否启用',
+  `ENABLED` tinyint(1) DEFAULT '1' COMMENT '是否启用: 0-禁用,1-正常',
   `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
   `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (`ID`),
@@ -156,7 +177,10 @@ CREATE TABLE `lms_question_learn` (
   `ID` bigint(30) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `CTIME` datetime DEFAULT NULL COMMENT '创建时间',
   `CUSER` bigint(30) DEFAULT NULL COMMENT '创建人',
-  `UUID` char(36) COLLATE utf8_unicode_ci DEFAULT 'uuid()',
+  `SUBJECT_ID` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '学科ID',
+  `SUBJECT_NAME` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '学科名',
+  `UUID` char(36) COLLATE utf8_unicode_ci DEFAULT 'uuid()' COMMENT 'UUID',
+  `AUTHOR` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '作者',
   `TITLE` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '标题',
   `CONTENT` text COLLATE utf8_unicode_ci COMMENT '正文',
   `NOTES` text COLLATE utf8_unicode_ci COMMENT '备注',
@@ -168,7 +192,7 @@ CREATE TABLE `lms_question_learn` (
 
 /*Data for the table `lms_question_learn` */
 
-insert  into `lms_question_learn`(`ID`,`CTIME`,`CUSER`,`UUID`,`TITLE`,`CONTENT`,`NOTES`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,'1dbb53f6-ceba-11f0-8745-f8cab851439b','演示材料','<p>\r\n	白日依山尽，\r\n</p>\r\n<p>\r\n	黄河入海流。\r\n</p>\r\n<p>\r\n	欲穷千里目，\r\n</p>\r\n<p>\r\n	更上一层楼。\r\n</p>','演示材料',1,NULL,NULL),(2,'2017-11-11 00:00:00',1,'2df6c93e-cebc-11f0-8745-f8cab851439b','望庐山瀑布','<p>\r\n	日照香炉生紫烟，\r\n</p>\r\n<p>\r\n	遥看瀑布挂前川。\r\n</p>\r\n<p>\r\n	飞流直下三千尺，\r\n</p>\r\n<p>\r\n	疑是银河落九天。\r\n</p>',NULL,0,'2025-12-01 22:06:04',1);
+insert  into `lms_question_learn`(`ID`,`CTIME`,`CUSER`,`SUBJECT_ID`,`SUBJECT_NAME`,`UUID`,`AUTHOR`,`TITLE`,`CONTENT`,`NOTES`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,'1,2','演示学类 / 演示科目','1dbb53f6-ceba-11f0-8745-f8cab851439b','王之涣','登鹳雀楼','<p>\n	白日依山尽，\n</p>\n<p>\n	黄河入海流。\n</p>\n<p>\n	欲穷千里目，\n</p>\n<p>\n	更上一层楼。\n</p>','演示材料',1,'2026-01-04 14:14:22',1),(2,'2017-11-11 00:00:00',1,'4,22','语文 / 二年级','2df6c93e-cebc-11f0-8745-f8cab851439b','李白','望庐山瀑布','<p>\n	日照香炉生紫烟，\n</p>\n<p>\n	遥看瀑布挂前川。\n</p>\n<p>\n	飞流直下三千尺，\n</p>\n<p>\n	疑是银河落九天。\n</p>',NULL,0,'2026-01-04 14:10:28',1);
 
 /*Table structure for table `lms_question_wrong` */
 
@@ -249,11 +273,11 @@ CREATE TABLE `sys_authorities_res` (
   KEY `res_id` (`RES_ID`),
   CONSTRAINT `sys_authorities_res_ibfk_1` FOREIGN KEY (`AUTH_ID`) REFERENCES `sys_authorities` (`ID`),
   CONSTRAINT `sys_authorities_res_ibfk_2` FOREIGN KEY (`RES_ID`) REFERENCES `sys_resources` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COMMENT='角色权限关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='角色权限关联表';
 
 /*Data for the table `sys_authorities_res` */
 
-insert  into `sys_authorities_res`(`ID`,`AUTH_ID`,`RES_ID`) values (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9),(10,1,10),(11,1,11),(12,1,12),(13,1,13),(14,1,14),(15,1,15),(16,1,16),(17,1,17),(18,1,18),(19,1,19),(20,1,20),(21,1,21),(22,1,22),(23,1,23),(24,1,24);
+insert  into `sys_authorities_res`(`ID`,`AUTH_ID`,`RES_ID`) values (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9),(10,1,10),(11,1,11),(12,1,12),(13,1,13),(14,1,14),(15,1,15),(16,1,16),(17,1,17),(18,1,18),(19,1,19),(20,1,20),(21,1,21),(22,1,22),(23,1,23),(24,1,24),(25,1,25);
 
 /*Table structure for table `sys_dept` */
 
@@ -359,16 +383,16 @@ CREATE TABLE `sys_resources` (
   `NOTES` varchar(50) DEFAULT NULL COMMENT '描述',
   `LEVELS` int(1) DEFAULT '0' COMMENT '层级',
   `ISMENU` varchar(1) NOT NULL DEFAULT 'N' COMMENT '是否是菜单',
-  `ENABLED` int(1) NOT NULL DEFAULT '0' COMMENT '是否被禁用 0禁用1正常',
-  `ISYS` int(1) NOT NULL DEFAULT '0' COMMENT '是否是超级权限 0非1是',
+  `ENABLED` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否被禁用: 0-禁用,1-正常',
+  `ISYS` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否是超级权限: 0-非,1-是',
   `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
   `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COMMENT='资源表';
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='资源表';
 
 /*Data for the table `sys_resources` */
 
-insert  into `sys_resources`(`ID`,`CTIME`,`CUSER`,`PID`,`NAME`,`ICON`,`TYPE`,`URL`,`SORT`,`NOTES`,`LEVELS`,`ISMENU`,`ENABLED`,`ISYS`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',NULL,0,'后台管理',NULL,'U','#',1,'用户登陆后台跳转页',1,'Y',1,0,NULL,NULL),(2,'2017-11-11 00:00:00',NULL,1,'系统管理',NULL,'U','#',1,'系统管理',2,'Y',1,0,NULL,NULL),(3,'2017-11-11 00:00:00',NULL,2,'用户列表',NULL,'U','/admin/user/list',1,'用户管理列表页',3,'Y',1,0,NULL,NULL),(4,'2017-11-11 00:00:00',NULL,3,'用户保存',NULL,'U','/admin/user/save',1,'用户管理保存更新',4,'N',1,0,NULL,NULL),(5,'2017-11-11 00:00:00',NULL,2,'角色列表',NULL,'U','/admin/role/list',2,'角色管理的列表',3,'Y',1,0,NULL,NULL),(6,'2017-11-11 00:00:00',NULL,5,'角色保存',NULL,'U','/admin/role/save',1,'角色保存与更新',4,'N',1,0,NULL,NULL),(7,'2017-11-11 00:00:00',NULL,2,'资源列表',NULL,'U','/admin/res/list',3,'资源管理列表',3,'Y',1,0,NULL,NULL),(8,'2017-11-11 00:00:00',NULL,7,'资源保存',NULL,'U','/admin/res/save',1,'资源管理的保存',4,'N',1,0,NULL,NULL),(9,'2017-11-11 00:00:00',NULL,2,'部门列表',NULL,'U','/admin/dept/list',4,'部门管理列表',3,'Y',1,0,NULL,NULL),(10,'2017-11-11 00:00:00',NULL,9,'部门保存',NULL,'U','/admin/dept/save',1,'部门保存与更新',4,'N',1,0,NULL,NULL),(11,'2017-11-11 00:00:00',NULL,2,'字典列表',NULL,'U','/admin/dict/list',5,'字典管理列表',3,'Y',1,0,NULL,NULL),(12,'2017-11-11 00:00:00',NULL,11,'字典保存',NULL,'U','/admin/dict/save',1,'字典保存与更新',4,'N',1,0,NULL,NULL),(13,'2017-11-11 00:00:00',NULL,2,'日志列表',NULL,'U','/admin/log/list',6,'日志列表列表',3,'Y',1,0,NULL,NULL),(14,'2017-11-11 00:00:00',NULL,1,'首页管理',NULL,'U','#',2,'首页管理',2,'Y',1,0,NULL,NULL),(15,'2017-11-11 00:00:00',NULL,14,'顶部列表',NULL,'U','/admin/lms/top/list',1,'模型列表',3,'Y',1,0,NULL,NULL),(16,'2017-11-11 00:00:00',NULL,1,'题库管理',NULL,'U','#',4,'题库管理',2,'Y',1,0,NULL,NULL),(17,'2017-11-11 00:00:00',NULL,16,'题库列表',NULL,'U','/admin/lms/question/list',1,'题库列表',3,'Y',1,0,NULL,NULL),(18,'2017-11-11 00:00:00',NULL,16,'答案列表',NULL,'U','/admin/lms/question/answer/list',2,'题库答案列表',3,'Y',1,0,NULL,NULL),(19,'2017-11-11 00:00:00',NULL,16,'错题科目',NULL,'U','/admin/lms/question/wrong/list',3,'题库错题列表',3,'Y',1,0,NULL,NULL),(20,'2017-11-11 00:00:00',NULL,16,'题库材料',NULL,'U','/admin/lms/question/learn/list',4,'题库知识列表',3,'Y',1,0,NULL,NULL),(21,'2017-11-11 00:00:00',NULL,1,'答题室管理',NULL,'U','#',5,'答题室管理',2,'Y',1,0,NULL,NULL),(22,'2017-11-11 00:00:00',NULL,21,'答题室列表',NULL,'U','/admin/lms/exam/room/list',1,'答题室列表',3,'Y',1,0,NULL,NULL),(23,'2017-11-11 00:00:00',NULL,21,'统计列表',NULL,'U','/admin/lms/exam/log/list',2,'答题统计列表',3,'Y',1,0,NULL,NULL),(24,'2017-11-11 00:00:00',NULL,21,'分类列表',NULL,'U','/admin/lms/exam/subject/list',3,'学科分类列表',3,'Y',1,0,NULL,NULL);
+insert  into `sys_resources`(`ID`,`CTIME`,`CUSER`,`PID`,`NAME`,`ICON`,`TYPE`,`URL`,`SORT`,`NOTES`,`LEVELS`,`ISMENU`,`ENABLED`,`ISYS`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',NULL,0,'后台管理',NULL,'U','#',1,'用户登陆后台跳转页',1,'Y',1,0,NULL,NULL),(2,'2017-11-11 00:00:00',NULL,1,'系统管理',NULL,'U','#',1,'系统管理',2,'Y',1,0,NULL,NULL),(3,'2017-11-11 00:00:00',NULL,2,'用户列表',NULL,'U','/admin/user/list',1,'用户管理列表页',3,'Y',1,0,NULL,NULL),(4,'2017-11-11 00:00:00',NULL,3,'用户保存',NULL,'U','/admin/user/save',1,'用户管理保存更新',4,'N',1,0,NULL,NULL),(5,'2017-11-11 00:00:00',NULL,2,'角色列表',NULL,'U','/admin/role/list',2,'角色管理的列表',3,'Y',1,0,NULL,NULL),(6,'2017-11-11 00:00:00',NULL,5,'角色保存',NULL,'U','/admin/role/save',1,'角色保存与更新',4,'N',1,0,NULL,NULL),(7,'2017-11-11 00:00:00',NULL,2,'资源列表',NULL,'U','/admin/res/list',3,'资源管理列表',3,'Y',1,0,NULL,NULL),(8,'2017-11-11 00:00:00',NULL,7,'资源保存',NULL,'U','/admin/res/save',1,'资源管理的保存',4,'N',1,0,NULL,NULL),(9,'2017-11-11 00:00:00',NULL,2,'部门列表',NULL,'U','/admin/dept/list',4,'部门管理列表',3,'Y',1,0,NULL,NULL),(10,'2017-11-11 00:00:00',NULL,9,'部门保存',NULL,'U','/admin/dept/save',1,'部门保存与更新',4,'N',1,0,NULL,NULL),(11,'2017-11-11 00:00:00',NULL,2,'字典列表',NULL,'U','/admin/dict/list',5,'字典管理列表',3,'Y',1,0,NULL,NULL),(12,'2017-11-11 00:00:00',NULL,11,'字典保存',NULL,'U','/admin/dict/save',1,'字典保存与更新',4,'N',1,0,NULL,NULL),(13,'2017-11-11 00:00:00',NULL,2,'日志列表',NULL,'U','/admin/log/list',6,'日志列表列表',3,'Y',1,0,NULL,NULL),(14,'2017-11-11 00:00:00',NULL,1,'首页管理',NULL,'U','#',0,'首页管理',2,'Y',1,0,NULL,NULL),(15,'2017-11-11 00:00:00',NULL,14,'顶部列表',NULL,'U','/admin/lms/top/list',1,'模型列表',3,'Y',1,0,NULL,NULL),(16,'2017-11-11 00:00:00',NULL,14,'留言列表',NULL,'U','/admin/lms/comment/list',4,'留言列表',3,'Y',1,0,NULL,NULL),(17,'2017-11-11 00:00:00',NULL,1,'题库管理',NULL,'U','#',1,'题库管理',2,'Y',1,0,NULL,NULL),(18,'2017-11-11 00:00:00',NULL,17,'题库列表',NULL,'U','/admin/lms/question/list',2,'题库列表',3,'Y',1,0,NULL,NULL),(19,'2017-11-11 00:00:00',NULL,17,'答案列表',NULL,'U','/admin/lms/question/answer/list',3,'题库答案列表',3,'Y',1,0,NULL,NULL),(20,'2017-11-11 00:00:00',NULL,17,'题库材料',NULL,'U','/admin/lms/question/learn/list',4,'题库知识列表',3,'Y',1,0,NULL,NULL),(21,'2017-11-11 00:00:00',NULL,1,'答题室管理',NULL,'U','#',5,'答题室管理',2,'Y',1,0,NULL,NULL),(22,'2017-11-11 00:00:00',NULL,21,'答题室列表',NULL,'U','/admin/lms/exam/room/list',1,'答题室列表',3,'Y',1,0,NULL,NULL),(23,'2017-11-11 00:00:00',NULL,21,'统计列表',NULL,'U','/admin/lms/exam/log/list',2,'答题统计列表',3,'Y',1,0,NULL,NULL),(24,'2017-11-11 00:00:00',NULL,21,'分类列表',NULL,'U','/admin/lms/exam/subject/list',3,'学科分类列表',3,'Y',1,0,NULL,NULL),(25,'2017-11-11 00:00:00',NULL,1,'管理',NULL,'U','#',2,'',3,'Y',1,0,NULL,NULL);
 
 /*Table structure for table `sys_role` */
 
@@ -432,7 +456,7 @@ CREATE TABLE `sys_user` (
 
 /*Data for the table `sys_user` */
 
-insert  into `sys_user`(`ID`,`CTIME`,`CUSER`,`RID`,`NAME`,`USERNAME`,`PASSWORD`,`NOTES`,`ENABLED`,`ISYS`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',NULL,1,'管理员','admin','21232f297a57a5a743894a0e4a801fc3','系统超级管理员',1,1,NULL,NULL),(2,'2017-11-11 00:00:00',NULL,4,'测试用户','user','21232f297a57a5a743894a0e4a801fc3','测试用户',1,0,NULL,NULL),(3,'2017-11-11 00:00:00',NULL,NULL,'3','3','21232f297a57a5a743894a0e4a801fc3','1123333',1,0,NULL,NULL);
+insert  into `sys_user`(`ID`,`CTIME`,`CUSER`,`RID`,`NAME`,`USERNAME`,`PASSWORD`,`NOTES`,`ENABLED`,`ISYS`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',NULL,1,'管理员','admin','21232f297a57a5a743894a0e4a801fc3','系统超级管理员',1,1,NULL,NULL),(2,'2017-11-11 00:00:00',NULL,4,'测试用户','user','21232f297a57a5a743894a0e4a801fc3','测试用户',1,0,NULL,NULL),(3,'2017-11-11 00:00:00',NULL,NULL,'3','3','21232f297a57a5a743894a0e4a801fc3','1123333',1,0,'2026-01-06 16:37:36',NULL);
 
 /* Trigger structure for table `lms_exam_room` */
 

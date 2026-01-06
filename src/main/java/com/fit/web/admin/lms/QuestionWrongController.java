@@ -38,7 +38,7 @@ public class QuestionWrongController extends BaseController {
      */
     @GetMapping("/list")
     public String index() {
-        return PREFIX + "list";
+        return PREFIX + "wrongs";
     }
 
     /**
@@ -62,7 +62,7 @@ public class QuestionWrongController extends BaseController {
             LmsQuestionWrong bean = this.service.get(id);
             model.addAttribute("bean", bean);
         }
-        return PREFIX + "edit";
+        return PREFIX + "wrong";
     }
 
     /**

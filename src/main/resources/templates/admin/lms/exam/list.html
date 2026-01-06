@@ -94,6 +94,10 @@
             }
         });
 
+        form.on('switch(status)', function (obj) {
+            modifyReq('/admin/lms/exam/subject/setState', {id: obj.value}, false);
+        });
+
         form.on('submit(search)', function (form) {
             treeTable.reload('table-list', {
                 where: form.field

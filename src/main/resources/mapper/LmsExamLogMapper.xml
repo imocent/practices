@@ -5,7 +5,7 @@
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
     <result column="USER_ID" jdbcType="BIGINT" property="userId" />
-    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
     <result column="EXAM_ROOM_ID" jdbcType="BIGINT" property="examRoomId" />
     <result column="EXAM_ROOM_NAME" jdbcType="VARCHAR" property="examRoomName" />
     <result column="SCORE" jdbcType="INTEGER" property="score" />
@@ -16,7 +16,7 @@
     <result column="WRONG_QUESTIONS" jdbcType="INTEGER" property="wrongQuestions" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CTIME, USER_ID, USER_NAME, EXAM_ROOM_ID, EXAM_ROOM_NAME, SCORE, TIME_ON, TIME_OFF, 
+    ID, CTIME, USER_ID, USERNAME, EXAM_ROOM_ID, EXAM_ROOM_NAME, SCORE, TIME_ON, TIME_OFF, 
     TOTAL_QUESTIONS, CORRECT_QUESTIONS, WRONG_QUESTIONS
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -41,8 +41,8 @@
       <if test="userId != null">
         USER_ID,
       </if>
-      <if test="userName != null">
-        USER_NAME,
+      <if test="username != null">
+        USERNAME,
       </if>
       <if test="examRoomId != null">
         EXAM_ROOM_ID,
@@ -79,8 +79,8 @@
       <if test="userId != null">
         #{userId,jdbcType=BIGINT},
       </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
       </if>
       <if test="examRoomId != null">
         #{examRoomId,jdbcType=BIGINT},
@@ -117,8 +117,8 @@
       <if test="userId != null">
         USER_ID = #{userId,jdbcType=BIGINT},
       </if>
-      <if test="userName != null">
-        USER_NAME = #{userName,jdbcType=VARCHAR},
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
       </if>
       <if test="examRoomId != null">
         EXAM_ROOM_ID = #{examRoomId,jdbcType=BIGINT},
@@ -161,8 +161,8 @@
       <if test="userId != null and userId != ''">
          and USER_ID = #{userId,jdbcType=BIGINT}
       </if>
-      <if test="userName != null and userName != ''">
-         and USER_NAME = #{userName,jdbcType=VARCHAR}
+      <if test="username != null and username != ''">
+         and USERNAME = #{username,jdbcType=VARCHAR}
       </if>
       <if test="examRoomId != null and examRoomId != ''">
          and EXAM_ROOM_ID = #{examRoomId,jdbcType=BIGINT}
@@ -210,9 +210,6 @@
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_exam_log
     <include refid="Base_Where_List" />
-  </select>
-  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
-    ${value}
   </select>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_exam_log where ID in

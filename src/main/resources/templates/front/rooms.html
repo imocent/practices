@@ -11,34 +11,29 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">科目分类：</label>
                 <div class="layui-input-block">
-                    <span class="filter-tag active">全部</span>
-                    <span class="filter-tag">美国</span>
-                    <span class="filter-tag">日本</span>
-                    <span class="filter-tag">韩国</span>
-                    <span class="filter-tag">香港</span>
-                    <span class="filter-tag">台湾</span>
-                    <span class="filter-tag">英国</span>
-                    <span class="filter-tag">法国</span>
+                    <span class="filter-tag active" data-pid="">全部</span>
+                    <span class="filter-tag" th:each="screen : ${screens}" th:data-pid="${screen.id}" th:text="${screen.name}">分类名</span>
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">答卷模式：</label>
                 <div class="layui-input-block">
-                    <span class="filter-tag active">全部</span>
-                    <span class="filter-tag">标准答题模式</span>
-                    <span class="filter-tag">随机抽取模式</span>
-                    <span class="filter-tag">习题练习模式</span>
-                    <span class="filter-tag">只读学习模式</span>
+                    <span class="filter-tag active" data-eid="">全部</span>
+                    <span class="filter-tag" data-eid="0">标准答题模式</span>
+                    <span class="filter-tag" data-eid="1">随机抽取模式</span>
+                    <span class="filter-tag" data-eid="2">习题练习模式</span>
+                    <span class="filter-tag" data-eid="3">只读学习模式</span>
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">成绩类型：</label>
                 <div class="layui-input-block">
-                    <span class="filter-tag active">得分&答案</span>
-                    <span class="filter-tag">得分</span>
-                    <span class="filter-tag">答案</span>
+                    <span class="filter-tag active" data-mid="">全部</span>
+                    <span class="filter-tag" data-mid="0">得分&答案</span>
+                    <span class="filter-tag" data-mid="1">得分</span>
+                    <span class="filter-tag" data-mid="2">答案</span>
                 </div>
             </div>
         </div>
@@ -46,10 +41,9 @@
     <div class="layui-row layui-col-space20">
         <div class="layui-col-md4 layui-col-sm6" th:each="room : ${rooms}">
             <div class="layui-card" style="border: 1px solid #EEEEEE">
-                <div class="layui-card-header" style="background: #E2E2E2; color: black;">
-                    <i class="layui-icon layui-icon-component"></i> <span th:text="${room?.name}">答题室标题</span>
-                    <span class="layui-badge" style="float: right; color: white;"
-                          th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
+                <div class="layui-card-header room-header">
+                    <i class="layui-icon layui-icon-component"></i> <span th:text="${room?.title}">答题室标题</span>
+                    <span class="layui-badge room-right" th:text="${room?.timeMode==1?'限时答题':'永久有效'}"></span>
                 </div>
                 <div class="layui-card-body layui-row fixed-content-height">
                     <div class="layui-col-md8">
@@ -91,15 +85,19 @@
 <!-- 底部信息 -->
 <div th:include="include :: f_footer"></div>
 <script>
-    layui.use(['element', 'form', 'laypage',], function (element, form, laypage) {
-        laypage.render({
-            elem: 'demo-laypage-theme',
-            count: 100,
-            theme: '#B55AD0',
-            first: '首页',
-            last: '尾页',
-            prev: '<em>←</em>',
-            next: '<em>→</em>'
+    layui.use(['jquery', 'element', 'form', 'laypage'], function ($, element, form, laypage) {
+        $(function () {
+            layPage('demo-laypage-theme', "[[${count}]]")
+            $('.filter-tag[data-pid]').removeClass('active').filter('[data-pid="[[${pid}]]"]').addClass('active');
+            $('.filter-tag[data-eid]').removeClass('active').filter('[data-eid="[[${eid}]]"]').addClass('active');
+            $('.filter-tag[data-mid]').removeClass('active').filter('[data-mid="[[${mid}]]"]').addClass('active');
+        });
+        $('.filter-tag').on('click', function () {
+            $(this).addClass('active').siblings('.filter-tag').removeClass('active');
+            let pid = $('.filter-tag[data-pid].active').data('pid');
+            let eid = $('.filter-tag[data-eid].active').data('eid');
+            let mid = $('.filter-tag[data-mid].active').data('mid');
+            location.href = `/rooms?sid=${pid}&eid=${eid}&mid=${mid}`;
         });
     });
 </script>

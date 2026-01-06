@@ -3,6 +3,7 @@ package com.fit.web.admin.lms;
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.LmsExamSubject;
+import com.fit.entity.LmsTop;
 import com.fit.service.LmsExamSubjectService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
@@ -99,5 +100,24 @@ public class ExamSubjectController extends BaseController {
         } else {
             return AjaxResult.error("参数异常");
         }
+    }
+
+    /**
+     * 修改状态
+     */
+    @RequestMapping("/setState")
+    @ResponseBody
+    public Object changeState(Long id) {
+        LmsExamSubject bean = this.service.get(id);
+        if (bean != null) {
+            if (bean.getEnabled()) {
+                bean.setEnabled(false);
+            } else {
+                bean.setEnabled(true);
+            }
+            this.service.update(bean);
+            return AjaxResult.success("修改成功");
+        }
+        return AjaxResult.error("修改状态失败");
     }
 }

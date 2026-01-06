@@ -2,6 +2,7 @@ package com.fit.web.admin.sys;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
+import com.fit.entity.LmsQuestionLearn;
 import com.fit.entity.SysResources;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -31,7 +32,7 @@ public class ResourcesController extends BaseController {
     private static String PREFIX = "/admin/sys/resources/";
 
     @Autowired
-    private SysResourcesService resourcesService;
+    private SysResourcesService service;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -46,8 +47,8 @@ public class ResourcesController extends BaseController {
     @ResponseBody
     public void list(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
-        List<SysResources> userList = resourcesService.findList(map);
-        int count = resourcesService.findCount(map);
+        List<SysResources> userList = service.findList(map);
+        int count = service.findCount(map);
         writeJson(response, AjaxResult.tables(count, userList));
     }
 
@@ -57,9 +58,28 @@ public class ResourcesController extends BaseController {
     @RequestMapping("edit")
     public String edit(Long id, Model model) {
         if (OftenUtil.isNotEmpty(id)) {
-            SysResources resources = resourcesService.get(id);
+            SysResources resources = service.get(id);
             model.addAttribute("menu", resources);
         }
         return PREFIX + "edit";
+    }
+
+    /**
+     * 修改状态
+     */
+    @RequestMapping("/setState")
+    @ResponseBody
+    public Object changeState(Long id) {
+        SysResources bean = this.service.get(id);
+        if (bean != null) {
+            if (bean.getEnabled()) {
+                bean.setEnabled(false);
+            } else {
+                bean.setEnabled(true);
+            }
+            this.service.update(bean);
+            return AjaxResult.success("修改成功");
+        }
+        return AjaxResult.error("修改状态失败");
     }
 }

@@ -225,10 +225,6 @@ public class WebUtil {
                 map.put(key, value);
             }
         }
-        if(map.containsKey("limit") && map.containsKey("page")){
-
-        }
-
         return map;
     }
 

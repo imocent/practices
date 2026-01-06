@@ -5,7 +5,10 @@
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
     <result column="CUSER" jdbcType="BIGINT" property="cuser" />
+    <result column="SUBJECT_ID" jdbcType="VARCHAR" property="subjectId" />
+    <result column="SUBJECT_NAME" jdbcType="VARCHAR" property="subjectName" />
     <result column="UUID" jdbcType="CHAR" property="uuid" />
+    <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
     <result column="NOTES" jdbcType="VARCHAR" property="notes" />
@@ -14,7 +17,8 @@
     <result column="EUSER" jdbcType="BIGINT" property="euser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CTIME, CUSER, UUID, TITLE, CONTENT, NOTES, ENABLED, ETIME, EUSER
+    ID, CTIME, CUSER, SUBJECT_ID, SUBJECT_NAME, UUID, AUTHOR, TITLE, CONTENT, NOTES, 
+    ENABLED, ETIME, EUSER
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -38,8 +42,17 @@
       <if test="cuser != null">
         CUSER,
       </if>
+      <if test="subjectId != null">
+        SUBJECT_ID,
+      </if>
+      <if test="subjectName != null">
+        SUBJECT_NAME,
+      </if>
       <if test="uuid != null">
         UUID,
+      </if>
+      <if test="author != null">
+        AUTHOR,
       </if>
       <if test="title != null">
         TITLE,
@@ -70,8 +83,17 @@
       <if test="cuser != null">
         #{cuser,jdbcType=BIGINT},
       </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectName != null">
+        #{subjectName,jdbcType=VARCHAR},
+      </if>
       <if test="uuid != null">
         #{uuid,jdbcType=CHAR},
+      </if>
+      <if test="author != null">
+        #{author,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
@@ -102,8 +124,17 @@
       <if test="cuser != null">
         CUSER = #{cuser,jdbcType=BIGINT},
       </if>
+      <if test="subjectId != null">
+        SUBJECT_ID = #{subjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectName != null">
+        SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR},
+      </if>
       <if test="uuid != null">
         UUID = #{uuid,jdbcType=CHAR},
+      </if>
+      <if test="author != null">
+        AUTHOR = #{author,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         TITLE = #{title,jdbcType=VARCHAR},
@@ -140,8 +171,17 @@
       <if test="cuser != null and cuser != ''">
          and CUSER = #{cuser,jdbcType=BIGINT}
       </if>
+      <if test="subjectId != null and subjectId != ''">
+         and SUBJECT_ID = #{subjectId,jdbcType=VARCHAR}
+      </if>
+      <if test="subjectName != null and subjectName != ''">
+         and SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR}
+      </if>
       <if test="uuid != null and uuid != ''">
          and UUID = #{uuid,jdbcType=CHAR}
+      </if>
+      <if test="author != null and author != ''">
+         and AUTHOR = #{author,jdbcType=VARCHAR}
       </if>
       <if test="title != null and title != ''">
          and TITLE = #{title,jdbcType=VARCHAR}
@@ -180,9 +220,6 @@
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_question_learn
     <include refid="Base_Where_List" />
-  </select>
-  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
-    ${value}
   </select>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_question_learn where ID in

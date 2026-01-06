@@ -1,5 +1,8 @@
 package com.fit.base;
 
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +72,8 @@ public interface BaseCrudDao<T> {
     /**
      * 查询数据列表
      */
-    List<T> selectBySQL(String sql);
+    @Select("${sql}")
+    List<Map<String, Object>> selectBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
 
     /**
      * 清空表

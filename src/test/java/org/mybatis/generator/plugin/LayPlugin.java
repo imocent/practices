@@ -140,13 +140,6 @@ public class LayPlugin extends PluginAdapter {
         c_select.addElement(new TextElement("SELECT count(1) FROM " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
         c_select.addElement(include2);
         rootElement.addElement(c_select);
-        // 创建根据SQL查询数据
-        XmlElement sql_select = new XmlElement("select");
-        sql_select.addAttribute(new Attribute("id", "selectBySQL"));
-        sql_select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
-        sql_select.addAttribute(new Attribute("parameterType", "java.lang.String"));
-        sql_select.addElement(new TextElement("${value}"));
-        rootElement.addElement(sql_select);
         // 创建批量删除
         String primaryKeyColumn = introspectedTable.getPrimaryKeyColumns().get(0).getActualColumnName();
         XmlElement removes = new XmlElement("delete");

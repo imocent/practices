@@ -24,7 +24,7 @@ public class LmsExamLog extends BaseEntity<LmsExamLog> {
     /**
      * 用户名
      */
-    private String userName;
+    private String username;
 
     /**
      * 答题室ID
@@ -75,7 +75,7 @@ public class LmsExamLog extends BaseEntity<LmsExamLog> {
         sb.append(", id=").append(id);
         sb.append(", ctime=").append(ctime);
         sb.append(", userId=").append(userId);
-        sb.append(", userName=").append(userName);
+        sb.append(", username=").append(username);
         sb.append(", examRoomId=").append(examRoomId);
         sb.append(", examRoomName=").append(examRoomName);
         sb.append(", score=").append(score);

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.LmsCommentsDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsComments">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="USER_ID" jdbcType="BIGINT" property="userId" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="MODE" jdbcType="VARCHAR" property="mode" />
+    <result column="LIKE_COUNT" jdbcType="INTEGER" property="likeCount" />
+    <result column="VOTE_COUNT" jdbcType="INTEGER" property="voteCount" />
+    <result column="ENABLED" jdbcType="BIT" property="enabled" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, CTIME, USER_ID, USERNAME, CONTENT, `MODE`, LIKE_COUNT, VOTE_COUNT, ENABLED
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lms_comments
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from lms_comments
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.fit.entity.LmsComments">
+    insert into lms_comments
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="ctime != null">
+        CTIME,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="username != null">
+        USERNAME,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+      <if test="mode != null">
+        `MODE`,
+      </if>
+      <if test="likeCount != null">
+        LIKE_COUNT,
+      </if>
+      <if test="voteCount != null">
+        VOTE_COUNT,
+      </if>
+      <if test="enabled != null">
+        ENABLED,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="mode != null">
+        #{mode,jdbcType=VARCHAR},
+      </if>
+      <if test="likeCount != null">
+        #{likeCount,jdbcType=INTEGER},
+      </if>
+      <if test="voteCount != null">
+        #{voteCount,jdbcType=INTEGER},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.LmsComments">
+    update lms_comments
+    <set>
+      <if test="ctime != null">
+        CTIME = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="mode != null">
+        `MODE` = #{mode,jdbcType=VARCHAR},
+      </if>
+      <if test="likeCount != null">
+        LIKE_COUNT = #{likeCount,jdbcType=INTEGER},
+      </if>
+      <if test="voteCount != null">
+        VOTE_COUNT = #{voteCount,jdbcType=INTEGER},
+      </if>
+      <if test="enabled != null">
+        ENABLED = #{enabled,jdbcType=BIT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="id != null and id != ''">
+         and ID = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="ctime != null ">
+         and CTIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and CTIME &lt;= #{etime } 
+      </if>
+      <if test="userId != null and userId != ''">
+         and USER_ID = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="username != null and username != ''">
+         and USERNAME = #{username,jdbcType=VARCHAR}
+      </if>
+      <if test="content != null and content != ''">
+         and CONTENT = #{content,jdbcType=VARCHAR}
+      </if>
+      <if test="mode != null and mode != ''">
+         and `MODE` = #{mode,jdbcType=VARCHAR}
+      </if>
+      <if test="likeCount != null and likeCount != ''">
+         and LIKE_COUNT = #{likeCount,jdbcType=INTEGER}
+      </if>
+      <if test="voteCount != null and voteCount != ''">
+         and VOTE_COUNT = #{voteCount,jdbcType=INTEGER}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and ENABLED = #{enabled,jdbcType=BIT}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_comments
+    <include refid="Base_Where_List" />
+    order by ID desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM lms_comments
+    <include refid="Base_Where_List" />
+  </select>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from lms_comments where ID in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table lms_comments
+  </update>
+</mapper>

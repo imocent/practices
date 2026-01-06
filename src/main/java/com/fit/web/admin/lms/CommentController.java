@@ -1,14 +1,15 @@
 package com.fit.web.admin.lms;
 
+import com.fit.aop.BizLog;
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.LmsComments;
-import com.fit.entity.LmsTop;
-import com.fit.service.LmsTopService;
+import com.fit.entity.SysUser;
+import com.fit.service.LmsCommentsService;
 import com.fit.util.BeanUtil;
+import com.fit.util.DateUtils;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,22 +17,23 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @AUTO 展示控制器
+ * @AUTO 控制器
  * @Author AIM
  * @DATE 2019/4/26
  */
 @Controller
-@RequestMapping("/admin/lms/top")
-public class TopController extends BaseController {
+@RequestMapping("/admin/lms/comment")
+public class CommentController extends BaseController {
 
-    private static String PREFIX = "/admin/lms/top/";
+    private static String PREFIX = "/admin/lms/comment/";
 
     @Autowired
-    private LmsTopService service;
+    private LmsCommentsService service;
 
     /**
      * 列表页面
@@ -48,7 +50,7 @@ public class TopController extends BaseController {
     @ResponseBody
     public Object list(HttpServletRequest request) {
         Map<String, Object> params = WebUtil.getRequestMap(request);
-        List<LmsTop> list = this.service.findList(params);
+        List<LmsComments> list = this.service.findList(params);
         int count = this.service.findCount(params);
         return AjaxResult.tables(count, list);
     }
@@ -59,8 +61,8 @@ public class TopController extends BaseController {
     @GetMapping("/edit")
     public String editView(Long id, Model model) {
         if (OftenUtil.isNotEmpty(id)) {
-            LmsTop top = this.service.get(id);
-            model.addAttribute("bean", top);
+            LmsComments bean = this.service.get(id);
+            model.addAttribute("bean", bean);
         }
         return PREFIX + "edit";
     }
@@ -70,17 +72,21 @@ public class TopController extends BaseController {
      */
     @PostMapping("/save")
     @ResponseBody
-    public Object save(LmsTop bean) {
-        LmsTop entity = this.service.get(bean.getId());
-        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+    public Object save(LmsComments bean) {
+        LmsComments entity = this.service.get(bean.getId());
         if (null == entity) {
+            if (!bean.getUsername().isEmpty()) {
+                Map<String, Object> param = new HashMap<>();
+                param.put("username", bean.getUsername());
+                List<Map<String, Object>> maps = this.service.selectBySQL("SELECT * FROM `sys_user` WHERE `USERNAME`=#{params.username}", param);
+                if (maps.size() > 0) {
+                    bean.setUserId(Long.valueOf(maps.get(0).get("ID").toString()));
+                }
+            }
             bean.setCtime(new Date());
-            bean.setCuser(userId);
             this.service.save(bean);
         } else {
             BeanUtil.copyProperties(bean, entity);
-            entity.setEtime(new Date());
-            entity.setEuser(userId);
             this.service.update(entity);
         }
         return AjaxResult.success();
@@ -108,7 +114,7 @@ public class TopController extends BaseController {
     @RequestMapping("/setState")
     @ResponseBody
     public Object changeState(Long id) {
-        LmsTop bean = this.service.get(id);
+        LmsComments bean = this.service.get(id);
         if (bean != null) {
             if (bean.getEnabled()) {
                 bean.setEnabled(false);

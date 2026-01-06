@@ -5,11 +5,12 @@
 <div class="yadmin-body animated fadeIn">
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${bean?.id}"/>
+        <input type="hidden" name="uuid" th:value="${bean?.uuid}"/>
         <div class="layui-form-item">
-            <label for="uuid" class="layui-form-label">名称</label>
+            <label for="ETI" class="layui-form-label">科目分类</label>
             <div class="layui-input-block">
-                <input type="text" id="uuid" placeholder="请输入名称，例如：状态标识" name="uuid" th:value="${bean?.uuid}"
-                       lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
+                <input type="hidden" id="STI" name="subjectId" th:value="${bean?.subjectId}">
+                <input type="hidden" id="ETI" name="subjectName" th:value="${bean?.subjectName}">
             </div>
         </div>
         <div class="layui-form-item">
@@ -20,9 +21,16 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="content" class="layui-form-label">其它信息：</label>
+            <label for="content" class="layui-form-label">正文</label>
             <div class="layui-input-block">
                 <textarea id="content" name="content" placeholder="" class="layui-textarea" th:text="${bean?.content}"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="author" class="layui-form-label">作者</label>
+            <div class="layui-input-block">
+                <input type="text" id="author" placeholder="请输入作者" name="author" th:value="${bean?.author}" autocomplete="off"
+                       class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -47,7 +55,10 @@
     </div>
 </div>
 <script>
-    layui.use(['jquery', 'form', 'layer', 'layEditor'], function ($, form, layer, editor) {
+    layui.use(['jquery', 'form', 'layer', 'layEditor', 'layChoice'], function ($, form, layer, editor, choice) {
+
+        choice.render({elem: '#STI', labelElem: '#ETI', url: '/subjects',});
+
         editor.init({
             elem: '#content',
             uploadUrl: 'https://upload-z1.qiniup.com',
@@ -56,6 +67,9 @@
             uploadSize: '',
             style: 'fangge',
         });
+
+        $('input:radio[name=enabled][value="[[${bean?.enabled}]]"]').prop('checked', true);
+        form.render('radio');
 
         form.on('submit(submit-form)', function (obj) {
             $.post('/admin/lms/question/learn/save', obj.field, function (data) {

@@ -234,9 +234,6 @@
     SELECT count(1) FROM lms_top
     <include refid="Base_Where_List" />
   </select>
-  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
-    ${value}
-  </select>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_top where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

@@ -14,8 +14,8 @@
     <result column="NOTES" jdbcType="VARCHAR" property="notes" />
     <result column="LEVELS" jdbcType="INTEGER" property="levels" />
     <result column="ISMENU" jdbcType="VARCHAR" property="ismenu" />
-    <result column="ENABLED" jdbcType="INTEGER" property="enabled" />
-    <result column="ISYS" jdbcType="INTEGER" property="isys" />
+    <result column="ENABLED" jdbcType="BIT" property="enabled" />
+    <result column="ISYS" jdbcType="BIT" property="isys" />
     <result column="ETIME" jdbcType="TIMESTAMP" property="etime" />
     <result column="EUSER" jdbcType="BIGINT" property="euser" />
   </resultMap>
@@ -123,10 +123,10 @@
         #{ismenu,jdbcType=VARCHAR},
       </if>
       <if test="enabled != null">
-        #{enabled,jdbcType=INTEGER},
+        #{enabled,jdbcType=BIT},
       </if>
       <if test="isys != null">
-        #{isys,jdbcType=INTEGER},
+        #{isys,jdbcType=BIT},
       </if>
       <if test="etime != null">
         #{etime,jdbcType=TIMESTAMP},
@@ -173,10 +173,10 @@
         ISMENU = #{ismenu,jdbcType=VARCHAR},
       </if>
       <if test="enabled != null">
-        ENABLED = #{enabled,jdbcType=INTEGER},
+        ENABLED = #{enabled,jdbcType=BIT},
       </if>
       <if test="isys != null">
-        ISYS = #{isys,jdbcType=INTEGER},
+        ISYS = #{isys,jdbcType=BIT},
       </if>
       <if test="etime != null">
         ETIME = #{etime,jdbcType=TIMESTAMP},
@@ -229,10 +229,10 @@
          and ISMENU = #{ismenu,jdbcType=VARCHAR}
       </if>
       <if test="enabled != null and enabled != ''">
-         and ENABLED = #{enabled,jdbcType=INTEGER}
+         and ENABLED = #{enabled,jdbcType=BIT}
       </if>
       <if test="isys != null and isys != ''">
-         and ISYS = #{isys,jdbcType=INTEGER}
+         and ISYS = #{isys,jdbcType=BIT}
       </if>
       <if test="ctime != null ">
          and ETIME &gt;= #{ctime }
@@ -259,9 +259,6 @@
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_resources
     <include refid="Base_Where_List" />
-  </select>
-  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
-    ${value}
   </select>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from sys_resources where ID in

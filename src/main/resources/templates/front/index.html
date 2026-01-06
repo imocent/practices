@@ -23,11 +23,9 @@
 
                 <div class="layui-form">
                     <div class="layui-input-group" style="width: 100%;">
-                        <input type="text" class="layui-input layui-search" placeholder="搜索课程、知识库内容..."/>
+                        <input type="text" name="title" class="layui-input layui-search" placeholder="搜索课程、知识库内容..."/>
                         <div class="layui-input-suffix">
-                            <button class="layui-btn layui-bg-purple layui-search-btn">
-                                <i class="layui-icon layui-icon-search"></i> 搜索
-                            </button>
+                            <button class="layui-btn layui-bg-purple layui-search-btn"><i class="layui-icon">&#xe615; 搜索</i></button>
                         </div>
                     </div>
                 </div>
@@ -50,7 +48,7 @@
         <div class="layui-col-md4 layui-col-sm6" th:each="room : ${rooms}" th:data-room-id="${room.id}">
             <div class="layui-card" style="border: 1px solid #EEEEEE">
                 <div class="layui-card-header" style="background: #E2E2E2; color: black;">
-                    <i class="layui-icon layui-icon-component"></i> <span th:text="${room?.name}">答题室标题</span>
+                    <i class="layui-icon layui-icon-component"></i> <span th:text="${room?.title}">答题室标题</span>
                     <span class="layui-badge" style="float: right; color: white;"
                           th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
                 </div>

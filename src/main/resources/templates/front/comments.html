@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('做题吧 - 首页')"></head>
+<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
+<body>
+<div th:include="include :: f_header"></div>
+<div class="layui-container" style="margin-bottom: 40px; min-height: 500px;">
+    <div class="layui-fluid layadmin-message-fluid">
+        <div class="layui-row layui-col-md12">
+            <h1 style="text-align: center;font-size: 28px;color: #333;margin: 20px 0;">探索知识，收听意见</h1>
+            <div class="layui-form">
+                <input type="hidden" name="username" th:if="${session.username!= null}" th:value="${session?.username}"/>
+                <div class="layui-form-item" th:unless="${session.username!= null}">
+                    <input type="text" name="username" lay-verify="required" placeholder="请输入昵称" class="layui-input"/>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+                <div class="layui-form-item" style="overflow: hidden;">
+                    <div class="comments-icon">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-face-smile-b"></i></a>
+                        <a href="javascript:;"><i class="layui-icon layui-icon-picture"></i></a>
+                        <a href="javascript:;"><i class="layui-icon layui-icon-link"></i></a>
+                    </div>
+                    <div style="float: right;">
+                        <button class="layui-btn" lay-submit lay-filter="submit-form">发表</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12" style="padding: 0 40px;">
+            <div class="media-body" style="margin-bottom: 20px;" th:each="comment : ${comments}">
+                <div class="pad-btm">
+                    <p class="fontColor"><a href="javascript:;" th:text="${comment.username}"></a></p>
+                    <p class="min-font">
+                      <span class="layui-breadcrumb" lay-separator="-">
+                        <a href="javascript:;" class="layui-icon layui-icon-cellphone"></a>
+                        <a href="javascript:;" th:text="${comment.mode}">留言设备</a>
+                        <a href="javascript:;" th:text="${#dates.format(comment.ctime, 'yyyy-MM-dd HH:mm:ss')}">留言时间</a>
+                      </span>
+                    </p>
+                </div>
+                <p class="message-text" th:text="${comment.content}"></p>
+            </div>
+            <div class="layui-row" style="text-align:center;">
+                <a href="javascript:;" class="layui-btn">更多</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 底部信息 -->
+<div th:include="include :: f_footer"></div>
+<script>
+    layui.use(['jquery', 'form'], function ($, form) {
+        form.on('submit(submit-form)', function (obj) {
+            $.post('/comments/save', obj.field, function (data) {
+                advices(data, parent);
+            }, 'json').fail(function (event) {
+                toError(event);
+            });
+        });
+    });
+</script>
+</body>
+</html>

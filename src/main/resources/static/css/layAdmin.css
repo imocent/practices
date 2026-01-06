@@ -130,8 +130,9 @@
     color: #1E9FFF !important;
 }
 
-.layui-btn .layui-icon {
+.layui-search-btn .layui-icon {
     margin-right: 0px !important;
+    color: #FFF;
 }
 
 .layui-form-label {

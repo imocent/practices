@@ -2,6 +2,7 @@ package com.fit.web.admin.lms;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
+import com.fit.entity.LmsExamSubject;
 import com.fit.entity.LmsQuestion;
 import com.fit.entity.LmsQuestionAnswer;
 import com.fit.service.LmsQuestionAnswerService;

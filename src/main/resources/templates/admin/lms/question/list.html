@@ -23,7 +23,7 @@
             </div>
             <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="shareTpl">
-                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="公开|私有" lay-filter="status" {{d.share?"checked":""}}>
+                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="公开|私有" lay-filter="share" {{d.share?"checked":""}}>
             </script>
             <script type="text/html" id="statusTpl">
                 <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status" {{d.enabled?"checked":""}}>
@@ -98,6 +98,14 @@
             }else if (event === 'answer') {
                 openFull("/admin/lms/question/answer/list?id=" + data.id, "答案");
             }
+        });
+
+        form.on('switch(share)', function (obj) {
+            modifyReq('/admin/lms/question/setShare', {id: obj.value}, false);
+        });
+
+        form.on('switch(status)', function (obj) {
+            modifyReq('/admin/lms/question/setState', {id: obj.value}, false);
         });
 
         form.on('submit(search)', function (form) {

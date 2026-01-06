@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:include="include :: head('题目列表')"></head>
+<head th:include="include :: head('列表')"></head>
 <body>
 <div class="layui-card">
     <div class="layui-card-body">
@@ -23,7 +23,8 @@
             </div>
             <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="statusTpl">
-                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status" {{d.enabled?"checked":""}}>
+                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status"
+                       {{d.enabled?"checked":""}}>
             </script>
             <script type="text/html" id="toolbar">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
@@ -45,28 +46,29 @@
     layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
         table.render({
             elem: '#table-list',
-            url: '/admin/lms/question/learn/list',
+            url: '/admin/lms/comment/list',
             method: 'post',
             dataType: 'JSON',
             smartReloadModel: true,
-            height: 'full-160',
             page: true,
             toolbar: '#toolbar',
             cols: [ [
                 {type: 'checkbox'},
-                {field: 'uuid', title: 'UUID', minWidth: 80},
-                {field: 'subjectName', title: '学科名', minWidth: 80},
-                {field: 'title', title: '标题', minWidth: 80},
-                {field: 'notes', title: '备注', minWidth: 80},
-                {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar', width: 100}
+                {field: 'ctime', title: '时间', minWidth: 100},
+                {field: 'username', title: '名称', minWidth: 80},
+                {field: 'content', title: '内容', minWidth: 80},
+                {field: 'mode', title: '留言方式', width: 100},
+                {field: 'likeCount', title: '点赞计数', width: 100},
+                {field: 'voteCount', title: '投票计数', width: 100},
+                {field: 'enabled', title: '状态', width: 100, align: 'center', templet: "#statusTpl"},
+                {fixed: 'right', title: '操作', width: 100, align: 'center', toolbar: '#column-toolbar'}
             ] ]
         });
 
         // 工具条点击事件
         table.on('toolbar', function (obj) {
             if (obj.event === 'add') {
-                editView("/admin/lms/question/learn/edit", "添加");
+                editView("/admin/lms/comment/edit", "添加");
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
@@ -76,7 +78,7 @@
                             idsArray.push(selectData[i].id);
                         }
                         let ids = idsArray.toString();
-                        deleteReq(ids, '/admin/lms/question/learn/del')
+                        deleteReq(ids, '/admin/lms/comment/del')
                         layer.close(index);
                     }
                 });
@@ -86,12 +88,12 @@
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
-                editView("/admin/lms/question/learn/edit?id=" + data.id, "编辑");
+                editView("/admin/lms/comment/edit?id=" + data.id, "编辑");
             }
         });
 
         form.on('switch(status)', function (obj) {
-            modifyReq('/admin/lms/question/learn/setState', {id: obj.value}, false);
+            modifyReq('/admin/lms/comment/setState', {id: obj.value}, false);
         });
 
         form.on('submit(search)', function (form) {

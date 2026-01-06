@@ -9,7 +9,7 @@
     <result column="SUBJECT_ID" jdbcType="VARCHAR" property="subjectId" />
     <result column="SUBJECT_NAME" jdbcType="VARCHAR" property="subjectName" />
     <result column="IMG_ID" jdbcType="BIGINT" property="imgId" />
-    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="TITLE" jdbcType="VARCHAR" property="title" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
     <result column="LEVEL" jdbcType="VARCHAR" property="level" />
     <result column="NOTES" jdbcType="VARCHAR" property="notes" />
@@ -32,7 +32,7 @@
     <result column="EUSER" jdbcType="BIGINT" property="euser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CTIME, CUSER, UUID, SUBJECT_ID, SUBJECT_NAME, IMG_ID, `NAME`, CONTENT, `LEVEL`, 
+    ID, CTIME, CUSER, UUID, SUBJECT_ID, SUBJECT_NAME, IMG_ID, TITLE, CONTENT, `LEVEL`, 
     NOTES, ENABLED, `SHARE`, EXAM_MODE, TIME_MODE, TIME_LEN, TIME_ON, TIME_OFF, EXAMINEE_MODE, 
     EXAMINEE_COUNT, SUBJECT_SORT_MODE, SUBJECT_OPT_SORT_MODE, ADJUDGE_MODE, MARK_MODE, 
     MARK_SHOW_MODE, MARK_TIME_MODE, ETIME, EUSER
@@ -71,8 +71,8 @@
       <if test="imgId != null">
         IMG_ID,
       </if>
-      <if test="name != null">
-        `NAME`,
+      <if test="title != null">
+        TITLE,
       </if>
       <if test="content != null">
         CONTENT,
@@ -157,8 +157,8 @@
       <if test="imgId != null">
         #{imgId,jdbcType=BIGINT},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
@@ -243,8 +243,8 @@
       <if test="imgId != null">
         IMG_ID = #{imgId,jdbcType=BIGINT},
       </if>
-      <if test="name != null">
-        `NAME` = #{name,jdbcType=VARCHAR},
+      <if test="title != null">
+        TITLE = #{title,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         CONTENT = #{content,jdbcType=VARCHAR},
@@ -335,8 +335,8 @@
       <if test="imgId != null and imgId != ''">
          and IMG_ID = #{imgId,jdbcType=BIGINT}
       </if>
-      <if test="name != null and name != ''">
-         and `NAME` = #{name,jdbcType=VARCHAR}
+      <if test="title != null and title != ''">
+         and TITLE = #{title,jdbcType=VARCHAR}
       </if>
       <if test="content != null and content != ''">
          and CONTENT = #{content,jdbcType=VARCHAR}
@@ -423,9 +423,6 @@
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_exam_room
     <include refid="Base_Where_List" />
-  </select>
-  <select id="selectBySQL" parameterType="java.lang.String" resultMap="BaseResultMap">
-    ${value}
   </select>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_exam_room where ID in

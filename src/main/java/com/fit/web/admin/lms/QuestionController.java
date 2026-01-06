@@ -2,6 +2,7 @@ package com.fit.web.admin.lms;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
+import com.fit.entity.LmsExamRoom;
 import com.fit.entity.LmsQuestion;
 import com.fit.service.LmsQuestionService;
 import com.fit.util.BeanUtil;
@@ -99,5 +100,43 @@ public class QuestionController extends BaseController {
         } else {
             return AjaxResult.error("参数异常");
         }
+    }
+
+    /**
+     * 修改状态
+     */
+    @RequestMapping("/setShare")
+    @ResponseBody
+    public Object changeShare(Long id) {
+        LmsQuestion bean = this.service.get(id);
+        if (bean != null) {
+            if (bean.getShare()) {
+                bean.setShare(false);
+            } else {
+                bean.setShare(true);
+            }
+            this.service.update(bean);
+            return AjaxResult.success("修改成功");
+        }
+        return AjaxResult.error("修改状态失败");
+    }
+
+    /**
+     * 修改状态
+     */
+    @RequestMapping("/setState")
+    @ResponseBody
+    public Object changeState(Long id) {
+        LmsQuestion bean = this.service.get(id);
+        if (bean != null) {
+            if (bean.getEnabled()) {
+                bean.setEnabled(false);
+            } else {
+                bean.setEnabled(true);
+            }
+            this.service.update(bean);
+            return AjaxResult.success("修改成功");
+        }
+        return AjaxResult.error("修改状态失败");
     }
 }
