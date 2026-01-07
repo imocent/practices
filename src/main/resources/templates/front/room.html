@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 <head th:include="include :: head('做题吧 - 答题室')"></head>
 <body>
-<div th:include="include :: f_header"></div>
+<th:block th:include="include :: f_header"></th:block>
 <div class="layui-container layui-fluid" style="margin-top:10px">
     <div class="layui-row layui-col-space20">
         <!-- 左侧：课程信息 -->
         <div class="layui-col-md8">
             <div class="layui-card">
                 <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="layui-icon layui-icon-template-1"></i> <span style="color: #fff;" th:text="${room?.name}">实战课程</span>
+                    <i class="layui-icon layui-icon-template-1"></i> <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
                 </div>
                 <div class="layui-card-body" th:text="${room?.content}">
                     <ul class="layui-timeline">
@@ -120,7 +120,7 @@
         </div>
     </div>
 </div>
-<div th:include="include :: f_footer"></div>
+<th:block th:include="include :: f_footer"></th:block>
 <!-- 引入 LayUI JS -->
 <script src="/js/layui.js"></script>
 <script>

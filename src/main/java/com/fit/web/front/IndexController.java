@@ -33,8 +33,6 @@ public class IndexController extends BaseController {
     @Autowired
     private LmsTopService topService;
     @Autowired
-    private LmsCommentsService commentsService;
-    @Autowired
     private LmsExamRoomService roomService;
     @Autowired
     private LmsQuestionLearnService learnService;
@@ -84,7 +82,7 @@ public class IndexController extends BaseController {
             map.remove("sid");
             map.put("subjectId", subjectId);
         }
-        model.addAttribute("pid", pid);
+        model.addAttribute("pid", pid.equals("0") ? cid : pid);
         model.addAttribute("cid", cid);
     }
 
@@ -141,40 +139,5 @@ public class IndexController extends BaseController {
         List<Map<String, Object>> screens = this.menuService.getScreen("0");
         model.addAttribute("screens", screens);
         return "front/learns";
-    }
-
-    @GetMapping("/comments")
-    public String comments(HttpServletRequest request, Model model) {
-        Map<String, Object> map = WebUtil.getRequestMap(request);
-        if (!SecurityUtils.getSubject().isAuthenticated()) {
-            map.put("enabled", 1);
-        }
-        map.put("limit", 2);
-        map.put("page", 0);
-        List<LmsComments> comments = this.commentsService.findList(map);
-        model.addAttribute("comments", comments);
-        return "front/comments";
-    }
-
-    @PostMapping("/comments/save")
-    @ResponseBody
-    public Object save(HttpServletRequest request) {
-        Map<String, Object> map = WebUtil.getRequestMap(request);
-        try {
-            LmsComments bean = BeanUtil.map2Bean(LmsComments.class, map);
-            if (!bean.getUsername().isEmpty()) {
-                Map<String, Object> param = new HashMap<>();
-                param.put("username", map.get("username"));
-                List<Map<String, Object>> maps = this.commentsService.selectBySQL("SELECT * FROM `sys_user` WHERE `USERNAME`=#{params.username}", param);
-                if (maps.size() > 0) {
-                    bean.setUserId(Long.valueOf(maps.get(0).get("ID").toString()));
-                }
-            }
-            bean.setCtime(new Date());
-            this.commentsService.save(bean);
-            return AjaxResult.success();
-        } catch (NumberFormatException e) {
-            return AjaxResult.error();
-        }
     }
 }

@@ -3,7 +3,7 @@
 <head th:include="include :: head('管理系统平台')"></head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
-    <div th:include="include :: header"></div>
+    <th:block th:include="include :: header"></th:block>
     <!-- 左侧导航区域 -->
     <div class="layui-side">
         <div class="layui-side-scroll">
@@ -57,7 +57,7 @@
             </div>
         </div>
     </div>
-    <div th:include="include :: footer"></div>
+    <th:block th:include="include :: footer"></th:block>
 </div>
 </body>
 </html>

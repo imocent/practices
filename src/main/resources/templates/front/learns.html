@@ -1,42 +1,45 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 首页')"></head>
-<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
 <body>
-<div th:include="include :: f_header"></div>
-<div class="layui-container" style="margin-bottom: 40px; min-height: 500px;">
-    <div class="layui-card">
-        <div class="layui-card-body layui-form">
-            <div class="layui-card-header" style="background-color: #E2E2E2">分类筛选</div>
-            <div class="layui-card-body layui-form">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">科目分类：</label>
-                    <div class="layui-input-block">
-                        <span class="filter-tag active" data-pid="">全部</span>
-                        <span class="filter-tag" th:each="screen : ${screens}" th:data-pid="${screen.id}" th:text="${screen.name}">分类名</span>
-                    </div>
+<th:block th:include="include :: f_header"></th:block>
+<div class="layui-container layui-fluid">
+    <form class="layui-row layui-card layui-form">
+        <div class="layui-card-header" style="background-color: #E2E2E2">分类筛选</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">科目分类：</label>
+                <div class="layui-input-block">
+                    <input type="hidden" name="pid" th:value="${pid}"/>
+                    <span class="filter-tag active" data-pid="">全部</span>
+                    <span class="filter-tag" th:each="screen : ${screens}" th:data-pid="${screen.id}" th:text="${screen.name}">分类名</span>
                 </div>
             </div>
-            <div class="layui-row layui-col-space10">
-                <div class="layui-col-xs12 layui-col-sm8">
-                    <input type="text" name="title" class="layui-input" placeholder="搜索课程、知识库内容..." />
-                </div>
-                <div class="layui-col-xs12 layui-col-sm4">
-                    <div class="layui-row layui-col-space5">
-                        <div class="layui-col-xs6">
-                            <button class="layui-btn layui-btn-fluid layui-bg-purple"><i class="layui-icon">&#xe615; 搜索</i></button>
-                        </div>
-                        <div class="layui-col-xs6">
-                            <button class="layui-btn layui-btn-fluid layui-bg-cyan"><i class="layui-icon">&#xe666; 重置</i></button>
-                        </div>
+        </div>
+        <div class="layui-col-space10">
+            <div class="layui-col-xs12 layui-col-sm8">
+                <input type="text" name="title" class="layui-input" placeholder="搜索课程、知识库内容..."/>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm4">
+                <div class="layui-row layui-col-space5">
+                    <div class="layui-col-xs6">
+                        <button class="layui-btn layui-btn-fluid layui-bg-purple" lay-submit lay-filter="search">
+                            <i class="layui-icon">&#xe615; 搜索</i>
+                        </button>
+                    </div>
+                    <div class="layui-col-xs6">
+                        <button type="reset" class="layui-btn layui-btn-fluid layui-bg-cyan">
+                            <i class="layui-icon">&#xe666; 重置</i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- 学习内容列表 -->
-    <div class="layui-card" style="margin-top: 15px;">
-        <div class="layui-card-header layui-bg-green"><i class="layui-icon">&#xe705; 学习内容列表</i></div>
+    </form>
+    <div class="layui-row layui-card">
+        <div class="layui-card-header" style="background-color: #E2E2E2">
+            <i class="layui-icon">&#xe705; 学习内容列表</i>
+        </div>
         <div class="layui-card-body">
             <ul class="layadmin-serach-list layui-text" th:each="learn : ${learns}">
                 <li>
@@ -46,23 +49,30 @@
                     </div>
                 </li>
             </ul>
-            <!-- 分页 -->
-            <div id="pagination" style="text-align: center; margin-top: 20px;"></div>
         </div>
+    </div>
+    <div class="layui-row layui-card">
+        <!-- 分页 -->
+        <div id="pagination" class="laytable-cell-space layui-fluid"></div>
     </div>
 </div>
 <!-- 底部信息 -->
-<div th:include="include :: f_footer"></div>
+<th:block th:include="include :: f_footer"></th:block>
 <script>
-    layui.use(['jquery','element', 'form', 'laypage',], function ($, element, form, laypage) {
+    layui.use(['jquery', 'element', 'form', 'laypage'], function ($, element, form, laypage) {
         $(function () {
-            layPage('pagination', "[[${count}]]")
+            layPage('pagination', "[[${count}]]");
             $('.filter-tag[data-pid]').removeClass('active').filter('[data-pid="[[${pid}]]"]').addClass('active');
         });
         $('.filter-tag').on('click', function () {
             $(this).addClass('active').siblings('.filter-tag').removeClass('active');
             let pid = $('.filter-tag[data-pid].active').data('pid');
             location.href = `/learns?sid=${pid}`;
+        });
+
+        form.on('submit(search)', function (form) {
+            console.log(form.field);
+            return false;
         });
     });
 </script>

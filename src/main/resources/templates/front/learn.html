@@ -1,9 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 首页')"></head>
-<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
 <body>
-<div th:include="include :: f_header"></div>
+<th:block th:include="include :: f_header"></th:block>
 <!-- 学习内容展示区域 -->
 <div class="layui-container" style="margin-top: 20px; margin-bottom: 40px;">
     <!-- 学习路径/学科分类 -->
@@ -128,7 +127,7 @@
     </div>
 </div>
 <!-- 底部信息 -->
-<div th:include="include :: f_footer"></div>
+<th:block th:include="include :: f_footer"></th:block>
 <script>
     layui.use(['element', 'form', 'laypage',], function (element, form, laypage) {
         laypage.render({

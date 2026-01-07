@@ -10,13 +10,14 @@
     <link rel="Bookmark" th:href="@{/favicon.ico}"/>
     <link rel="Shortcut Icon" th:href="@{/favicon.ico}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/layui.css}" media="all"/>
-    <script type="text/javascript" charset="utf-8" th:src="@{/js/layui.js}"></script>
-    <script type="text/javascript" charset="utf-8" th:src="@{/js/lay-config.js}"></script>
+    <link rel="stylesheet" type="text/css" th:unless="${#request.servletPath.startsWith('/admin')}" th:href="@{/css/index.css}"/>
+    <script type="text/javascript" th:src="@{/js/layui.js}"></script>
     <!--[if lt IE 9]>
     <script type="text/javascript" th:src="@{/js/html5shiv.js}"></script>
     <script type="text/javascript" th:src="@{/js/respond.min.js}"></script><![endif]--><!--[if IE 6]>
     <script type="text/javascript" th:src="@{/js/DD_belatedPNG_0.0.8a-min.js}"></script>
     <script>DD_belatedPNG.fix('*');</script><![endif]-->
+    <script type="text/javascript" th:if="${#request.servletPath.startsWith('/admin')}" th:src="@{/js/lay-config.js}"></script>
 </head>
 <!-- 头部信息 -->
 <div th:fragment="header">
@@ -75,7 +76,7 @@
 <!-- 尾部信息 -->
 <div th:fragment="footer">
     <div class="layui-footer">
-        <p>© 2025 <a href="#" target="_blank">做题吧</a> 版权所有 | 冀ICP备12345678号</p>
+        <p>© 2025 <a href="#" target="_blank" style="color: #3498db; text-decoration: none;">做题吧</a> 版权所有 | 冀ICP备12345678号</p>
     </div>
     <!-- 移动端遮罩 -->
     <div class="site-mobile-shade"></div>
@@ -103,7 +104,7 @@
                             <a href="/learns" style="color: #fff;">知识库 <i class="layui-icon">&#xe61a;</i></a>
                         </li>
                         <li class="layui-nav-item" data-page="comments">
-                            <a href="/comments" style="color: #fff;">问答社区</a>
+                            <a href="/comment" style="color: #fff;">问答社区</a>
                         </li>
                     </ul>
                     <!-- 右侧登录 -->
@@ -133,68 +134,80 @@
 </div>
 
 <div th:fragment="f_footer">
-    <div class="footer">
+    <div class="layui-footer" style="background: #2c3e50; color: #fff; padding: 40px 0 20px; margin-top: auto;">
         <div class="layui-container">
-            <div class="layui-row" style="padding: 40px 0;">
+            <div class="layui-row" style="margin-bottom:15px;">
+                <!-- 平台介绍 -->
                 <div class="layui-col-md6">
-                    <div style="font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #fff;">做题吧平台</div>
-                    <div style="color: #bdc3c7; line-height: 1.6; margin-bottom: 20px;">
-                        专注于提供高质量的在线做题平台，帮助您实现成长。
+                    <div class="layui-font-20">
+                        <img src="/images/logo.png" alt="logo" height="24px" style="vertical-align: middle; margin-right: 10px;">
+                        做题吧平台
+                    </div>
+                    <div class="layui-font-14" style="color: #bdc3c7; line-height: 1.6; margin-bottom: 20px;">
+                        专注于提供高质量的在线做题平台，帮助您实现成长。我们致力于为用户提供最优质的学习体验。
                     </div>
                 </div>
+                <!-- 学习资源 -->
                 <div class="layui-col-md2">
-                    <div style="color: #ecf0f1; font-weight: bold; margin-bottom: 15px;">学习资源</div>
-                    <div style="color: #bdc3c7;">
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">课程中心</a>
-                        </div>
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">知识库</a></div>
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">实战项目</a>
-                        </div>
+                    <div class="layui-font-16">学习资源</div>
+                    <div class="layui-font-14">
+                        <a href="/rooms" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">课程中心</a>
+                        <a href="/learns" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">知识库</a>
                     </div>
                 </div>
+                <!-- 服务支持 -->
                 <div class="layui-col-md2">
-                    <div style="color: #ecf0f1; font-weight: bold; margin-bottom: 15px;">服务支持</div>
-                    <div style="color: #bdc3c7;">
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">帮助中心</a>
-                        </div>
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">常见问题</a>
-                        </div>
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">联系我们</a>
-                        </div>
+                    <div class="layui-font-16">服务支持</div>
+                    <div class="layui-font-14">
+                        <a href="#" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">帮助中心</a>
+                        <a href="#" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">常见问题</a>
+                        <a href="#" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">联系我们</a>
                     </div>
                 </div>
+                <!-- 关于我们 -->
                 <div class="layui-col-md2">
-                    <div style="color: #ecf0f1; font-weight: bold; margin-bottom: 15px;">关于我们</div>
-                    <div style="color: #bdc3c7;">
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">公司介绍</a>
-                        </div>
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">加入我们</a>
-                        </div>
-                        <div style="margin-bottom: 8px;">
-                            <a href="#" style="color: #bdc3c7; text-decoration: none;">隐私政策</a>
-                        </div>
+                    <div class="layui-font-16">关于我们</div>
+                    <div class="layui-font-14">
+                        <a href="#" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">公司介绍</a>
+                        <a href="#" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">加入我们</a>
+                        <a href="#" style="color: #bdc3c7;display: block;margin: 0 15px 10px 0;">隐私政策</a>
                     </div>
                 </div>
-                <div th:include="include :: footer"></div>
             </div>
+            <!-- 底部版权 -->
+            <th:block th:include="include :: footer"></th:block>
         </div>
     </div>
+    <!-- 移动端遮罩 -->
+    <div class="site-mobile-shade"></div>
     <script>
+        function layPage(id, count, curr, limit) {
+            layui.laypage.render({
+                elem: id,
+                count: count,
+                curr: curr || 1,
+                limit: limit || 12,
+                theme: '#B55AD0',
+                first: '首页',
+                last: '尾页',
+                prev: '<em>←</em>',
+                next: '<em>→</em>',
+                jump: function (obj, first) {
+                    if (!first) {
+                        console.log(window.location.pathname)
+                        // window.location.href = window.location.pathname
+                    }
+                }
+            });
+        }
         layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
-
             var pageMap = {
                 '/': 'home', '/index': 'home', '/index.html': 'home',
+                '/room': 'rooms', '/room.html': 'rooms',
                 '/rooms': 'rooms', '/rooms.html': 'rooms',
                 '/learns': 'learns', '/learns.html': 'learns',
-                '/comments': 'comments', '/comments.html': 'comments'
+                '/comment': 'comments', '/comment.html': 'comments',
+                '/comments': 'comments', '/comments.html': 'comments',
             };
             // 获取当前页面标识
             var dataPageKey = pageMap[window.location.pathname] || 'home';

@@ -1,3 +1,12 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
 .search-section {
     background-color: #fff;
     padding: 40px 0;
@@ -40,6 +49,24 @@
     color: #FFF;
 }
 
+.comments-icon-search {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.comments-search {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    border-color: #FFF;
+}
+
 .comments-icon {
     overflow: hidden;
     float: left;
@@ -53,12 +80,6 @@
     color: #C4CBCF;
 }
 
-.footer {
-    background-color: #2c3e50;
-    color: #fff;
-    margin-top: 50px;
-}
-
 .layui-search {
     height: 50px;
     font-size: 16px;
@@ -68,6 +89,10 @@
     height: 50px;
     width: 120px;
     font-size: 16px;
+}
+
+.layui-search-btn .layui-icon {
+    color: #FFF;
 }
 
 .layui-input-group > .layui-input-suffix {

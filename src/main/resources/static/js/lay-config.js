@@ -84,26 +84,6 @@ function modifyReq(url, dataParam, isReload) {
     });
 }
 
-function layPage(id, count, curr, limit) {
-    layui.laypage.render({
-        elem: id,
-        count: count,
-        curr: curr || 1,
-        limit: limit || 12,
-        theme: '#B55AD0',
-        first: '首页',
-        last: '尾页',
-        prev: '<em>←</em>',
-        next: '<em>→</em>',
-        jump: function (obj, first) {
-            if (!first) {
-                console.log(window.location.pathname)
-                // window.location.href = window.location.pathname
-            }
-        }
-    });
-}
-
 layui.config({
     base: rootPath
 }).extend({
