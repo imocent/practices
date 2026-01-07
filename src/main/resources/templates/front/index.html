@@ -3,7 +3,7 @@
 <head th:include="include :: head('做题吧 - 首页')"></head>
 <body>
 <th:block th:include="include :: f_header"></th:block>
-<div class="layui-main">
+<div class="layui-container">
     <div class="layui-row">
         <!-- 搜索区域 -->
         <div class="search-section">
@@ -20,11 +20,15 @@
                     <p style="color: #666; font-size: 16px;">专业的IT技能学习平台，助力您的职业成长</p>
                 </div>
 
-                <div class="layui-form">
-                    <div class="layui-input-group" style="width: 100%;">
-                        <input type="text" name="title" class="layui-input layui-search" placeholder="搜索课程、知识库内容..."/>
-                        <div class="layui-input-suffix">
-                            <button class="layui-btn layui-bg-purple layui-search-btn"><i class="layui-icon">&#xe615; 搜索</i></button>
+                <div class="layui-row layui-card layui-form">
+                    <div class="layui-col-space10">
+                        <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
+                            <input type="text" name="title" class="layui-input" placeholder="搜索课程、知识库内容..."/>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
+                            <button class="layui-btn layui-btn-fluid layui-bg-purple" lay-submit lay-filter="search">
+                                <i class="layui-icon">&#xe615; 搜索</i>
+                            </button>
                         </div>
                     </div>
                 </div>
