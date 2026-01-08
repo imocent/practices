@@ -336,10 +336,10 @@
          and IMG_ID = #{imgId,jdbcType=BIGINT}
       </if>
       <if test="title != null and title != ''">
-         and TITLE = #{title,jdbcType=VARCHAR}
+         and TITLE like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
       </if>
       <if test="content != null and content != ''">
-         and CONTENT = #{content,jdbcType=VARCHAR}
+         and CONTENT like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
       </if>
       <if test="level != null and level != ''">
          and `LEVEL` = #{level,jdbcType=VARCHAR}

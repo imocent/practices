@@ -103,6 +103,7 @@ public class IndexController extends BaseController {
             map.put("markShowMode", mid);
         }
         model.addAttribute("mid", mid);
+        model.addAttribute("title", map.get("title"));
         List<LmsExamRoom> rooms = this.roomService.findList(map);
         model.addAttribute("rooms", rooms);
         model.addAttribute("count", rooms.size());
@@ -131,6 +132,7 @@ public class IndexController extends BaseController {
     public String learns(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         shiftSubject(map, model);
+        model.addAttribute("title", map.get("title"));
         List<LmsQuestionLearn> learns = this.learnService.findList(map);
         model.addAttribute("learns", learns);
         model.addAttribute("count", learns.size());

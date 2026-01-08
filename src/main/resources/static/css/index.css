@@ -49,7 +49,7 @@ body {
     color: #FFF;
 }
 
-.comments-icon-search {
+.index-icon-search {
     position: absolute;
     left: 10px;
     top: 50%;
@@ -57,10 +57,14 @@ body {
     color: #999;
 }
 
-.comments-search {
+.index-input{
+    padding-left: 30px;
+}
+
+.index-search {
     position: absolute;
-    right: 5px;
-    top: 2px;
+    right: 6px;
+    top: 14%;
     height: 30px;
     line-height: 30px;
     padding: 0 10px;

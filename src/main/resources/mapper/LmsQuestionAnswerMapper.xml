@@ -75,7 +75,7 @@
          and QUESTION_ID = #{questionId,jdbcType=BIGINT}
       </if>
       <if test="content != null and content != ''">
-         and CONTENT = #{content,jdbcType=VARCHAR}
+         and CONTENT like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
       </if>
       <if test="verify != null and verify != ''">
          and VERIFY = #{verify,jdbcType=INTEGER}

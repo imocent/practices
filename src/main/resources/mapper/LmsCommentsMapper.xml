@@ -131,10 +131,10 @@
          and USER_ID = #{userId,jdbcType=BIGINT}
       </if>
       <if test="username != null and username != ''">
-         and USERNAME = #{username,jdbcType=VARCHAR}
+         and USERNAME like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
       </if>
       <if test="content != null and content != ''">
-         and CONTENT = #{content,jdbcType=VARCHAR}
+         and CONTENT like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
       </if>
       <if test="mode != null and mode != ''">
          and `MODE` = #{mode,jdbcType=VARCHAR}

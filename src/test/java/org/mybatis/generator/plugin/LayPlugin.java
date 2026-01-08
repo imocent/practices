@@ -14,7 +14,8 @@ import java.sql.Types;
 import java.util.*;
 
 public class LayPlugin extends PluginAdapter {
-    private final String[] ignoreTable = {"createTime"};
+    private final List<String> ignoreTables = Arrays.asList("createTime");
+    private final List<String> likeColumns = Arrays.asList("content", "name", "username", "title");
     private String targetBusine = "";
     private String javaProject = "src/main/java";
 
@@ -82,11 +83,10 @@ public class LayPlugin extends PluginAdapter {
         // 加入 逻辑删除 del_flag标识 根据选择是否添加
         // where.addElement(new TextElement(" DEL_FLAG != 1 "));
         StringBuilder sb = new StringBuilder();
-        List<String> list = Arrays.asList(ignoreTable);
         for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
             XmlElement isNotNullElement = new XmlElement("if");
             String javaProperty = introspectedColumn.getJavaProperty();// java字段名
-            if (list.contains(javaProperty)) {
+            if (ignoreTables.contains(javaProperty)) {
                 continue;
             }
             switch (introspectedColumn.getJdbcType()) {
@@ -101,12 +101,14 @@ public class LayPlugin extends PluginAdapter {
                     sb.append(javaProperty + " != null and ").append(javaProperty + " != ''");
                     isNotNullElement.addAttribute(new Attribute("test", sb.toString()));
                     where.addElement(isNotNullElement);
-
                     sb.setLength(0);
-                    sb.append(" and ");
-                    sb.append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-                    sb.append(" = ");
-                    sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn));
+                    sb.append(" and ").append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
+                    if (likeColumns.contains(javaProperty)) {
+                        sb.append(" like CONCAT('%',");
+                        sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn)).append(",'%')");
+                    } else {
+                        sb.append(" = ").append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn));
+                    }
                     isNotNullElement.addElement(new TextElement(sb.toString()));
             }
         }

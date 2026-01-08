@@ -171,7 +171,7 @@
          and MOLD = #{mold,jdbcType=INTEGER}
       </if>
       <if test="content != null and content != ''">
-         and CONTENT = #{content,jdbcType=VARCHAR}
+         and CONTENT like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
       </if>
       <if test="difficulty != null and difficulty != ''">
          and DIFFICULTY = #{difficulty,jdbcType=INTEGER}

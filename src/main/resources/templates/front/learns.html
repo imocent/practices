@@ -4,7 +4,7 @@
 <body>
 <th:block th:include="include :: f_header"></th:block>
 <div class="layui-container layui-fluid">
-    <form class="layui-row layui-card layui-form">
+    <form lay-filter="searchForm" class="layui-row layui-card layui-form">
         <div class="layui-card-header" style="background-color: #E2E2E2">分类筛选</div>
         <div class="layui-card-body">
             <div class="layui-form-item">
@@ -16,23 +16,16 @@
                 </div>
             </div>
         </div>
-        <div class="layui-col-space10">
+        <div class="layui-row layui-col-space10">
             <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
-                <input type="text" name="title" class="layui-input" placeholder="搜索课程、知识库内容..."/>
+                <i class="layui-icon layui-icon-search index-icon-search"></i>
+                <input type="text" name="title" th:value="${title}" class="layui-input index-input" placeholder="搜索答题室内容..."/>
+                <button type="button" id="resetBtn" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
             </div>
             <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
-                <div class="layui-row layui-col-space5">
-                    <div class="layui-col-xs6">
-                        <button class="layui-btn layui-btn-fluid layui-bg-purple" lay-submit lay-filter="search">
-                            <i class="layui-icon">&#xe615; 搜索</i>
-                        </button>
-                    </div>
-                    <div class="layui-col-xs6">
-                        <button type="reset" class="layui-btn layui-btn-fluid layui-bg-cyan">
-                            <i class="layui-icon">&#xe666; 重置</i>
-                        </button>
-                    </div>
-                </div>
+                <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
+                    <i class="layui-icon">&#xe615; 搜索</i>
+                </button>
             </div>
         </div>
     </form>
@@ -67,12 +60,16 @@
         $('.filter-tag').on('click', function () {
             $(this).addClass('active').siblings('.filter-tag').removeClass('active');
             let pid = $('.filter-tag[data-pid].active').data('pid');
-            location.href = `/learns?sid=${pid}`;
+            window.location.href = `/learns?sid=${pid}`;
         });
 
-        form.on('submit(search)', function (form) {
-            console.log(form.field);
-            return false;
+        $('#resetBtn').on('click', function () {
+            form.val('searchForm', {"title": ""});
+            form.render();
+        });
+
+        form.on('submit(search)', function (obj) {
+            window.location.href = "/comments?" + $.param(obj.field);
         });
     });
 </script>

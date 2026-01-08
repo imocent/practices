@@ -31,7 +31,7 @@
     <div class="layui-row layui-card">
         <div class="layui-col-xs12" style="padding: 15px 0; border-bottom: 1px solid #eee;" th:each="comment : ${comments}">
             <!-- 头像 -->
-            <div class="layui-col-md1 layui-col-sm1 layui-col-xs3">
+            <div class="layui-col-md1 layui-col-sm1 layui-col-xs3 laytable-cell-space">
                 <img src="/images/logo.png" alt="头像" style="width: 40px; height: 40px; border-radius: 50%;">
             </div>
             <div class="layui-col-md11 layui-col-sm11 layui-col-xs9">
@@ -43,7 +43,7 @@
     </div>
     <div class="layui-row layui-card">
         <div class="layui-card-body laytable-cell-space">
-            <button class="layui-btn layui-btn-primary layui-border-purple">更多</button>
+            <a th:href="@{/comments}" class="layui-btn layui-btn-primary layui-border-purple">更多</a>
         </div>
     </div>
 </div>

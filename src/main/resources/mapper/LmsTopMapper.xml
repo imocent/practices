@@ -185,10 +185,10 @@
          and MODEL = #{model,jdbcType=INTEGER}
       </if>
       <if test="title != null and title != ''">
-         and TITLE = #{title,jdbcType=VARCHAR}
+         and TITLE like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
       </if>
       <if test="content != null and content != ''">
-         and CONTENT = #{content,jdbcType=VARCHAR}
+         and CONTENT like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
       </if>
       <if test="url != null and url != ''">
          and URL = #{url,jdbcType=VARCHAR}

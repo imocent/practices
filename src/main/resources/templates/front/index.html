@@ -21,16 +21,18 @@
                 </div>
 
                 <div class="layui-row layui-card layui-form">
-                    <div class="layui-col-space10">
+                    <form class="layui-col-space10">
                         <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
-                            <input type="text" name="title" class="layui-input" placeholder="搜索课程、知识库内容..."/>
+                            <i class="layui-icon layui-icon-search index-icon-search"></i>
+                            <input type="text" name="title" class="layui-input index-input" placeholder="搜索答题室内容..."/>
+                            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
                         </div>
                         <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
-                            <button class="layui-btn layui-btn-fluid layui-bg-purple" lay-submit lay-filter="search">
+                            <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
                                 <i class="layui-icon">&#xe615; 搜索</i>
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -38,8 +40,7 @@
         <div class="layui-col-md12">
             <div class="section-title">
                 <span>热门课程</span>
-                <a th:href="@{/rooms}" class="layui-btn layui-btn-primary layui-btn-sm"
-                   style="float: right;">更多课程</a>
+                <a th:href="@{/rooms}" class="layui-btn layui-btn-primary layui-btn-sm" style="float: right;">更多课程</a>
             </div>
         </div>
         <div class="rooms layui-col-space20">
@@ -51,7 +52,7 @@
                               th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
                     </div>
                     <div class="layui-card-body layui-row fixed-content-height">
-                        <div class="layui-col-md8">
+                        <div class="layui-col-xs8 layui-col-sm8 layui-col-md8">
                             <div class="layui-row">
                                 <p class="content-area" th:text="${room?.content}">答题室内容</p>
                                 <div class="layui-col-xs12">
@@ -62,8 +63,8 @@
                                 <span style="color: #666; margin: 5px 0 0 10px;">考试分类</span>
                             </div>
                         </div>
-                        <div class="layui-col-md4">
-                            <img src="/images/logo.png" style="height: 120px;padding: 8px;display: flex;"/>
+                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                            <img src="/images/logo.png"/>
                         </div>
                         <hr/>
                         <div class="layui-row layui-col-space5" style="margin-top: 10px;">
@@ -91,4 +92,16 @@
 <!-- 底部信息 -->
 <th:block th:include="include :: f_footer"></th:block>
 </body>
+<script>
+    layui.use(['jquery', 'form', 'laypage'], function ($, form) {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                document.getElementById('search').click();
+            }
+        });
+        form.on('submit(search)', function (obj) {
+            console.log(obj.field);
+        });
+    });
+</script>
 </html>

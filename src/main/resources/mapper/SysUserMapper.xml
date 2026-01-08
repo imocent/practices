@@ -165,10 +165,10 @@
          and RID = #{rid,jdbcType=BIGINT}
       </if>
       <if test="name != null and name != ''">
-         and `NAME` = #{name,jdbcType=VARCHAR}
+         and `NAME` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
       </if>
       <if test="username != null and username != ''">
-         and USERNAME = #{username,jdbcType=VARCHAR}
+         and USERNAME like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
       </if>
       <if test="password != null and password != ''">
          and `PASSWORD` = #{password,jdbcType=VARCHAR}

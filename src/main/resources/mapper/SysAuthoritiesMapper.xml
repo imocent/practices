@@ -131,7 +131,7 @@
          and CUSER = #{cuser,jdbcType=BIGINT}
       </if>
       <if test="name != null and name != ''">
-         and `NAME` = #{name,jdbcType=VARCHAR}
+         and `NAME` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
       </if>
       <if test="notes != null and notes != ''">
          and NOTES = #{notes,jdbcType=VARCHAR}

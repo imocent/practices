@@ -154,7 +154,7 @@
          and PID = #{pid,jdbcType=BIGINT}
       </if>
       <if test="name != null and name != ''">
-         and `NAME` = #{name,jdbcType=VARCHAR}
+         and `NAME` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
       </if>
       <if test="code != null and code != ''">
          and CODE = #{code,jdbcType=VARCHAR}

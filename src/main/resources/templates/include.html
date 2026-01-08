@@ -235,7 +235,7 @@
                     data: res.data || [],
                     click: function (data, othis, event) {
                         var sid = data.pid + '/' + data.id
-                        location.href = "/rooms?sid=" + sid;
+                        window.location.href = "/rooms?sid=" + sid;
                     }
                 });
                 dropdown.render({
@@ -244,7 +244,7 @@
                     data: res.data || [],
                     click: function (data, othis, event) {
                         var sid = data.pid + '/' + data.id
-                        location.href = "/learns?sid=" + sid;
+                        window.location.href = "/learns?sid=" + sid;
                     }
                 });
             }, 'json');
@@ -256,7 +256,7 @@
                 var roomId = $card.parent().data('roomId');
                 if ($btn.hasClass('layui-border-purple')) {
                     console.log("答题室" + roomId)
-                    location.href = "/room?id=" + roomId;
+                    window.location.href = "/room?id=" + roomId;
                 } else if ($btn.hasClass('layui-border-orange')) {
                     console.log("报告" + roomId)
                 } else if ($btn.hasClass('layui-border-red')) {

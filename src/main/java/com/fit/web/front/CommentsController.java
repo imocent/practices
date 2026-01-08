@@ -49,6 +49,7 @@ public class CommentsController extends BaseController {
     @GetMapping("/comments")
     public String comments(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
+        model.addAttribute("content", map.get("content"));
         List<LmsComments> comments = this.commentsService.findList(map);
         model.addAttribute("comments", comments);
         model.addAttribute("count", comments.size());
