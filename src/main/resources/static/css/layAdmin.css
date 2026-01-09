@@ -251,7 +251,6 @@
     vertical-align: -0.35em;
 }
 
-
 /* 关闭按钮样式 */
 .layui-layout-admin .layui-tab > .layui-tab-title li .layui-tab-close {
     width: 16px;
@@ -325,7 +324,6 @@
 
 
 /* ----- tab 左右按钮样式 ----- */
-
 .layui-layout-admin .layui-body .admin-tabs-control {
     position: absolute;
     top: 0;
