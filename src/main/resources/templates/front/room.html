@@ -6,36 +6,23 @@
 <div class="layui-container layui-fluid" style="margin-top:10px">
     <div class="layui-row layui-col-space20">
         <!-- 左侧：课程信息 -->
-        <div class="layui-col-md8">
-            <div class="layui-card">
-                <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="layui-icon layui-icon-template-1"></i> <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
-                </div>
-                <div class="layui-card-body" th:text="${room?.content}">
-                    <ul class="layui-timeline">
-                        <li class="layui-timeline-item">
-                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-                            <div class="layui-timeline-content layui-text">
-                                <h3 class="layui-timeline-title">Vue 3.0 核心特性</h3>
-                                <p>全面讲解Composition API、响应式系统、Teleport、Fragments等Vue 3.0新特性</p>
-                            </div>
-                        </li>
-                        <li class="layui-timeline-item">
-                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-                            <div class="layui-timeline-content layui-text">
-                                <h3 class="layui-timeline-title">实战项目开发</h3>
-                                <p>通过完整的电商后台管理系统项目，掌握Vue 3.0在实际开发中的应用</p>
-                            </div>
-                        </li>
-                        <li class="layui-timeline-item">
-                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-                            <div class="layui-timeline-content layui-text">
-                                <h3 class="layui-timeline-title">配套练习与答题</h3>
-                                <p>每个知识点配有练习题和答题室，巩固学习成果</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+        <div class="layui-col-md8 layui-card">
+            <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                <i class="layui-icon layui-icon-template-1"></i> <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
+            </div>
+            <div class="layui-card-body" th:text="${room?.content}">
+                <ul class="layui-timeline">
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">Vue 3.0 核心特性</h3>
+                            <p>全面讲解Composition API、响应式系统、Teleport、Fragments等Vue 3.0新特性</p>
+                        </div>
+                    </li>
+                    <li class="layui-timeline-item">
+                        我是广告位
+                    </li>
+                </ul>
             </div>
         </div>
         <!-- 右侧：答题室信息 -->
@@ -43,33 +30,31 @@
             <!-- 答题室卡片 -->
             <div class="layui-card">
                 <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="layui-icon layui-icon-list"></i> 测试答题室
-                    <span class="layui-badge layui-bg-white" style="float: right; color: #FFF;">永久有效</span>
+                    <i class="layui-icon layui-icon-list"></i>
+                    <span>测试答题室</span>
+                    <span class="layui-badge" style="float: right;">永久有效</span>
                 </div>
                 <div class="layui-card-body">
-                    <!-- 答题室信息 -->
-                    <div class="layui-form">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">类型：</label>
-                            <div class="layui-input-block" style="padding: 3px;">标准答题</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">条件：</label>
-                            <div class="layui-input-block" style="padding: 3px;">时长10分 / 任何人员</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">分类：</label>
-                            <div class="layui-input-block" style="padding: 3px;">默认答题室</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">状态：</label>
-                            <div class="layui-input-block" style="padding: 3px;">
-                                <span class="layui-badge layui-bg-green">开始答题</span>
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="layui-row layui-col-space10">
+                        <li class="layui-col-md12">
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">类型: </span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">标准答题</span>
+                        </li>
+                        <li class="layui-col-md12">
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">条件: </span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">时长10分 / 任何人员</span>
+                        </li>
+                        <li class="layui-col-md12">
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">分类: </span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">默认答题室</span>
+                        </li>
+                        <li class="layui-col-md12">
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">状态: </span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">开始答题</span>
+                        </li>
+                    </ul>
                     <!-- 答题室人数 -->
-                    <div class="layui-card" style="background: #f8f8f8; text-align: center; margin: 20px 0;">
+                    <div class="layui-card laytable-cell-space" style="background: #f8f8f8; margin: 20px 0;">
                         <div class="layui-card-body">
                             <div style="font-size: 36px; color: #1E9FFF; font-weight: bold;">1/1</div>
                             <div style="color: #666;">进入答题室人数</div>
@@ -77,24 +62,25 @@
                     </div>
                     <!-- 操作按钮 -->
                     <div class="layui-row layui-col-space10">
-                        <div class="layui-col-xs6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple"
+                                    th:data-id="${room.id}" data-action="enter">
                                 <i class="layui-icon layui-icon-play"></i> 进入答题室
                             </button>
                         </div>
-                        <div class="layui-col-xs6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange"
+                                    th:data-id="${room.id}" data-action="report">
                                 <i class="layui-icon layui-icon-file-b"></i> 报告
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-
             <!-- 答题须知 -->
             <div class="layui-card" style="margin-top: 20px;">
                 <div class="layui-card-header">
-                    <i class="layui-icon layui-icon-tips"></i> 答题须知
+                    <i class="layui-icon">&#xe702; 答题须知</i>
                 </div>
                 <div class="layui-card-body">
                     <div class="layui-collapse">
@@ -124,29 +110,31 @@
 <!-- 引入 LayUI JS -->
 <script src="/js/layui.js"></script>
 <script>
-    layui.use(['element', 'form', 'layer'], function (element, form, layer) {
-        // 按钮点击事件
-        document.querySelectorAll('.layui-btn').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var btnText = this.textContent.trim();
+    layui.use(['jquery', 'element', 'form', 'layer'], function ($, element, form, layer) {
+        // 初始化折叠面板
+        element.render('collapse');
 
-                if (btnText.includes('进入答题室')) {
-                    layer.msg('正在进入答题室...', {icon: 1, time: 1500});
-                } else if (btnText.includes('阅卷')) {
-                    layer.msg('正在加载阅卷界面...', {icon: 1, time: 1500});
-                } else if (btnText.includes('查看报告')) {
+        $('button[data-action]').on('click', function () {
+            let roomId = $(this).data('id');
+            switch ($(this).data('action')) {
+                case 'report':
+                    console.log('report房间ID:', roomId);
                     layer.open({
                         type: 1,
                         title: '答题报告',
                         area: ['600px', '400px'],
-                        content: '<div style="padding: 20px;"><p>当前答题室暂无历史答题记录。</p><p>完成答题后可以查看详细的答题报告，包括：</p><ul><li>答题分数与正确率</li><li>每道题的正确选项</li><li>知识点掌握情况分析</li><li>学习建议</li></ul></div>'
+                        content: '<div style="padding: 20px;">' +
+                            '<p>当前答题室暂无历史答题记录。</p>' +
+                            '<p>完成答题后可以查看详细的答题报告，包括：</p>' +
+                            '<ul><li>答题分数与正确率</li><li>每道题的正确选项</li><li>知识点掌握情况分析</li><li>学习建议</li></ul>' +
+                            '</div>'
                     });
-                }
-            });
+                    break;
+                case 'enter':
+                    console.log('enter房间ID:', roomId);
+                    break;
+            }
         });
-
-        // 初始化折叠面板
-        element.render('collapse');
     });
 </script>
 </body>

@@ -36,28 +36,26 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label for="ENABLED" class="layui-form-label">考场状态</label>
-                                <div class="layui-input-inline">
-                                    <select id="ENABLED" name="enabled" lay-search>
-                                        <option value="1">新建</option>
-                                        <option value="2">发布</option>
-                                        <option value="3">结束</option>
-                                        <option value="4">归档</option>
-                                        <option value="0">停用</option>
-                                    </select>
-                                </div>
+                            <label for="ENABLED" class="layui-form-label">考场状态</label>
+                            <div class="layui-input-block">
+                                <select id="ENABLED" name="enabled" lay-search>
+                                    <option value="1">新建</option>
+                                    <option value="2">发布</option>
+                                    <option value="3">结束</option>
+                                    <option value="4">归档</option>
+                                    <option value="0">停用</option>
+                                </select>
                             </div>
-                            <div class="layui-inline">
-                                <label for="EXAM_MODE" class="layui-form-label">答卷模式</label>
-                                <div class="layui-input-inline">
-                                    <select id="EXAM_MODE" name="examMode" lay-search>
-                                        <option value="0">标准答题模式</option>
-                                        <option value="1">随机抽取模式</option>
-                                        <option value="2">习题练习模式</option>
-                                        <option value="3">只读学习模式</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="EXAM_MODE" class="layui-form-label">答卷模式</label>
+                            <div class="layui-input-block">
+                                <select id="EXAM_MODE" name="examMode" lay-search>
+                                    <option value="0">标准答题模式</option>
+                                    <option value="1">随机抽取模式</option>
+                                    <option value="2">习题练习模式</option>
+                                    <option value="3">只读学习模式</option>
+                                </select>
                             </div>
                         </div>
                         <!-- 答题限制 -->
@@ -65,9 +63,9 @@
                             <legend>答题限制</legend>
                         </fieldset>
                         <div class="layui-form-item">
-                            <div class="layui-inline">
+                            <div class="layui-inline layui-col-md6">
                                 <label FOR="EXAMINEE_MODE" class="layui-form-label">答题人员</label>
-                                <div class="layui-input-inline">
+                                <div class="layui-input-block">
                                     <select ID="EXAMINEE_MODE" name="examineeMode" lay-verify="required">
                                         <option value="0">任何人员</option>
                                         <option value="1">指定人员</option>
@@ -75,7 +73,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="layui-inline">
+                            <div class="layui-inline layui-col-md6">
                                 <label class="layui-form-label">有效时间</label>
                                 <div class="layui-input-inline">
                                     <input id="TIME_MODE" type="checkbox" lay-filter="switch" name="timeMode" lay-skin="switch"
@@ -84,28 +82,26 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">答题时长</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" id="timeLen" name="score" lay-affix="number" placeholder="请输入答题时长"
-                                           step="1" min="1" max="200" th:value="${bean?.timeLen}" class="layui-input"/>
-                                </div>
+                            <label class="layui-form-label">答题时长</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="timeLen" name="score" lay-affix="number" placeholder="请输入答题时长"
+                                       step="1" min="1" max="200" th:value="${bean?.timeLen}" class="layui-input"/>
                             </div>
-                            <div class="layui-inline">
-                                <label FOR="EXAMINEE_COUNT" class="layui-form-label">答题次数</label>
-                                <div class="layui-input-inline">
-                                    <select ID="EXAMINEE_COUNT" name="examineeCount" lay-verify="required">
-                                        <option value="1">1数</option>
-                                        <option value="2">2次</option>
-                                        <option value="3">3次</option>
-                                        <option value="4">4次</option>
-                                        <option value="5">5次</option>
-                                        <option value="10">10次</option>
-                                        <option value="15">15次</option>
-                                        <option value="20">20次</option>
-                                        <option value="">不限次数</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label FOR="EXAMINEE_COUNT" class="layui-form-label">答题次数</label>
+                            <div class="layui-input-block">
+                                <select ID="EXAMINEE_COUNT" name="examineeCount" lay-verify="required">
+                                    <option value="1">1数</option>
+                                    <option value="2">2次</option>
+                                    <option value="3">3次</option>
+                                    <option value="4">4次</option>
+                                    <option value="5">5次</option>
+                                    <option value="10">10次</option>
+                                    <option value="15">15次</option>
+                                    <option value="20">20次</option>
+                                    <option value="">不限次数</option>
+                                </select>
                             </div>
                         </div>
                         <!-- 答题展示 -->
@@ -149,25 +145,23 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label for="MARK_TIME_MODE" class="layui-form-label">成绩发布时间</label>
-                                <div class="layui-input-inline">
-                                    <select id="MARK_TIME_MODE" name="markTimeMode" lay-verify="required">
-                                        <option value="2">答卷阅卷后</option>
-                                        <option value="1">全场阅卷后</option>
-                                        <option value="0">不发布</option>
-                                    </select>
-                                </div>
+                            <label for="MARK_TIME_MODE" class="layui-form-label">成绩发布时间</label>
+                            <div class="layui-input-block">
+                                <select id="MARK_TIME_MODE" name="markTimeMode" lay-verify="required">
+                                    <option value="2">答卷阅卷后</option>
+                                    <option value="1">全场阅卷后</option>
+                                    <option value="0">不发布</option>
+                                </select>
                             </div>
-                            <div class="layui-inline">
-                                <label for="MARK_SHOW_MODE" class="layui-form-label">发布成绩类型</label>
-                                <div class="layui-input-inline">
-                                    <select id="MARK_SHOW_MODE" name="markShowMode" lay-verify="required">
-                                        <option value="0">得分&答案</option>
-                                        <option value="1">得分</option>
-                                        <option value="2">答案</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="MARK_SHOW_MODE" class="layui-form-label">发布成绩类型</label>
+                            <div class="layui-input-block">
+                                <select id="MARK_SHOW_MODE" name="markShowMode" lay-verify="required">
+                                    <option value="0">得分&答案</option>
+                                    <option value="1">得分</option>
+                                    <option value="2">答案</option>
+                                </select>
                             </div>
                         </div>
                     </div>

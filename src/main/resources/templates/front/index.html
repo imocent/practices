@@ -47,9 +47,9 @@
             <div class="layui-col-md4 layui-col-sm6" th:each="room : ${rooms}" th:data-room-id="${room.id}">
                 <div class="layui-card" style="border: 1px solid #EEEEEE">
                     <div class="layui-card-header" style="background: #E2E2E2; color: black;">
-                        <i class="layui-icon layui-icon-component"></i> <span th:text="${room?.title}">答题室标题</span>
-                        <span class="layui-badge" style="float: right; color: white;"
-                              th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
+                        <i class="layui-icon layui-icon-component"></i>
+                        <span th:text="${room?.title}">答题室标题</span>
+                        <span class="layui-badge" style="float: right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
                     </div>
                     <div class="layui-card-body layui-row fixed-content-height">
                         <div class="layui-col-xs8 layui-col-sm8 layui-col-md8">

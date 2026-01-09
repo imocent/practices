@@ -70,17 +70,20 @@
                     <hr/>
                     <div class="layui-col-space5" style="margin-top: 10px;">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red"
+                                    th:data-id="${room?.id}" data-action="mark">
                                 <i class="layui-icon layui-icon-edit"></i> 阅卷
                             </button>
                         </div>
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange"
+                                    th:data-id="${room?.id}" data-action="report">
                                 <i class="layui-icon layui-icon-file-b"></i> 报告
                             </button>
                         </div>
                     </div>
-                    <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple">
+                    <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple"
+                            th:data-id="${room?.id}" data-action="enter">
                         <i class="layui-icon layui-icon-play"></i> 进入答题室
                     </button>
                 </div>
@@ -112,6 +115,22 @@
         $('#resetBtn').on('click', function () {
             form.val('searchForm', {"title": ""});
             form.render();
+        });
+
+        $('button[data-action]').on('click', function () {
+            let roomId = $(this).data('id');
+            switch ($(this).data('action')) {
+                case 'mark':
+                    console.log('mark房间ID:', roomId);
+                    break;
+                case 'report':
+                    console.log('report房间ID:', roomId);
+                    break;
+                case 'enter':
+                    console.log('enter房间ID:', roomId);
+                    window.location.href = `/room?id=${roomId}`;
+                    break;
+            }
         });
     });
 </script>
