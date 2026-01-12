@@ -21,9 +21,9 @@ public class LmsQuestionAnswer extends BaseEntity<LmsQuestionAnswer> {
     private String content;
 
     /**
-     * 答案校验: 0-无,1-正确,2-错误
+     * 答案校验: 0-错误,1-正确
      */
-    private Integer verify;
+    private Boolean verify;
 
     @Override
     public String toString() {

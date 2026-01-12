@@ -62,15 +62,21 @@
                 {field: 'timeOn', title: '开始时间', width: 120},
                 {field: 'timeOff', title: '结束时间', width: 120},
                 {field: 'examineeCount', title: '答题次数', width: 100},
-                {field: 'examineeMode', title: '人员类型', width: 100,templet: function (d) {return d.examineeMode ? "任何人员" : "指定人员";}},
+                {field: 'examineeMode', title: '人员类型', width: 100,templet: function (d) {
+                    return d.examineeMode ? "指定人员" : "任何人员";
+                }},
                 {field: 'subjectSortMode', title: '题目顺序', width: 100,align: 'center',templet: function (d) {
                     return d.subjectSortMode ? "随机" : "固定";
                 }},
                 {field: 'subjectOptSortMode', title: '选项顺序', width: 100,align: 'center',templet: function (d) {
                     return d.subjectOptSortMode ? "随机" : "固定";
                 }},
-                {field: 'markMode', title: '阅卷类型', width: 100,templet: function (d) {return d.markMode ? "人工" : "自动";}},
-                {field: 'adjudgeMode', title: '判卷类型', width: 100,templet: function (d) {return d.adjudgeMode ? "全场收卷后" : "用户交卷后";}},
+                {field: 'markMode', title: '阅卷类型', width: 100,templet: function (d) {
+                    return d.markMode ? "人工" : "自动";
+                }},
+                {field: 'adjudgeMode', title: '判卷类型', width: 100,templet: function (d) {
+                    return d.adjudgeMode ? "全场收卷后" : "用户交卷后";
+                }},
                 {field: 'markShowMode', title: '发布成绩时间', width: 120,templet: function (d) {
                     return d.markShowMode == 1 ? "得分" : d.markShowMode == 2 ? "答卷" : "得分&答卷";
                 }},

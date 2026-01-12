@@ -5,7 +5,7 @@
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="QUESTION_ID" jdbcType="BIGINT" property="questionId" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
-    <result column="VERIFY" jdbcType="INTEGER" property="verify" />
+    <result column="VERIFY" jdbcType="BIT" property="verify" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, QUESTION_ID, CONTENT, VERIFY
@@ -47,7 +47,7 @@
         #{content,jdbcType=VARCHAR},
       </if>
       <if test="verify != null">
-        #{verify,jdbcType=INTEGER},
+        #{verify,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -61,7 +61,7 @@
         CONTENT = #{content,jdbcType=VARCHAR},
       </if>
       <if test="verify != null">
-        VERIFY = #{verify,jdbcType=INTEGER},
+        VERIFY = #{verify,jdbcType=BIT},
       </if>
     </set>
     where ID = #{id,jdbcType=BIGINT}
@@ -78,7 +78,7 @@
          and CONTENT like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
       </if>
       <if test="verify != null and verify != ''">
-         and VERIFY = #{verify,jdbcType=INTEGER}
+         and VERIFY = #{verify,jdbcType=BIT}
       </if>
     </where>
   </sql>

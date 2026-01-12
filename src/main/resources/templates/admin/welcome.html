@@ -117,8 +117,7 @@
     };
 
     setInterval(function () {
-        var time = new Date().Format("yyyy-MM-dd HH:mm:ss");
-        document.getElementById("clock").innerHTML = time;
+        document.getElementById("clock").innerHTML = new Date().Format("yyyy-MM-dd HH:mm:ss");
     }, 1000);
     intervalTime();
 </script>

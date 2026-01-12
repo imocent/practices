@@ -12,157 +12,154 @@
                 <li>设置考场图标</li>
             </ul>
             <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show">
-                    <div class="layui-form" lay-filter="">
-                        <div class="layui-form-item">
-                            <label for="title" class="layui-form-label"><span class="yadmin-red">*</span>考场标题</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="title" placeholder="请输入名称" name="name" th:value="${bean?.title}"
-                                       lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
-                            </div>
+                <div class="layui-tab-item layui-form layui-show" lay-filter="">
+                    <div class="layui-form-item">
+                        <label for="title" class="layui-form-label"><span class="yadmin-red">*</span>考场标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="title" placeholder="请输入名称" name="name" th:value="${bean?.title}"
+                                   lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
                         </div>
-                        <div class="layui-form-item">
-                            <label for="notes" class="layui-form-label">考场说明</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="notes" placeholder="请输入说明" name="notes" th:value="${bean?.notes}"
-                                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="notes" class="layui-form-label">考场说明</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="notes" placeholder="请输入说明" name="notes" th:value="${bean?.notes}"
+                                   lay-vertype="tips" autocomplete="off" class="layui-input"/>
                         </div>
-                        <div class="layui-form-item">
-                            <label for="ETI" class="layui-form-label">科目分类</label>
-                            <div class="layui-input-block">
-                                <input type="hidden" id="STI" name="subjectId" th:value="${bean?.subjectId}">
-                                <input type="hidden" id="ETI" name="subjectName" th:value="${bean?.subjectName}">
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="ETI" class="layui-form-label">科目分类</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" id="STI" name="subjectId" th:value="${bean?.subjectId}">
+                            <input type="hidden" id="ETI" name="subjectName" th:value="${bean?.subjectName}">
                         </div>
-                        <div class="layui-form-item">
-                            <label for="ENABLED" class="layui-form-label">考场状态</label>
-                            <div class="layui-input-block">
-                                <select id="ENABLED" name="enabled" lay-search>
-                                    <option value="1">新建</option>
-                                    <option value="2">发布</option>
-                                    <option value="3">结束</option>
-                                    <option value="4">归档</option>
-                                    <option value="0">停用</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="ENABLED" class="layui-form-label">考场状态</label>
+                        <div class="layui-input-block">
+                            <select id="ENABLED" name="enabled" lay-search>
+                                <option value="1">新建</option>
+                                <option value="2">发布</option>
+                                <option value="3">结束</option>
+                                <option value="4">归档</option>
+                                <option value="0">停用</option>
+                            </select>
                         </div>
-                        <div class="layui-form-item">
-                            <label for="EXAM_MODE" class="layui-form-label">答卷模式</label>
-                            <div class="layui-input-block">
-                                <select id="EXAM_MODE" name="examMode" lay-search>
-                                    <option value="0">标准答题模式</option>
-                                    <option value="1">随机抽取模式</option>
-                                    <option value="2">习题练习模式</option>
-                                    <option value="3">只读学习模式</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="EXAM_MODE" class="layui-form-label">答卷模式</label>
+                        <div class="layui-input-block">
+                            <select id="EXAM_MODE" name="examMode" lay-search>
+                                <option value="0">标准答题模式</option>
+                                <option value="1">随机抽取模式</option>
+                                <option value="2">习题练习模式</option>
+                                <option value="3">只读学习模式</option>
+                            </select>
                         </div>
-                        <!-- 答题限制 -->
-                        <fieldset class="layui-elem-field layui-field-title">
-                            <legend>答题限制</legend>
-                        </fieldset>
-                        <div class="layui-form-item">
-                            <div class="layui-inline layui-col-md6">
-                                <label FOR="EXAMINEE_MODE" class="layui-form-label">答题人员</label>
-                                <div class="layui-input-block">
-                                    <select ID="EXAMINEE_MODE" name="examineeMode" lay-verify="required">
-                                        <option value="0">任何人员</option>
-                                        <option value="1">指定人员</option>
-                                        <option value="2">匿名答题</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="layui-inline layui-col-md6">
-                                <label class="layui-form-label">有效时间</label>
-                                <div class="layui-input-inline">
-                                    <input id="TIME_MODE" type="checkbox" lay-filter="switch" name="timeMode" lay-skin="switch"
-                                           lay-text="限时|永久" th:checked="${bean?.timeMode}" value="0"/>
-                                </div>
-                            </div>
+                    </div>
+                    <!-- 答题限制 -->
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>答题限制</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <label for="EXAMINEE_MODE" class="layui-form-label">答题人员</label>
+                        <div class="layui-input-block">
+                            <select ID="EXAMINEE_MODE" name="examineeMode" lay-verify="required">
+                                <option value="0">任何人员</option>
+                                <option value="1">指定人员</option>
+                            </select>
                         </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">答题时长</label>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="TIME_MODE" class="layui-form-label">有效时间</label>
+                        <div class="layui-input-block">
+                            <select ID="TIME_MODE" name="timeMode" lay-verify="required">
+                                <option value="0">永久</option>
+                                <option value="1">限时</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">答题时长</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="timeLen" name="score" lay-affix="number" placeholder="请输入答题时长"
+                                   step="1" min="1" max="200" th:value="${bean?.timeLen}" class="layui-input"/>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label FOR="EXAMINEE_COUNT" class="layui-form-label">答题次数</label>
+                        <div class="layui-input-block">
+                            <select ID="EXAMINEE_COUNT" name="examineeCount" lay-verify="required">
+                                <option value="1">1数</option>
+                                <option value="2">2次</option>
+                                <option value="3">3次</option>
+                                <option value="4">4次</option>
+                                <option value="5">5次</option>
+                                <option value="10">10次</option>
+                                <option value="15">15次</option>
+                                <option value="20">20次</option>
+                                <option value="">不限次数</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- 答题展示 -->
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>答题展示</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label for="SSM" class="layui-form-label">题目排序</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="timeLen" name="score" lay-affix="number" placeholder="请输入答题时长"
-                                       step="1" min="1" max="200" th:value="${bean?.timeLen}" class="layui-input"/>
+                                <input id="SSM" type="checkbox" lay-filter="switch" name="subjectSortMode" lay-skin="switch"
+                                       lay-text="固定|随机" th:checked="${bean?.subjectSortMode}" value="0"/>
                             </div>
                         </div>
-                        <div class="layui-form-item">
-                            <label FOR="EXAMINEE_COUNT" class="layui-form-label">答题次数</label>
-                            <div class="layui-input-block">
-                                <select ID="EXAMINEE_COUNT" name="examineeCount" lay-verify="required">
-                                    <option value="1">1数</option>
-                                    <option value="2">2次</option>
-                                    <option value="3">3次</option>
-                                    <option value="4">4次</option>
-                                    <option value="5">5次</option>
-                                    <option value="10">10次</option>
-                                    <option value="15">15次</option>
-                                    <option value="20">20次</option>
-                                    <option value="">不限次数</option>
-                                </select>
+                        <div class="layui-inline">
+                            <label for="SOSM" class="layui-form-label">选项排序</label>
+                            <div class="layui-input-inline">
+                                <input id="SOSM" type="checkbox" lay-filter="switch" name="subjectOptSortMode" lay-skin="switch"
+                                       lay-text="固定|随机" th:checked="${bean?.subjectOptSortMode}" value="0"/>
                             </div>
                         </div>
-                        <!-- 答题展示 -->
-                        <fieldset class="layui-elem-field layui-field-title">
-                            <legend>答题展示</legend>
-                        </fieldset>
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label for="SSM" class="layui-form-label">题目排序</label>
-                                <div class="layui-input-inline">
-                                    <input id="SSM" type="checkbox" lay-filter="switch" name="subjectSortMode" lay-skin="switch"
-                                           lay-text="固定|随机" th:checked="${bean?.subjectSortMode}" value="0"/>
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label for="SOSM" class="layui-form-label">选项排序</label>
-                                <div class="layui-input-inline">
-                                    <input id="SOSM" type="checkbox" lay-filter="switch" name="subjectOptSortMode" lay-skin="switch"
-                                           lay-text="固定|随机" th:checked="${bean?.subjectOptSortMode}" value="0"/>
-                                </div>
+                    </div>
+                    <!-- 阅卷/成绩发布 -->
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>阅卷/成绩发布</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label for="markMode" class="layui-form-label">阅卷类型</label>
+                            <div class="layui-input-inline">
+                                <input id="markMode" type="checkbox" lay-filter="switch" name="markMode" lay-skin="switch"
+                                       lay-text="自动完成|人工阅卷" th:checked="${bean?.markMode}" value="0"/>
                             </div>
                         </div>
-                        <!-- 阅卷/成绩发布 -->
-                        <fieldset class="layui-elem-field layui-field-title">
-                            <legend>阅卷/成绩发布</legend>
-                        </fieldset>
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label for="markMode" class="layui-form-label">阅卷类型</label>
-                                <div class="layui-input-inline">
-                                    <input id="markMode" type="checkbox" lay-filter="switch" name="markMode" lay-skin="switch"
-                                           lay-text="自动完成|人工阅卷" th:checked="${bean?.markMode}" value="0"/>
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label for="ADJUDGE_MODE" class="layui-form-label">阅卷时间</label>
-                                <div class="layui-input-inline">
-                                    <input id="ADJUDGE_MODE" type="checkbox" lay-filter="switch" name="adjudgeMode" lay-skin="switch"
-                                           lay-text="用户交卷后|全场收卷后" th:checked="${bean?.adjudgeMode}" value="0"/>
-                                </div>
+                        <div class="layui-inline">
+                            <label for="ADJUDGE_MODE" class="layui-form-label">阅卷时间</label>
+                            <div class="layui-input-inline">
+                                <input id="ADJUDGE_MODE" type="checkbox" lay-filter="switch" name="adjudgeMode" lay-skin="switch"
+                                       lay-text="用户交卷后|全场收卷后" th:checked="${bean?.adjudgeMode}" value="0"/>
                             </div>
                         </div>
-                        <div class="layui-form-item">
-                            <label for="MARK_TIME_MODE" class="layui-form-label">成绩发布时间</label>
-                            <div class="layui-input-block">
-                                <select id="MARK_TIME_MODE" name="markTimeMode" lay-verify="required">
-                                    <option value="2">答卷阅卷后</option>
-                                    <option value="1">全场阅卷后</option>
-                                    <option value="0">不发布</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="MARK_TIME_MODE" class="layui-form-label">成绩发布时间</label>
+                        <div class="layui-input-block">
+                            <select id="MARK_TIME_MODE" name="markTimeMode" lay-verify="required">
+                                <option value="2">答卷阅卷后</option>
+                                <option value="1">全场阅卷后</option>
+                                <option value="0">不发布</option>
+                            </select>
                         </div>
-                        <div class="layui-form-item">
-                            <label for="MARK_SHOW_MODE" class="layui-form-label">发布成绩类型</label>
-                            <div class="layui-input-block">
-                                <select id="MARK_SHOW_MODE" name="markShowMode" lay-verify="required">
-                                    <option value="0">得分&答案</option>
-                                    <option value="1">得分</option>
-                                    <option value="2">答案</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="MARK_SHOW_MODE" class="layui-form-label">发布成绩类型</label>
+                        <div class="layui-input-block">
+                            <select id="MARK_SHOW_MODE" name="markShowMode" lay-verify="required">
+                                <option value="0">得分&答案</option>
+                                <option value="1">得分</option>
+                                <option value="2">答案</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -194,10 +191,6 @@
 </div>
 <script>
     layui.use(['jquery', 'form', 'layer', 'element', 'upload', 'layChoice'], function ($, form, layer, element, upload, choice) {
-        form.on('select(etiFilter)', function (data) {
-            $('#EXAM_TYPE_NAME').val($(data.elem).find('option:selected').text());
-        });
-
         choice.render({elem: '#STI', labelElem: '#ETI', url: '/subjects',});
 
         upload.render({
@@ -225,6 +218,10 @@
         });
 
         $(function () {
+            form.on('select', function (data) {
+                data.elem.value = data.elem.checked ? '1' : '0';
+            });
+
             form.on('switch', function (data) {
                 data.elem.value = data.elem.checked ? '1' : '0';
             });
