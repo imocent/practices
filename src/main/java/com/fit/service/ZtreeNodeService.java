@@ -50,7 +50,6 @@ public class ZtreeNodeService {
         sb.append("SELECT sm.`ID` AS id, IFNULL(ms.`ID`,0) AS parentId, sm.`NAME` as `title`, sm.`ID` AS `CODE`, ");
         sb.append("(CASE WHEN (sm.`PID` = 0 OR sm.`PID` IS NULL) THEN 'true' ELSE 'false' END ) AS OPEN, ");
         sb.append("sm.`LEVELS`  FROM `sys_resources` sm LEFT JOIN `sys_resources` ms ON sm.`PID` = ms.`ID`");
-
         return JdbcTemplateUtil.queryForListBean(jdbcTemplate, sb.toString(), ZTreeNode.class);
     }
 
@@ -64,8 +63,8 @@ public class ZtreeNodeService {
 
     public List<ZTreeNode> subjectZtree() {
         StringBuffer sb = new StringBuffer();
-        sb.append("SELECT t.`ID`,t.`PID` AS parentId, t.`NAME` AS `title`, t.`ID` AS `CODE`,");
-        sb.append("(CASE WHEN (t.`PID` = 0 OR t.`PID` IS NULL) THEN 'true' ELSE 'false' END ) AS OPEN");
+        sb.append("SELECT t.`ID`,t.`PID` AS parentId, t.`NAME` AS `title`, t.`ID` AS `CODE`, t.`LEVELS`,");
+        sb.append(" (CASE WHEN (t.`PID` = 0 OR t.`PID` IS NULL) THEN 'true' ELSE 'false' END ) AS OPEN");
         sb.append(" FROM `lms_exam_subject` t WHERE t.`ENABLED` = 1");
         return JdbcTemplateUtil.queryForListBean(jdbcTemplate, sb.toString(), ZTreeNode.class);
     }

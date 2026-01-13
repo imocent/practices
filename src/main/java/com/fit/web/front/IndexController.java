@@ -29,6 +29,8 @@ import java.util.*;
 public class IndexController extends BaseController {
 
     @Autowired
+    private LmsExamSubjectService subjectService;
+    @Autowired
     private MenuNodeService menuService;
     @Autowired
     private LmsTopService topService;
@@ -70,16 +72,25 @@ public class IndexController extends BaseController {
         return AjaxResult.success(this.menuService.getSubjectsDropdown());
     }
 
+    private String treeSubject(Long id) {
+        LmsExamSubject subject = this.subjectService.get(id);
+        if (subject == null) {
+            return "";
+        }
+        // 如果是顶级节点，直接返回
+        if (subject.getPid() == 0) {
+            return subject.getId().toString();
+        }
+        // 递归获取父级路径，然后拼接当前ID
+        return treeSubject(subject.getPid()) + "," + subject.getId();
+    }
+
     private void shiftSubject(Map<String, Object> map, Model model) {
         String pid = "", cid = "";
         if (map.containsKey("sid")) {
-            String subjectId = map.get("sid").toString();
-            String[] sids = subjectId.split("/");
-            pid = sids[0];
-            if (sids.length > 1) {
-                cid = sids[1];
-            }
-            map.remove("sid");
+            String sid = map.get("sid").toString();
+            String subjectId = treeSubject(Long.parseLong(sid));
+            pid = subjectId.split(",")[0];
             map.put("subjectId", subjectId);
         }
         model.addAttribute("pid", pid.equals("0") ? cid : pid);

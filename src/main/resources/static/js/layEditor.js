@@ -556,7 +556,6 @@ layui.define(['jquery', 'layer', 'form', 'element', 'upload', 'code', 'face'], f
                         title: '插入图片',
                         area: 'auto',
                         shade: false,
-                        area: '465px',
                         fixed: false,
                         offset: [editor.offset().top - $(window).scrollTop() + 'px', editor.offset().left + 'px'],
                         skin: 'layui-layer-border',

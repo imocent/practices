@@ -156,12 +156,12 @@ public class MenuNodeService {
     }
 
     public List<Map<String, Object>> getScreen(String pid) {
-        String sql = "SELECT `id`,`pid`,`name` FROM `lms_exam_subject` WHERE `ENABLED`=1 and `pid`=?";
+        String sql = "SELECT `id`,`pid`,`name`,`levels` FROM `lms_exam_subject` WHERE `ENABLED`=1 and `pid`=?";
         return JdbcTemplateUtil.queryForListMap(jdbcTemplate, sql, pid);
     }
 
     public List<Map<String, Object>> getSubjectsDropdown() {
-        String sql = "SELECT `id`,`pid`,`name` as `title` FROM `lms_exam_subject` WHERE `ENABLED`=1";
+        String sql = "SELECT `id`,`pid`,`name` as `title`,`levels` FROM `lms_exam_subject` WHERE `ENABLED`=1";
         List<Map<String, Object>> maps = JdbcTemplateUtil.queryForListMap(jdbcTemplate, sql);
         return buildTreeList(maps, "0", "ID", "PID", "child");
     }

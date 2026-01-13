@@ -158,8 +158,8 @@
                     </div>
                 </div>
             </div>
+            <th:block th:include="include :: footer"></th:block>
         </div>
-        <th:block th:include="include :: footer"></th:block>
     </div>
     <div class="site-mobile-shade" th:alt="移动端遮罩"></div>
     <script>
@@ -217,8 +217,7 @@
                     trigger: 'click',
                     data: res.data || [],
                     click: function (data, othis, event) {
-                        var sid = data.pid + '/' + data.id
-                        window.location.href = "/rooms?sid=" + sid;
+                        window.location.href = "/rooms?sid=" + data.id;
                     }
                 });
                 dropdown.render({
@@ -226,8 +225,7 @@
                     trigger: 'click',
                     data: res.data || [],
                     click: function (data, othis, event) {
-                        var sid = data.pid + '/' + data.id
-                        window.location.href = "/learns?sid=" + sid;
+                        window.location.href = "/learns?sid=" + data.id;
                     }
                 });
             }, 'json');

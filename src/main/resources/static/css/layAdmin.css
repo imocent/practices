@@ -1336,3 +1336,38 @@ html {
 .layui-footer .tabbar .fileAdd.open ul li.excel:hover {
     --translateY: -30px;
 }
+
+.open-content {
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 50px;
+    overflow: auto;
+}
+
+.open-body{
+    background-color:#fff;
+    overflow:hidden;
+}
+
+.open-container{
+    margin: 15px;
+}
+
+.open-bottom {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 50px;
+    line-height: 50px;
+    background-color: #F8F8F8;
+    border-top: 1px solid #eee;
+    z-index: 999;
+}
+
+.open-button-container {
+    position: absolute;
+    right: 15px;
+}

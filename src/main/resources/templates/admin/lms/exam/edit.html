@@ -9,7 +9,8 @@
             <label for="dTree" class="layui-form-label"><span class="yadmin-red">*</span>上级名称</label>
             <div class="layui-input-block">
                 <ul id="dTree" class="dtree" data-id="-1" data-value="选择上级名称"></ul>
-                <input type="hidden" id="pid" name="pid" th:value="${bean?.pid}">
+                <input type="hidden" id="pid" name="pid" th:value="${bean?.pid}"/>
+                <input type="hidden" id="levels" name="levels" th:value="${bean?.levels}"/>
             </div>
         </div>
         <div class="layui-form-item">
@@ -17,13 +18,6 @@
             <div class="layui-input-block">
                 <input type="text" id="name" placeholder="请输入名称" name="name" th:value="${bean?.name}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="levels" class="layui-form-label">层级</label>
-            <div class="layui-input-block">
-                <input type="text" id="levels" name="levels" lay-affix="number" placeholder="层级时长"
-                       step="1" min="1" max="200" th:value="${bean?.levels}" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
@@ -56,9 +50,11 @@
             let typeDom = $('#pid');
             if (typeDom.val() === obj.param.nodeId) {
                 typeDom.val('');
+                $('#levels').val(0);
                 $("input[dtree-id='pid']").val('请选择');
             } else {
                 typeDom.val(obj.param.nodeId)
+                $('#levels').val(obj.param.level);
             }
         });
 

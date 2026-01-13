@@ -51,23 +51,19 @@
                         <span th:text="${room?.title}">答题室标题</span>
                         <span class="layui-badge" style="float: right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
                     </div>
-                    <div class="layui-card-body layui-row fixed-content-height">
-                        <div class="layui-col-xs8 layui-col-sm8 layui-col-md8">
-                            <div class="layui-row">
-                                <p class="content-area" th:text="${room?.content}">答题室内容</p>
-                                <div class="layui-col-xs12">
-                                    <span class="layui-badge layui-bg-blue">标准答题</span>
-                                    <span class="layui-border-red" th:text="${room?.timeLen}">15</span>分钟
-                                </div>
-                                <span style="margin-top: 5px;" class="layui-badge layui-bg-green">进行中</span>
-                                <span style="color: #666; margin: 5px 0 0 10px;">考试分类</span>
-                            </div>
+                    <div class="layui-card-body fixed-content-height" th:with="util=${T(com.fit.util.DictRoomUtil)}">
+                        <div class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-room">
+                            <p class="content-area" th:text="${room?.content}">答题室内容</p>
+                            <span style="margin-top: 5px;" class="layui-badge layui-bg-green">进行中</span><br>
+                            <span class="layui-badge layui-bg-blue" th:text="${util.getDict(1, room?.examMode)}">标准答题</span><br>
+                            考试分类: <span style="color: #666; margin: 5px 0 0 10px;" th:text="${room?.subjectName}">考试分类</span><br>
+                            答题时间: <span class="layui-border-red" th:text="${room?.timeLen}">15</span>分钟<br>
                         </div>
-                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4" style="text-align: center;">
                             <img src="/images/logo.png"/>
                         </div>
-                        <hr/>
                         <div class="layui-row layui-col-space5" style="margin-top: 10px;">
+                            <hr/>
                             <div class="layui-col-xs6">
                                 <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple">
                                     <i class="layui-icon layui-icon-play"></i> 进入答题室

@@ -33,7 +33,7 @@ function openHtml(title, html) {
 
 function openView(opType, title, widthParam, heightParam, isFull, in_content) {
     let viewIndex = layer.open({
-        title: title, area: [widthParam, heightParam], fix: false, maxmin: false, shadeClose: true, type: opType, content: in_content
+        title: title, area: [widthParam, heightParam], fix: false, maxmin: false, shadeClose: true, type: opType, content: in_content,
     });
     if (isFull) {
         layer.full(viewIndex);

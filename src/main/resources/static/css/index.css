@@ -57,7 +57,7 @@ body {
     color: #999;
 }
 
-.index-input{
+.index-input {
     padding-left: 30px;
 }
 
@@ -82,6 +82,11 @@ body {
     line-height: 30px;
     margin-right: 15px;
     color: #C4CBCF;
+}
+
+.layui-room {
+    min-height: 200px;
+    max-height: 300px;
 }
 
 .layui-search {

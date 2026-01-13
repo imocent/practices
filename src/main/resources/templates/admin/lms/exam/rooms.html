@@ -43,6 +43,8 @@
 </div>
 <script>
     layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
+        var ROOM_STATUS = {0: '停用', 1: '新建', 2: '发布', 3: '结束', 4: '归档'};
+        var EXAM_MODE = {0: '标准答题模式',1: '随机抽取模式',2: '习题练习模式',3: '只读学习模式'};
         table.render({
             elem: '#table-list',
             url: '/admin/lms/exam/room/list',
@@ -53,14 +55,11 @@
             toolbar: '#toolbar',
             cols: [ [
                 {type: 'checkbox', fixed: 'left'},
-                {field: 'subjectName', title: '业务分类', minWidth: 100, fixed: 'left'},
-                {field: 'title', title: '答题室标题', width: 100, fixed: 'left'},
-                {field: 'enabled', title: '答题室状态', width: 100},
-                {field: 'examMode', title: '答卷模式', width: 100},
+                {field: 'subjectName', title: '业务分类', minWidth: 200, fixed: 'left'},
+                {field: 'title', title: '答题室标题', minWidth: 200, fixed: 'left'},
+                {field: 'enabled', title: '答题室状态', width: 100, templet: function (d) {return ROOM_STATUS[d.enabled]}},
+                {field: 'examMode', title: '答卷模式', width: 120, templet: function (d) {return EXAM_MODE[d.examMode]}},
                 {field: 'timeMode', title: '时间类型', width: 120,templet: function (d) {return d.timeMode ? "限时" : "永久";}},
-                {field: 'timeLen', title: '答题时长', width: 100},
-                {field: 'timeOn', title: '开始时间', width: 120},
-                {field: 'timeOff', title: '结束时间', width: 120},
                 {field: 'examineeCount', title: '答题次数', width: 100},
                 {field: 'examineeMode', title: '人员类型', width: 100,templet: function (d) {
                     return d.examineeMode ? "指定人员" : "任何人员";
