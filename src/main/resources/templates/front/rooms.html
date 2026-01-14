@@ -4,55 +4,58 @@
 <body>
 <th:block th:include="include :: f_header"></th:block>
 <div class="layui-container layui-fluid">
-    <form lay-filter="searchForm" class="layui-row layui-card layui-form">
-        <div class="layui-card-header" style="background-color: #E2E2E2">分类筛选</div>
-        <div class="layui-card-body">
-            <div class="layui-form-item">
-                <label class="layui-form-label">科目分类：</label>
-                <div class="layui-input-block">
-                    <span class="filter-tag active" data-pid="">全部</span>
-                    <span class="filter-tag" th:each="screen : ${screens}" th:data-pid="${screen.id}" th:text="${screen.name}">分类名</span>
+    <div class="layui-row search-section">
+        <form lay-filter="searchForm" class="layui-card layui-form">
+            <div class="layui-card-header" style="background-color: #E2E2E2">分类筛选</div>
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">科目分类：</label>
+                    <div class="layui-input-block">
+                        <span class="filter-tag active" data-pid="">全部</span>
+                        <span class="filter-tag" th:each="screen : ${screens}" th:data-pid="${screen.id}" th:text="${screen.name}">分类名</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">答卷模式：</label>
+                    <div class="layui-input-block">
+                        <span class="filter-tag active" data-eid="">全部</span>
+                        <span class="filter-tag" data-eid="0">标准答题模式</span>
+                        <span class="filter-tag" data-eid="1">随机抽取模式</span>
+                        <span class="filter-tag" data-eid="2">习题练习模式</span>
+                        <span class="filter-tag" data-eid="3">只读学习模式</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">成绩类型：</label>
+                    <div class="layui-input-block">
+                        <span class="filter-tag active" data-mid="">全部</span>
+                        <span class="filter-tag" data-mid="0">得分&答案</span>
+                        <span class="filter-tag" data-mid="1">得分</span>
+                        <span class="filter-tag" data-mid="2">答案</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
+                        <i class="layui-icon layui-icon-search index-icon-search"></i>
+                        <input type="text" name="title" th:value="${title}" class="layui-input index-input" placeholder="搜索答题室内容..."/>
+                        <button type="button" id="resetBtn" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
+                        <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
+                            <i class="layui-icon">&#xe615; 搜索</i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">答卷模式：</label>
-                <div class="layui-input-block">
-                    <span class="filter-tag active" data-eid="">全部</span>
-                    <span class="filter-tag" data-eid="0">标准答题模式</span>
-                    <span class="filter-tag" data-eid="1">随机抽取模式</span>
-                    <span class="filter-tag" data-eid="2">习题练习模式</span>
-                    <span class="filter-tag" data-eid="3">只读学习模式</span>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">成绩类型：</label>
-                <div class="layui-input-block">
-                    <span class="filter-tag active" data-mid="">全部</span>
-                    <span class="filter-tag" data-mid="0">得分&答案</span>
-                    <span class="filter-tag" data-mid="1">得分</span>
-                    <span class="filter-tag" data-mid="2">答案</span>
-                </div>
-            </div>
-        </div>
-        <div class="layui-row layui-col-space10">
-            <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
-                <i class="layui-icon layui-icon-search index-icon-search"></i>
-                <input type="text" name="title" th:value="${title}" class="layui-input index-input" placeholder="搜索答题室内容..."/>
-                <button type="button" id="resetBtn" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
-            </div>
-            <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
-                <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
-                    <i class="layui-icon">&#xe615; 搜索</i>
-                </button>
-            </div>
-        </div>
-    </form>
-    <div class="layui-row layui-card">
-        <div class="layui-col-md4 layui-col-sm6 layui-laydate-content" th:each="room : ${rooms}">
-            <div style="border: 1px solid #EEEEEE">
-                <div class="layui-card-header room-header">
-                    <i class="layui-icon layui-icon-component"></i> <span th:text="${room?.title}">答题室标题</span>
-                    <span class="layui-badge room-right" th:text="${room?.timeMode==1?'限时答题':'永久有效'}"></span>
+        </form>
+    </div>
+    <div class="rooms layui-col-space20">
+        <div class="layui-col-md4 layui-col-sm6" th:each="room : ${rooms}" th:data-room-id="${room.id}">
+            <div class="layui-card" style="border: 1px solid #EEEEEE">
+                <div class="layui-card-header" style="background: #E2E2E2; color: black;">
+                    <i class="layui-icon layui-icon-component"></i>
+                    <span th:text="${room?.title}">答题室标题</span>
+                    <span class="layui-badge" style="float: right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
                 </div>
                 <div class="layui-card-body fixed-content-height" th:with="util=${T(com.fit.util.DictRoomUtil)}">
                     <div class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-room">
@@ -65,23 +68,20 @@
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4" style="text-align: center;">
                         <img src="/images/logo.png"/>
                     </div>
-                    <div class="layui-col-space5" style="margin-top: 10px;">
+                    <div class="layui-col-space5" style="margin-top: 10px;" th:classappend="${role==5?'layui-hide':''}">
                         <hr/>
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red"
-                                    th:data-id="${room?.id}" data-action="mark">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red">
                                 <i class="layui-icon layui-icon-edit"></i> 阅卷
                             </button>
                         </div>
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange"
-                                    th:data-id="${room?.id}" data-action="report">
+                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange">
                                 <i class="layui-icon layui-icon-file-b"></i> 报告
                             </button>
                         </div>
                     </div>
-                    <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple"
-                            th:data-id="${room?.id}" data-action="enter">
+                    <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple">
                         <i class="layui-icon layui-icon-play"></i> 进入答题室
                     </button>
                 </div>
@@ -113,22 +113,6 @@
         $('#resetBtn').on('click', function () {
             form.val('searchForm', {"title": ""});
             form.render();
-        });
-
-        $('button[data-action]').on('click', function () {
-            let roomId = $(this).data('id');
-            switch ($(this).data('action')) {
-                case 'mark':
-                    console.log('mark房间ID:', roomId);
-                    break;
-                case 'report':
-                    console.log('report房间ID:', roomId);
-                    break;
-                case 'enter':
-                    console.log('enter房间ID:', roomId);
-                    window.location.href = `/room?id=${roomId}`;
-                    break;
-            }
         });
     });
 </script>

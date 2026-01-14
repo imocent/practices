@@ -10,7 +10,7 @@
             <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
                 <i class="layui-icon layui-icon-template-1"></i> <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
             </div>
-            <div class="layui-card-body" th:text="${room?.content}">
+            <div class="layui-card-body" id="ID-body" th:text="${room?.content}">
                 <ul class="layui-timeline">
                     <li class="layui-timeline-item">
                         <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
@@ -24,6 +24,7 @@
                     </li>
                 </ul>
             </div>
+            <div class="layui-card-body layui-hide" id="ID-flow" style="height: 570px; overflow: auto;"></div>
         </div>
         <!-- 右侧：答题室信息 -->
         <div class="layui-col-md4">
@@ -34,7 +35,7 @@
                     <span>测试答题室</span>
                     <span class="layui-badge" style="float: right;">永久有效</span>
                 </div>
-                <div class="layui-card-body">
+                <div class="room layui-card-body">
                     <ul class="layui-row layui-col-space10">
                         <li class="layui-col-md12">
                             <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">类型: </span>
@@ -61,20 +62,10 @@
                         </div>
                     </div>
                     <!-- 操作按钮 -->
-                    <div class="layui-row layui-col-space10">
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple"
-                                    th:data-id="${room.id}" data-action="enter">
-                                <i class="layui-icon layui-icon-play"></i> 进入答题室
-                            </button>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange"
-                                    th:data-id="${room.id}" data-action="report">
-                                <i class="layui-icon layui-icon-file-b"></i> 报告
-                            </button>
-                        </div>
-                    </div>
+                    <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red" th:data-room-id="${room.id}">
+                        <i class="layui-icon">&#xe652; 开始答题</i>
+                        <i class="layui-icon layui-hide">&#xe6cc; 结束答题</i>
+                    </button>
                 </div>
             </div>
             <!-- 答题须知 -->
@@ -110,29 +101,41 @@
 <!-- 引入 LayUI JS -->
 <script src="/js/layui.js"></script>
 <script>
-    layui.use(['jquery', 'element', 'form', 'layer'], function ($, element, form, layer) {
+    layui.use(['jquery', 'element', 'form', 'flow'], function ($, element, form, flow) {
         // 初始化折叠面板
         element.render('collapse');
 
-        $('button[data-action]').on('click', function () {
-            let roomId = $(this).data('id');
-            switch ($(this).data('action')) {
-                case 'report':
-                    console.log('report房间ID:', roomId);
-                    layer.open({
-                        type: 1,
-                        title: '答题报告',
-                        area: ['600px', '400px'],
-                        content: '<div style="padding: 20px;">' +
-                            '<p>当前答题室暂无历史答题记录。</p>' +
-                            '<p>完成答题后可以查看详细的答题报告，包括：</p>' +
-                            '<ul><li>答题分数与正确率</li><li>每道题的正确选项</li><li>知识点掌握情况分析</li><li>学习建议</li></ul>' +
-                            '</div>'
-                    });
-                    break;
-                case 'enter':
-                    console.log('enter房间ID:', roomId);
-                    break;
+        $('.room').on('click', '.layui-btn', function (e) {
+            e.stopPropagation();
+            var $btn = $(this);
+            var roomId = $btn.data('room-id');
+            $btn.toggleClass('layui-border-red layui-border-green');
+            // 切换两个图标的显示状态
+            $btn.find('i').toggleClass('layui-hide');
+            // 根据当前状态执行不同逻辑
+            if ($btn.hasClass('layui-border-green')) {
+                console.log('开始答题 - 房间ID:', roomId);
+                $('#ID-body').addClass('layui-hide');
+                $('#ID-flow').removeClass('layui-hide');
+            } else {
+                console.log('结束答题 - 房间ID:', roomId);
+                $('#ID-body').removeClass('layui-hide');
+                $('#ID-flow').addClass('layui-hide');
+            }
+        });
+
+        flow.load({
+            elem: '#ID-flow',
+            scrollElem: '#ID-flow',
+            done: function (page, next) {
+                console.log(page)
+                setTimeout(function(){
+                    var lis = [];
+                    for(var i = 0; i < 8; i++){
+                        lis.push('<li>'+ ( (page-1)*8 + i + 1 ) +'</li>')
+                    }
+                    next(lis.join(''), page < 10);
+                }, 520);
             }
         });
     });

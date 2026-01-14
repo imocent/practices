@@ -172,7 +172,7 @@
          and CUSER = #{cuser,jdbcType=BIGINT}
       </if>
       <if test="subjectId != null and subjectId != ''">
-         and SUBJECT_ID = #{subjectId,jdbcType=VARCHAR}
+         and SUBJECT_ID like CONCAT('%',#{subjectId,jdbcType=VARCHAR},'%')
       </if>
       <if test="subjectName != null and subjectName != ''">
          and SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR}

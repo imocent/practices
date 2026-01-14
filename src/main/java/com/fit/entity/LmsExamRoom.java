@@ -24,6 +24,11 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
     private String uuid;
 
     /**
+     * 所属父科ID
+     */
+    private String subjectPid;
+
+    /**
      * 所属学科ID
      */
     private String subjectId;
@@ -59,7 +64,7 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
     private String notes;
 
     /**
-     * 答题室状态: 0-停用,1-新建,2-发布,3-结束,4-归档'
+     * 答题室状态: 0-停用,1-新建,2-发布,3-结束,4-归档
      */
     private Integer enabled;
 
@@ -153,6 +158,7 @@ public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
         sb.append(", ctime=").append(ctime);
         sb.append(", cuser=").append(cuser);
         sb.append(", uuid=").append(uuid);
+        sb.append(", subjectPid=").append(subjectPid);
         sb.append(", subjectId=").append(subjectId);
         sb.append(", subjectName=").append(subjectName);
         sb.append(", imgId=").append(imgId);

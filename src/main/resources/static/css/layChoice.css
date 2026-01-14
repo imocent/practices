@@ -75,7 +75,7 @@
 }
 
 .cascader-dropdown-panel > .cascader-dropdown-dl {
-    min-width: 180px;
+    min-width: 150px;
     min-height: 180px;
     max-height: 300px;
     overflow-y: auto;

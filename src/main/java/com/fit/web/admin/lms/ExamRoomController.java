@@ -72,6 +72,7 @@ public class ExamRoomController extends BaseController {
     @ResponseBody
     public Object save(LmsExamRoom bean) {
         LmsExamRoom entity = this.service.get(bean.getId());
+        bean.setSubjectPid(bean.getSubjectId().split(",")[0]);
         Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
         if (null == entity) {
             bean.setCtime(new Date());

@@ -4,22 +4,24 @@
 <body>
 <th:block th:include="include :: f_header"></th:block>
 <div class="layui-container layui-fluid">
-    <form lay-filter="searchForm" class="layui-row layui-card layui-form">
-        <div class="layui-card-body">
-            <div class="layui-row layui-col-space10">
-                <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
-                    <i class="layui-icon layui-icon-search index-icon-search"></i>
-                    <input type="text" name="content" th:value="${content}" class="layui-input index-input" placeholder="请输入留言..."/>
-                    <button type="button" id="resetBtn" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
-                </div>
-                <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
-                    <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
-                        <i class="layui-icon">&#xe615; 搜索</i>
-                    </button>
+    <div class="layui-row layui-card ">
+        <form lay-filter="searchForm" class="layui-form">
+            <div class="layui-card-body">
+                <div class="layui-row layui-col-space10">
+                    <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
+                        <i class="layui-icon layui-icon-search index-icon-search"></i>
+                        <input type="text" name="content" th:value="${content}" class="layui-input index-input" placeholder="请输入留言..."/>
+                        <button type="button" id="resetBtn" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
+                        <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
+                            <i class="layui-icon">&#xe615; 搜索</i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
     <div class="layui-row layui-card">
         <div class="layui-col-xs12" style="padding: 15px 0; border-bottom: 1px solid #eee;" th:each="comment : ${comments}">
             <div class="layui-col-md1 layui-col-sm1 layui-col-xs2  laytable-cell-space">

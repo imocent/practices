@@ -77,8 +77,7 @@ public class IndexController extends BaseController {
         if (subject == null) {
             return "";
         }
-        // 如果是顶级节点，直接返回
-        if (subject.getPid() == 0) {
+        if (subject.getPid() == 0) {// 如果是顶级节点，直接返回
             return subject.getId().toString();
         }
         // 递归获取父级路径，然后拼接当前ID
@@ -86,15 +85,16 @@ public class IndexController extends BaseController {
     }
 
     private void shiftSubject(Map<String, Object> map, Model model) {
-        String pid = "", cid = "";
+        String pid = "";
         if (map.containsKey("sid")) {
             String sid = map.get("sid").toString();
-            String subjectId = treeSubject(Long.parseLong(sid));
-            pid = subjectId.split(",")[0];
-            map.put("subjectId", subjectId);
+            if (sid.length() > 0) {
+                String subjectId = treeSubject(Long.parseLong(sid));
+                pid = subjectId.split(",")[0];
+                map.put("subjectPid", subjectId);
+            }
         }
-        model.addAttribute("pid", pid.equals("0") ? cid : pid);
-        model.addAttribute("cid", cid);
+        model.addAttribute("pid", pid);
     }
 
     @GetMapping("/rooms")
@@ -122,6 +122,7 @@ public class IndexController extends BaseController {
         map.put("enabled", 2);
         List<Map<String, Object>> screens = this.menuService.getScreen("0");
         model.addAttribute("screens", screens);
+        model.addAttribute("role", 5);
         return "front/rooms";
     }
 

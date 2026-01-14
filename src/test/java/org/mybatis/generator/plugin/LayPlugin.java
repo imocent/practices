@@ -15,7 +15,7 @@ import java.util.*;
 
 public class LayPlugin extends PluginAdapter {
     private final List<String> ignoreTables = Arrays.asList("createTime");
-    private final List<String> likeColumns = Arrays.asList("content", "name", "username", "title");
+    private final List<String> likeColumns = Arrays.asList("content", "name", "username", "title", "subjectId");
     private String targetBusine = "";
     private String javaProject = "src/main/java";
 

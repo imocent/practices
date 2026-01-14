@@ -6,6 +6,7 @@
     <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
     <result column="CUSER" jdbcType="BIGINT" property="cuser" />
     <result column="UUID" jdbcType="VARCHAR" property="uuid" />
+    <result column="SUBJECT_PID" jdbcType="VARCHAR" property="subjectPid" />
     <result column="SUBJECT_ID" jdbcType="VARCHAR" property="subjectId" />
     <result column="SUBJECT_NAME" jdbcType="VARCHAR" property="subjectName" />
     <result column="IMG_ID" jdbcType="BIGINT" property="imgId" />
@@ -32,10 +33,10 @@
     <result column="EUSER" jdbcType="BIGINT" property="euser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CTIME, CUSER, UUID, SUBJECT_ID, SUBJECT_NAME, IMG_ID, TITLE, CONTENT, `LEVEL`, 
-    NOTES, ENABLED, `SHARE`, EXAM_MODE, TIME_MODE, TIME_LEN, TIME_ON, TIME_OFF, EXAMINEE_MODE, 
-    EXAMINEE_COUNT, SUBJECT_SORT_MODE, SUBJECT_OPT_SORT_MODE, ADJUDGE_MODE, MARK_MODE, 
-    MARK_SHOW_MODE, MARK_TIME_MODE, ETIME, EUSER
+    ID, CTIME, CUSER, UUID, SUBJECT_PID, SUBJECT_ID, SUBJECT_NAME, IMG_ID, TITLE, CONTENT, 
+    `LEVEL`, NOTES, ENABLED, `SHARE`, EXAM_MODE, TIME_MODE, TIME_LEN, TIME_ON, TIME_OFF, 
+    EXAMINEE_MODE, EXAMINEE_COUNT, SUBJECT_SORT_MODE, SUBJECT_OPT_SORT_MODE, ADJUDGE_MODE, 
+    MARK_MODE, MARK_SHOW_MODE, MARK_TIME_MODE, ETIME, EUSER
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -61,6 +62,9 @@
       </if>
       <if test="uuid != null">
         UUID,
+      </if>
+      <if test="subjectPid != null">
+        SUBJECT_PID,
       </if>
       <if test="subjectId != null">
         SUBJECT_ID,
@@ -148,6 +152,9 @@
       <if test="uuid != null">
         #{uuid,jdbcType=VARCHAR},
       </if>
+      <if test="subjectPid != null">
+        #{subjectPid,jdbcType=VARCHAR},
+      </if>
       <if test="subjectId != null">
         #{subjectId,jdbcType=VARCHAR},
       </if>
@@ -233,6 +240,9 @@
       </if>
       <if test="uuid != null">
         UUID = #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectPid != null">
+        SUBJECT_PID = #{subjectPid,jdbcType=VARCHAR},
       </if>
       <if test="subjectId != null">
         SUBJECT_ID = #{subjectId,jdbcType=VARCHAR},
@@ -326,8 +336,11 @@
       <if test="uuid != null and uuid != ''">
          and UUID = #{uuid,jdbcType=VARCHAR}
       </if>
+      <if test="subjectPid != null and subjectPid != ''">
+         and SUBJECT_PID = #{subjectPid,jdbcType=VARCHAR}
+      </if>
       <if test="subjectId != null and subjectId != ''">
-         and SUBJECT_ID = #{subjectId,jdbcType=VARCHAR}
+         and SUBJECT_ID like CONCAT('%',#{subjectId,jdbcType=VARCHAR},'%')
       </if>
       <if test="subjectName != null and subjectName != ''">
          and SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR}

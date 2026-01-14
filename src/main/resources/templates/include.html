@@ -18,6 +18,90 @@
     <script type="text/javascript" th:src="@{/js/DD_belatedPNG_0.0.8a-min.js}"></script>
     <script>DD_belatedPNG.fix('*');</script><![endif]-->
     <script type="text/javascript" th:if="${#request.servletPath.startsWith('/admin')}" th:src="@{/js/lay-config.js}"></script>
+    <script type="text/javascript" th:unless="${#request.servletPath.startsWith('/admin')}">
+        function layPage(id, count, curr, limit) {
+            layui.laypage.render({
+                elem: id,
+                count: count,
+                curr: curr || 1,
+                limit: limit || 12,
+                theme: '#B55AD0',
+                first: '首页',
+                last: '尾页',
+                prev: '<em>←</em>',
+                next: '<em>→</em>',
+                jump: function (obj, first) {
+                    if (!first) {
+                        console.log(window.location.pathname)
+                        // window.location.href = window.location.pathname
+                    }
+                }
+            });
+        }
+
+        layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
+            var pageMap = {
+                '/': 'home', '/index': 'home', '/index.html': 'home',
+                '/room': 'rooms', '/room.html': 'rooms',
+                '/rooms': 'rooms', '/rooms.html': 'rooms',
+                '/learns': 'learns', '/learns.html': 'learns',
+                '/comment': 'comments', '/comment.html': 'comments',
+                '/comments': 'comments', '/comments.html': 'comments',
+            };
+            // 获取当前页面标识
+            var dataPageKey = pageMap[window.location.pathname] || 'home';
+            // 移除所有active状态
+            $('.layui-nav-item').removeClass('layui-this');
+            // 设置当前active状态
+            $('#mainNav .layui-nav-item[data-page="' + dataPageKey + '"]').addClass('layui-this');
+            // 重新渲染
+            element.init();
+
+            carousel.render({
+                elem: '#banner',        // 绑定容器
+                width: '100%',           // 宽度自适应
+                height: '300px',         // 高度可调
+                interval: 3000,          // 切换间隔
+                anim: 'fade',            // 动画效果（可选：fade/updown）
+                arrow: 'hover',          // 箭头显示方式
+                indicator: 'outside'     // 指示器位置
+            });
+
+            $.get('/subjects', function (res) {
+                dropdown.render({
+                    elem: '.LAY_TRIGGER',
+                    trigger: 'click',
+                    data: res.data || [],
+                    click: function (data, othis, event) {
+                        window.location.href = "/rooms?sid=" + data.id;
+                    }
+                });
+                dropdown.render({
+                    elem: '.LAY_TRIG',
+                    trigger: 'click',
+                    data: res.data || [],
+                    click: function (data, othis, event) {
+                        window.location.href = "/learns?sid=" + data.id;
+                    }
+                });
+            }, 'json');
+
+            $('.rooms').on('click', '.layui-btn', function (e) {
+                e.stopPropagation();
+                var $btn = $(this);
+                var $card = $btn.closest('.layui-card');
+                var roomId = $card.parent().data('roomId');
+                if ($btn.hasClass('layui-border-purple')) {
+                    console.log("答题室" + roomId)
+                    window.location.href = "/room?id=" + roomId;
+                } else if ($btn.hasClass('layui-border-orange')) {
+                    console.log("报告" + roomId)
+                } else if ($btn.hasClass('layui-border-red')) {
+                    console.log("阅卷" + roomId)
+                }
+            });
+        });
+    </script>
 </head>
 <!-- 头部信息 -->
 <div th:fragment="header">
@@ -162,89 +246,5 @@
         </div>
     </div>
     <div class="site-mobile-shade" th:alt="移动端遮罩"></div>
-    <script>
-        function layPage(id, count, curr, limit) {
-            layui.laypage.render({
-                elem: id,
-                count: count,
-                curr: curr || 1,
-                limit: limit || 12,
-                theme: '#B55AD0',
-                first: '首页',
-                last: '尾页',
-                prev: '<em>←</em>',
-                next: '<em>→</em>',
-                jump: function (obj, first) {
-                    if (!first) {
-                        console.log(window.location.pathname)
-                        // window.location.href = window.location.pathname
-                    }
-                }
-            });
-        }
-
-        layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
-            var pageMap = {
-                '/': 'home', '/index': 'home', '/index.html': 'home',
-                '/room': 'rooms', '/room.html': 'rooms',
-                '/rooms': 'rooms', '/rooms.html': 'rooms',
-                '/learns': 'learns', '/learns.html': 'learns',
-                '/comment': 'comments', '/comment.html': 'comments',
-                '/comments': 'comments', '/comments.html': 'comments',
-            };
-            // 获取当前页面标识
-            var dataPageKey = pageMap[window.location.pathname] || 'home';
-            // 移除所有active状态
-            $('.layui-nav-item').removeClass('layui-this');
-            // 设置当前active状态
-            $('#mainNav .layui-nav-item[data-page="' + dataPageKey + '"]').addClass('layui-this');
-            // 重新渲染
-            element.init();
-
-            carousel.render({
-                elem: '#banner',        // 绑定容器
-                width: '100%',           // 宽度自适应
-                height: '300px',         // 高度可调
-                interval: 3000,          // 切换间隔
-                anim: 'fade',            // 动画效果（可选：fade/updown）
-                arrow: 'hover',          // 箭头显示方式
-                indicator: 'outside'     // 指示器位置
-            });
-
-            $.get('/subjects', function (res) {
-                dropdown.render({
-                    elem: '.LAY_TRIGGER',
-                    trigger: 'click',
-                    data: res.data || [],
-                    click: function (data, othis, event) {
-                        window.location.href = "/rooms?sid=" + data.id;
-                    }
-                });
-                dropdown.render({
-                    elem: '.LAY_TRIG',
-                    trigger: 'click',
-                    data: res.data || [],
-                    click: function (data, othis, event) {
-                        window.location.href = "/learns?sid=" + data.id;
-                    }
-                });
-            }, 'json');
-
-            $('.rooms').on('click', '.layui-btn', function (e) {
-                e.stopPropagation();
-                var $btn = $(this);
-                var $card = $btn.closest('.layui-card');
-                var roomId = $card.parent().data('roomId');
-                if ($btn.hasClass('layui-border-purple')) {
-                    console.log("答题室" + roomId)
-                    window.location.href = "/room?id=" + roomId;
-                } else if ($btn.hasClass('layui-border-orange')) {
-                    console.log("报告" + roomId)
-                } else if ($btn.hasClass('layui-border-red')) {
-                    console.log("阅卷" + roomId)
-                }
-            });
-        });
-    </script>
 </div>
 </html>
