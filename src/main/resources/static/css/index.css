@@ -147,3 +147,29 @@ body {
     color: white;
     border-color: #1E9FFF;
 }
+
+.question-container {
+    margin: 20px;
+}
+
+.question-container.has-error {
+    border: 2px solid #ff5722 !important;
+    padding: 15px !important;
+    margin: 10px 0 !important;
+    border-radius: 5px !important;
+    background: #fff5f5 !important;
+}
+
+.question-content {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.options {
+    list-style-type: none;
+    padding: 0;
+}
+
+.options li {
+    margin-bottom: 5px;
+}

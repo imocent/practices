@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('做题吧 - 小工具')"></head>
+<body>
+<th:block th:include="include :: f_header"></th:block>
+<div class="layui-container layui-fluid">
+    <div class="layui-row search-section">
+        <div class="layui-row layui-card">
+            <div class="layui-card-header" style="background-color: #E2E2E2">常用工具</div>
+            <div class="layui-card-body layui-tabs layui-tabs-card" lay-options="{index: 0}">
+                <ul class="layui-tabs-header">
+                    <li>JSON格式化</li>
+                    <li>Base64加解密</li>
+                    <li>URL编码解码工具</li>
+                </ul>
+                <div class="layui-tabs-body">
+                    <div class="layui-tabs-item">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <div class="layui-card-header">
+                            </div>
+                            <div class="layui-card-body">
+                                1111
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <pre class="layui-code" lay-options="{}" style="min-height: 300px;overflow: auto;"></pre>
+                        </div>
+                    </div>
+                    <div class="layui-tabs-item">内容-2</div>
+                    <div class="layui-tabs-item">内容-3</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 底部信息 -->
+<th:block th:include="include :: f_footer"></th:block>
+<script>
+    layui.use(['jquery', 'element', 'form'], function ($, element, form) {
+    });
+</script>
+</body>
+</html>

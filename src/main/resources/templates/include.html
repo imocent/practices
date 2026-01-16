@@ -47,6 +47,7 @@
                 '/learns': 'learns', '/learns.html': 'learns',
                 '/comment': 'comments', '/comment.html': 'comments',
                 '/comments': 'comments', '/comments.html': 'comments',
+                '/tools': 'tools', '/tools.html': 'tools',
             };
             // 获取当前页面标识
             var dataPageKey = pageMap[window.location.pathname] || 'home';
@@ -180,6 +181,9 @@
                 </li>
                 <li class="layui-nav-item" data-page="comments">
                     <a href="/comment" style="color: #fff;">问答社区</a>
+                </li>
+                <li class="layui-nav-item" data-page="tools">
+                    <a href="/tools" style="color: #fff;">常用工具</a>
                 </li>
             </ul>
             <ul class="layui-nav layui-layout-right" style="background: transparent;">

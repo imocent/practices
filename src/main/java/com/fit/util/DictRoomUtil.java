@@ -22,7 +22,7 @@ public class DictRoomUtil {
     // 答卷模式
     private static final Map<String, String> ROOM_MODE = ofMap("0", "标准答题模式", "1", "随机抽取模式", "2", "习题练习模式", "3", "只读学习模式");
     // 答题人员模式
-    private static final Map<String, String> EXAMINEE_MODE = ofMap("0", "任何人员", "1", "指定人员");
+    private static final Map<String, String> EXAMINEE_MODE = ofMap("false", "任何人员", "true", "指定人员");
     // 成绩时间类型
     private static final Map<String, String> MARK_TIME_MODE = ofMap("0", "不发布", "1", "全场阅卷后", "2", "答卷阅卷后");
 

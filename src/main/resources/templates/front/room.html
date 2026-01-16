@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 答题室')"></head>
 <body>
 <th:block th:include="include :: f_header"></th:block>
@@ -8,9 +8,10 @@
         <!-- 左侧：课程信息 -->
         <div class="layui-col-md8 layui-card">
             <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                <i class="layui-icon layui-icon-template-1"></i> <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
+                <i class="layui-icon layui-icon-template-1"></i>
+                <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
             </div>
-            <div class="layui-card-body" id="ID-body" th:text="${room?.content}">
+            <div class="layui-card-body" id="ID-body" style="height: 540px;" th:text="${room?.content}">
                 <ul class="layui-timeline">
                     <li class="layui-timeline-item">
                         <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
@@ -24,61 +25,75 @@
                     </li>
                 </ul>
             </div>
-            <div class="layui-card-body layui-hide" id="ID-flow" style="height: 570px; overflow: auto;"></div>
+            <div class="layui-card-body layui-hide" id="ID-flow" style="height: 540px; overflow: auto;">
+                <form class="layui-form layui-row">
+                    <div style="text-align: center;">
+                        <i class="layui-icon layui-icon-time"> <span id="timer">00:00:00</span></i>
+                        <input type="hidden" name="duration" id="duration"/>
+                    </div>
+                    <div class="question-container" th:each="q,qStat : ${questions}">
+                        <span th:text="${qStat.index+1}"></span>.
+                        <div class="question-content" th:text="${q?.CONTENT}">问题</div>
+                        <ul class="options">
+                            <li th:each="info,infoStat : ${#strings.arraySplit(q?.answer_info, ';')}">
+                                <input type="radio" class="layui-input"
+                                       th:name="${#strings.concat('q_', q.ID)}"
+                                       th:value="${#strings.arraySplit(info, '|')[0]}"
+                                       th:text="${#strings.arraySplit(info, '|')[1]}"/>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="layui-btn layui-btn-normal btn-w100" lay-submit lay-filter="submit_form">检查</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <!-- 右侧：答题室信息 -->
         <div class="layui-col-md4">
-            <!-- 答题室卡片 -->
             <div class="layui-card">
                 <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="layui-icon layui-icon-list"></i>
-                    <span>测试答题室</span>
-                    <span class="layui-badge" style="float: right;">永久有效</span>
+                    <i class="layui-icon layui-icon-cols"></i><span style="color:#FFF;"> 答题室</span>
+                    <span class="layui-badge" style="float:right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
                 </div>
                 <div class="room layui-card-body">
-                    <ul class="layui-row layui-col-space10">
+                    <ul class="layui-row layui-col-space10" th:with="util=${T(com.fit.util.DictRoomUtil)}">
                         <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">类型: </span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">标准答题</span>
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">状态:</span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${util.getDict(0, room?.enabled)}"></span>
                         </li>
                         <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">条件: </span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">时长10分 / 任何人员</span>
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">类型:</span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${util.getDict(1, room?.examMode)}"></span>
                         </li>
                         <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">分类: </span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">默认答题室</span>
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">条件:</span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10"
+                                  th:text="${util.getDict(2, room?.examineeMode)}"></span>
                         </li>
                         <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">状态: </span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10">开始答题</span>
+                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">分类:</span>
+                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${room?.subjectName}">默认答题室</span>
                         </li>
                     </ul>
-                    <!-- 答题室人数 -->
-                    <div class="layui-card laytable-cell-space" style="background: #f8f8f8; margin: 20px 0;">
-                        <div class="layui-card-body">
-                            <div style="font-size: 36px; color: #1E9FFF; font-weight: bold;">1/1</div>
-                            <div style="color: #666;">进入答题室人数</div>
-                        </div>
+                    <div class="layui-card-body laytable-cell-space" style="background: #f8f8f8; margin: 8px 0;">
+                        <div style="font-size: 32px; color: #1E9FFF; font-weight: bold;">1/1</div>
+                        <div style="color: #666;">进入答题室人数</div>
                     </div>
-                    <!-- 操作按钮 -->
                     <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red" th:data-room-id="${room.id}">
                         <i class="layui-icon">&#xe652; 开始答题</i>
                         <i class="layui-icon layui-hide">&#xe6cc; 结束答题</i>
                     </button>
                 </div>
             </div>
-            <!-- 答题须知 -->
             <div class="layui-card" style="margin-top: 20px;">
-                <div class="layui-card-header">
-                    <i class="layui-icon">&#xe702; 答题须知</i>
-                </div>
+                <div class="layui-card-header"><i class="layui-icon">&#xe702; 答题须知</i></div>
                 <div class="layui-card-body">
                     <div class="layui-collapse">
                         <div class="layui-colla-item">
                             <h2 class="layui-colla-title">答题规则</h2>
                             <div class="layui-colla-content layui-show">
-                                <p>1. 答题时长限制为10分钟，超时自动提交</p>
+                                <p>1. 答题时长限制为<span th:text="${room?.timeLen}"></span>分钟，超时自动提交</p>
                                 <p>2. 答题过程中不可切换页面，否则可能被判定为异常</p>
                                 <p>3. 每人仅有一次答题机会，请谨慎作答</p>
                             </div>
@@ -86,9 +101,8 @@
                         <div class="layui-colla-item">
                             <h2 class="layui-colla-title">评分标准</h2>
                             <div class="layui-colla-content">
-                                <p>1. 单选题每题10分，多选题每题20分</p>
-                                <p>2. 答题正确率需达到60%以上方可通过</p>
-                                <p>3. 答题结束后可立即查看分数和解析</p>
+                                <p>1. 答题正确率需达到60%以上方可通过</p>
+                                <p>2. 答题结束后可立即查看分数和解析</p>
                             </div>
                         </div>
                     </div>
@@ -101,41 +115,77 @@
 <!-- 引入 LayUI JS -->
 <script src="/js/layui.js"></script>
 <script>
-    layui.use(['jquery', 'element', 'form', 'flow'], function ($, element, form, flow) {
+    layui.use(['jquery', 'element', 'form'], function ($, element, form) {
         // 初始化折叠面板
         element.render('collapse');
 
+        var intervalId;
         $('.room').on('click', '.layui-btn', function (e) {
             e.stopPropagation();
             var $btn = $(this);
             var roomId = $btn.data('room-id');
-            $btn.toggleClass('layui-border-red layui-border-green');
-            // 切换两个图标的显示状态
+            $btn.toggleClass('layui-border-red layui-border-green');// 切换两个图标的显示状态
             $btn.find('i').toggleClass('layui-hide');
             // 根据当前状态执行不同逻辑
             if ($btn.hasClass('layui-border-green')) {
                 console.log('开始答题 - 房间ID:', roomId);
+                let totalSeconds = 0;
+                intervalId = setInterval(function () {
+                    totalSeconds += 1000;
+                    document.getElementById("timer").innerHTML = new Date(totalSeconds).Format("HH:mm:ss", true);
+                }, 1000);
                 $('#ID-body').addClass('layui-hide');
                 $('#ID-flow').removeClass('layui-hide');
             } else {
+                console.log(intervalId)
+                clearInterval(intervalId);
+                intervalId = null;
                 console.log('结束答题 - 房间ID:', roomId);
                 $('#ID-body').removeClass('layui-hide');
                 $('#ID-flow').addClass('layui-hide');
             }
         });
 
-        flow.load({
-            elem: '#ID-flow',
-            scrollElem: '#ID-flow',
-            done: function (page, next) {
-                console.log(page)
-                setTimeout(function(){
-                    var lis = [];
-                    for(var i = 0; i < 8; i++){
-                        lis.push('<li>'+ ( (page-1)*8 + i + 1 ) +'</li>')
+        function validateExamForm() {
+            var errorMessages = [];
+            var firstErrorElement = null;
+            // 检查每个题目
+            $('.question-container').each(function (index) {
+                var hasAnswer = $(this).find('input[type="radio"]:checked').length > 0;
+                if (!hasAnswer) {  // 没有答案
+                    errorMessages.push('第' + (index + 1) + '题未完成');
+                    $(this).addClass('has-error');
+                    if (!firstErrorElement) {
+                        firstErrorElement = $(this);
                     }
-                    next(lis.join(''), page < 10);
-                }, 520);
+                } else {  // 有答案
+                    $(this).removeClass('has-error');
+                }
+            });
+            return {
+                isValid: errorMessages.length === 0,
+                messages: errorMessages,
+                firstError: firstErrorElement
+            };
+        }
+
+        form.on('submit(submit_form)', function (data) {
+            var validation = validateExamForm();
+            if (!validation.isValid) {
+                layer.msg(validation.messages.join('<br>'), {icon: 2, time: 5000});
+                if (validation.firstError) {
+                    console.log(validation.firstError)
+                }
+            }
+            console.log(validation.messages)
+            console.log(data)
+            return false;
+        });
+
+        $(document).on('change', 'input[type="radio"]', function() {
+            var $questionContainer = $(this).closest('.question-container');
+            if ($questionContainer.find('input[type="radio"]:checked').length > 0) {
+                $questionContainer.removeClass('has-error');
             }
         });
     });

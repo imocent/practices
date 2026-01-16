@@ -37,6 +37,8 @@ public class IndexController extends BaseController {
     @Autowired
     private LmsExamRoomService roomService;
     @Autowired
+    private LmsQuestionService questionsService;
+    @Autowired
     private LmsQuestionLearnService learnService;
 
     @GetMapping(value = {"", "/", "/index"})
@@ -100,8 +102,8 @@ public class IndexController extends BaseController {
     @GetMapping("/rooms")
     public String rooms(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
-        String eid = "", mid = "";
         shiftSubject(map, model);
+        String eid = "", mid = "";
         if (map.containsKey("eid")) {
             eid = map.get("eid").toString();
             map.remove("eid");
@@ -129,15 +131,21 @@ public class IndexController extends BaseController {
     @GetMapping("/room")
     public String room(Model model, Long id) {
         LmsExamRoom room = this.roomService.get(id);
-        model.addAttribute("room", room);
-        return "front/room";
-    }
+        Map<String, Object> params = new HashMap<>();
+        params.put("rid", id);
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT q.*, GROUP_CONCAT(CONCAT_WS('|', a.ID, a.CONTENT, a.VERIFY ) SEPARATOR ';') AS answer_info");
+        sb.append(" FROM lms_question q LEFT JOIN lms_question_answer a ON q.ID = a.QUESTION_ID");
+        sb.append(" WHERE q.`EXAM_ROOM_ID` = #{params.rid} GROUP BY q.`ID` limit 10");
+        List<Map<String, Object>> questions = this.questionsService.selectBySQL(sb.toString(), params);
+        if (room.getSubjectSortMode()) {
+            Collections.shuffle(questions);
+        }
 
-    @GetMapping("/learn")
-    public String learn(Model model, Long id) {
-        LmsQuestionLearn learn = this.learnService.get(id);
-        model.addAttribute("learn", learn);
-        return "front/learn";
+        model.addAttribute("room", room);
+        model.addAttribute("total", toInt(Math.ceil((double) questions.size() / 6)));
+        model.addAttribute("questions", questions);
+        return "front/room";
     }
 
     @GetMapping("/learns")
@@ -153,5 +161,17 @@ public class IndexController extends BaseController {
         List<Map<String, Object>> screens = this.menuService.getScreen("0");
         model.addAttribute("screens", screens);
         return "front/learns";
+    }
+
+    @GetMapping("/learn")
+    public String learn(Model model, Long id) {
+        LmsQuestionLearn learn = this.learnService.get(id);
+        model.addAttribute("learn", learn);
+        return "front/learn";
+    }
+
+    @GetMapping("/tools")
+    public String tools(HttpServletRequest request, Model model) {
+        return "front/tools";
     }
 }
