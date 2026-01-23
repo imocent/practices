@@ -39,6 +39,12 @@
             });
         }
 
+        function layOpen(title, url, lo_w, lo_h) {
+            lo_w = typeof lo_w === 'undefined' ? '50%' : lo_w;
+            lo_h = typeof lo_h === 'undefined' ? '40%' : lo_h;
+            layer.open({type: 2, title: title, area: [lo_w, lo_h], shade: 0.8, content: url});
+        }
+
         layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
             var pageMap = {
                 '/': 'home', '/index': 'home', '/index.html': 'home',
@@ -48,6 +54,9 @@
                 '/comment': 'comments', '/comment.html': 'comments',
                 '/comments': 'comments', '/comments.html': 'comments',
                 '/tools': 'tools', '/tools.html': 'tools',
+                '/user/answers': 'users', '/user/answers.html': 'users',
+                '/user/account': 'users', '/user/account.html': 'users',
+                '/user/adjust': 'users', '/user/adjust.html': 'users',
             };
             // 获取当前页面标识
             var dataPageKey = pageMap[window.location.pathname] || 'home';
@@ -57,41 +66,28 @@
             $('#mainNav .layui-nav-item[data-page="' + dataPageKey + '"]').addClass('layui-this');
             // 重新渲染
             element.init();
+            // 首页横幅
+            carousel.render({elem: '#banner', height: '300px', interval: 3000, anim: 'fade', arrow: 'hover', indicator: 'outside'});
 
-            carousel.render({
-                elem: '#banner',        // 绑定容器
-                width: '100%',           // 宽度自适应
-                height: '300px',         // 高度可调
-                interval: 3000,          // 切换间隔
-                anim: 'fade',            // 动画效果（可选：fade/updown）
-                arrow: 'hover',          // 箭头显示方式
-                indicator: 'outside'     // 指示器位置
-            });
+            // 初始化栏目
+            function layDrop(clazz, datas, url) {
+                dropdown.render({
+                    elem: clazz, trigger: 'hover', data: datas || [],
+                    click: function (data, othis, event) {
+                        window.location.href = url + data.id;
+                    }
+                });
+            }
 
             $.get('/subjects', function (res) {
-                dropdown.render({
-                    elem: '.LAY_TRIGGER',
-                    trigger: 'click',
-                    data: res.data || [],
-                    click: function (data, othis, event) {
-                        window.location.href = "/rooms?sid=" + data.id;
-                    }
-                });
-                dropdown.render({
-                    elem: '.LAY_TRIG',
-                    trigger: 'click',
-                    data: res.data || [],
-                    click: function (data, othis, event) {
-                        window.location.href = "/learns?sid=" + data.id;
-                    }
-                });
+                layDrop('.LAY_TRIGGER', res.data, "/rooms?sid=");
+                layDrop('.LAY_TRIG', res.data, "/learns?sid=");
             }, 'json');
-
+            // 答题室按钮
             $('.rooms').on('click', '.layui-btn', function (e) {
                 e.stopPropagation();
                 var $btn = $(this);
-                var $card = $btn.closest('.layui-card');
-                var roomId = $card.parent().data('roomId');
+                var roomId = $btn.closest('.layui-card').parent().data('roomId');
                 if ($btn.hasClass('layui-border-purple')) {
                     console.log("答题室" + roomId)
                     window.location.href = "/room?id=" + roomId;
@@ -99,6 +95,20 @@
                     console.log("报告" + roomId)
                 } else if ($btn.hasClass('layui-border-red')) {
                     console.log("阅卷" + roomId)
+                }
+            });
+            // 用户操作
+            $('#mainNav').on("click", "*[lay-event]", function (e) {
+                switch ($(this).attr("lay-event")) {
+                    case 'login':
+                        layOpen('用户登录', '/user/login', '360px', '240px');
+                        break;
+                    case 'userInfo':
+                        layOpen('用户登录', '/user/account');
+                        break;
+                    case 'userPwd':
+                        layOpen('修改密码', '/user/adjust');
+                        break;
                 }
             });
         });
@@ -122,11 +132,6 @@
             </span>
         </ul>
         <ul class="layui-nav layui-layout-right">
-            <!--<li class="layui-nav-item layui-hide-xs" lay-unselect>
-                <a lay-event="clear" title="清理">
-                    <i class="layui-icon layui-icon-delete"></i>
-                </a>
-            </li>-->
             <li class="layui-nav-item layui-hide-xs" lay-unselect>
                 <a href="/" target="_blank" title="文档说明">
                     <i class="layui-icon layui-icon-website"></i>
@@ -140,10 +145,10 @@
             <li class="layui-nav-item user-selection">
                 <a>
                     <img th:src="@{/images/logo.png}" class="layui-nav-img" alt="头像">
-                    <cite style="margin: 0 10px;">[[${session.username?:'用户'}]]</cite>
+                    <cite th:text="${session?.username?:'用户'}"></cite>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd lay-unselect><a lay-event="userInfo">基本资料</a></dd>
+                    <dd lay-unselect><a lay-event="profile">基本资料</a></dd>
                     <dd lay-unselect><a lay-event="editPwd">修改密码</a></dd>
                     <hr>
                     <dd lay-unselect><a th:href="@{/logout}">退出</a></dd>
@@ -164,43 +169,50 @@
 
 <div th:fragment="f_header">
     <div class="layui-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <div class="layui-container layui-row" style="margin-bottom: 20px;">
+        <div id="mainNav" class="layui-container layui-row" style="margin-bottom: 20px;">
             <div class="layui-logo" style="color: #fff; font-size: 22px; padding-top: 10px;">
                 <img th:src="@{/images/logo.png}" alt="logo" height="30px"/>
                 <cite>做题吧</cite>
             </div>
-            <ul id="mainNav" class="layui-nav layui-layout-left" style="background: transparent;">
+            <ul class="layui-nav layui-layout-left" style="background: transparent;">
                 <li class="layui-nav-item" data-page="home">
-                    <a href="/" style="color: #fff;">首页</a>
+                    <a href="/">首页</a>
                 </li>
                 <li class="layui-nav-item LAY_TRIGGER" data-page="rooms">
-                    <a href="/rooms" style="color: #fff;">课程中心 <i class="layui-icon">&#xe61a;</i></a>
+                    <a href="/rooms">课程中心 <i class="layui-icon">&#xe61a;</i></a>
                 </li>
                 <li class="layui-nav-item LAY_TRIG" data-page="learns">
-                    <a href="/learns" style="color: #fff;">知识库 <i class="layui-icon">&#xe61a;</i></a>
+                    <a href="/learns">知识库 <i class="layui-icon">&#xe61a;</i></a>
                 </li>
                 <li class="layui-nav-item" data-page="comments">
-                    <a href="/comment" style="color: #fff;">问答社区</a>
+                    <a href="/comment">问答社区</a>
                 </li>
                 <li class="layui-nav-item" data-page="tools">
-                    <a href="/tools" style="color: #fff;">常用工具</a>
+                    <a href="/tools">常用工具</a>
                 </li>
             </ul>
             <ul class="layui-nav layui-layout-right" style="background: transparent;">
-                <li class="layui-nav-item" th:if="${session.username!= null}">
+                <li class="layui-nav-item" data-page="users" th:if="${session?.username!= null}">
                     <a>
                         <img th:src="@{/images/logo.png}" class="layui-nav-img" alt="头像">
-                        <cite style="margin: 0 10px;">[[${session.username?:'用户'}]]</cite>
+                        <cite th:text="${session?.username?:'用户'}"></cite>
                     </a>
                     <dl class="layui-nav-child">
-                        <dd lay-unselect><a lay-event="userInfo">基本资料</a></dd>
-                        <dd lay-unselect><a lay-event="editPwd">修改密码</a></dd>
+                        <dd lay-unselect>
+                            <a th:href="@{/user/answers}" lay-event="userAns"><i class="layui-icon">&#xe705;</i> 我的答题室</a>
+                        </dd>
+                        <dd lay-unselect>
+                            <a href="javascript:;" lay-event="userInfo"><i class="layui-icon">&#xe66f;</i> 基本资料</a>
+                        </dd>
+                        <dd lay-unselect>
+                            <a href="javascript:;" lay-event="userPwd"><i class="layui-icon">&#xe673;</i> 修改密码</a>
+                        </dd>
                         <hr>
-                        <dd lay-unselect><a th:href="@{/logout}">退出</a></dd>
+                        <dd lay-unselect><a th:href="@{/logout}"><i class="layui-icon">&#xe682;</i> 退出</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item" th:unless="${session.username!= null}">
-                    <a th:href="@{/login}" style="color: #fff;">
+                <li class="layui-nav-item" th:unless="${session?.username!= null}">
+                    <a lay-event="login" href="javascript:;" style="color: #fff;">
                         <i class="layui-icon layui-icon-username"></i> 登录
                     </a>
                 </li>
@@ -210,11 +222,11 @@
 </div>
 
 <div th:fragment="f_footer">
-    <div class="layui-footer" style="background: #2c3e50; color: #fff; padding: 40px 0 20px; margin-top: auto;">
+    <div class="index-footer">
         <div class="layui-container layui-row" style="margin-bottom:15px;">
             <div class="layui-col-md6">
                 <div class="layui-font-20">
-                    <img src="/images/logo.png" alt="logo" height="24px" style="vertical-align: middle; margin-right: 10px;">
+                    <img class="logo-footer" src="/images/logo.png" alt="logo"/>
                     做题吧平台
                 </div>
                 <div class="layui-font-14" style="color: #bdc3c7; line-height: 1.6; margin: 10px 40px 10px 0;">

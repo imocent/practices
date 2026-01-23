@@ -141,7 +141,7 @@ layui.define(["element", "layer"], function (exports) {
                 content: '../view/nav/messaging.html'
             });
         }, //个人中心
-        userInfo: function () {
+        profile: function () {
             layer.open({
                 type: 2,
                 title: '🤠 个人中心',
@@ -166,9 +166,7 @@ layui.define(["element", "layer"], function (exports) {
                 isLast = true;
             }
 
-            var currentBreadcurmbHTML;
-            var currentNavText = $(obj).first().find("cite").html();
-
+            var currentBreadcurmbHTML,currentNavText = $(obj).first().find("cite").html();
             // falg 为 true 表示最底级的导航.
             if (isLast) {
                 currentBreadcurmbHTML = "<a><cite>" + currentNavText + "</cite></a>";
@@ -181,7 +179,6 @@ layui.define(["element", "layer"], function (exports) {
             if (parent.length === 0) {
                 parent = $(obj).parents("li.layui-nav-itemed");
             }
-
             // 递归查找父导航, 直到没有父导航.
             if (parent.length !== 0) {
                 return this.buildBreadcrumb(parent, false, html);

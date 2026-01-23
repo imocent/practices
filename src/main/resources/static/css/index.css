@@ -7,18 +7,6 @@ body {
     flex-direction: column;
 }
 
-.search-section {
-    background-color: #fff;
-    padding: 40px 0;
-}
-
-.section-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-}
-
 .category-item {
     text-align: center;
     padding: 20px 10px;
@@ -28,47 +16,6 @@ body {
 .category-item:hover {
     background-color: #f8f8f8;
     transform: translateY(-3px);
-}
-
-.course-card, .teacher-card {
-    transition: all 0.3s;
-}
-
-.course-card:hover, .teacher-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.room-header {
-    background: #E2E2E2;
-    color: black;
-}
-
-.room-right {
-    float: right;
-    color: #FFF;
-}
-
-.index-icon-search {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-}
-
-.index-input {
-    padding-left: 30px;
-}
-
-.index-search {
-    position: absolute;
-    right: 6px;
-    top: 14%;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 10px;
-    border-color: #FFF;
 }
 
 .comments-icon {
@@ -84,29 +31,13 @@ body {
     color: #C4CBCF;
 }
 
-.layui-room {
-    min-height: 200px;
-    max-height: 300px;
+.course-card, .teacher-card {
+    transition: all 0.3s;
 }
 
-.layui-search {
-    height: 50px;
-    font-size: 16px;
-}
-
-.layui-search-btn {
-    height: 50px;
-    width: 120px;
-    font-size: 16px;
-}
-
-.layui-search-btn .layui-icon {
-    color: #FFF;
-}
-
-.layui-input-group > .layui-input-suffix {
-    width: 140px;
-    border-left: 0;
+.course-card:hover, .teacher-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .fixed-content-height {
@@ -148,6 +79,88 @@ body {
     border-color: #1E9FFF;
 }
 
+.home-user .layui-card {
+    text-align: center;
+}
+
+.home-user .layui-card-body{
+    height: 540px;
+    text-align: center;
+}
+
+.home-avatar {
+    margin: 10px;
+}
+
+.index-icon-search {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.index-input {
+    padding-left: 30px;
+}
+
+.index-footer {
+    background: #2c3e50;
+    color: #fff;
+    padding-top: 20px;
+    margin-top: auto;
+}
+
+.index-search {
+    position: absolute;
+    right: 6px;
+    top: 14%;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    border-color: #FFF;
+}
+
+.layui-room {
+    min-height: 200px;
+    max-height: 300px;
+}
+
+.layui-search {
+    height: 50px;
+    font-size: 16px;
+}
+
+.layui-search-btn {
+    height: 50px;
+    width: 120px;
+    font-size: 16px;
+}
+
+.layui-search-btn .layui-icon {
+    color: #FFF;
+}
+
+.layui-input-group > .layui-input-suffix {
+    width: 140px;
+    border-left: 0;
+}
+
+.logo-footer {
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.options {
+    list-style-type: none;
+    padding: 0;
+}
+
+.options li {
+    margin-bottom: 5px;
+}
+
 .question-container {
     margin: 20px;
 }
@@ -165,11 +178,42 @@ body {
     margin-bottom: 10px;
 }
 
-.options {
-    list-style-type: none;
-    padding: 0;
+.room-header {
+    background: #E2E2E2;
+    color: black;
 }
 
-.options li {
-    margin-bottom: 5px;
+.room-right {
+    float: right;
+    color: #FFF;
+}
+
+.room-body {
+    height: 540px;
+    margin: 3px;
+    overflow: auto;
+}
+
+.room-footer {
+    position: sticky;
+    background-color: white;
+    border-top: 1px solid #eee;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 0 5px 0;
+    text-align: center;
+    z-index: 100;
+}
+
+.search-section {
+    background-color: #fff;
+    padding: 40px 0;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
 }

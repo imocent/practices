@@ -17,6 +17,11 @@ public class LmsQuestionWrong extends BaseEntity<LmsQuestionWrong> {
     private Long userId;
 
     /**
+     * 答题室ID
+     */
+    private Long roomId;
+
+    /**
      * 题目ID
      */
     private Long questionId;
@@ -39,6 +44,7 @@ public class LmsQuestionWrong extends BaseEntity<LmsQuestionWrong> {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
+        sb.append(", roomId=").append(roomId);
         sb.append(", questionId=").append(questionId);
         sb.append(", wrongCount=").append(wrongCount);
         sb.append(", lastWrongTime=").append(lastWrongTime);

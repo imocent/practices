@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('做题吧 - 答过题室')"></head>
+<style>
+    .layui-table-header th{text-align:center!important;}
+</style>
+<body>
+<th:block th:include="include :: f_header"></th:block>
+<div class="layui-container layui-fluid">
+    <div class="layui-row layui-card">
+        <div class="layui-card-header"><i class="layui-icon">&#xe705; 我的答题</i></div>
+        <div class="layui-card-body">
+            <table class="layui-hide" id="table-list"></table>
+            <script type="text/html" id="column-toolbar">
+                {{# if(d.enabled){ }}
+                <button class="layui-btn layui-btn-sm" lay-event="see">查看答卷</button>
+                |
+                <button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="redo">重做错题</button>
+                {{# } else { }}
+                <button class="layui-btn layui-btn-sm" lay-event="gon">继续测试</button>
+                {{# } }}
+                |
+                <button class="layui-btn layui-btn-sm layui-bg-red" lay-event="del">删除测试</button>
+            </script>
+        </div>
+    </div>
+</div>
+<!-- 底部信息 -->
+<th:block th:include="include :: f_footer"></th:block>
+<script>
+    layui.use(['jquery', 'table', 'form'], function ($, table, form) {
+        table.render({
+            elem: '#table-list',
+            url: '/user/answers',
+            method: 'post',
+            dataType: 'JSON',
+            height: '450',
+            page: true,
+            cols: [
+                [
+                    {field: 'ctime', title: '交卷时间', width: 180},
+                    {field: 'subjectName', title: '学科名', minWidth: 80},
+                    {field: 'examRoomName', title: '房间名称', minWidth: 80},
+                    {field: 'totalScore', title: '总分', width: 80},
+                    {field: 'answerScore', title: '得分', width: 80},
+                    {fixed: 'right', title: '操作', minWidth: 200, toolbar: '#column-toolbar'}
+                ]
+            ]
+        });
+
+        table.on('tool', function (obj) {
+            let data = obj.data;
+            console.log(data)
+            switch (obj.event) {
+                case "see":
+                    console.log('see')
+                    break;
+                case "gon":
+                    console.log('gon')
+                    break;
+                case "del":
+                    console.log('del')
+                    break;
+                case "redo":
+                    console.log('redo')
+                    break;
+            }
+        });
+    });
+</script>
+</body>
+</html>

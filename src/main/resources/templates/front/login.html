@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('做题吧 - 首页')"></head>
+<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" />
+<body>
+<div class="layui-container lay-user-display-show" id="lay-user-login">
+    <div class="lay-user-login-main">
+        <div class="lay-user-login-box lay-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="lay-user-login-icon layui-icon layui-icon-username" for="lay-login-username"></label>
+                <input type="text" name="username" id="lay-login-username" lay-verify="required" placeholder="用户名" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="lay-user-login-icon layui-icon layui-icon-password" for="lay-login-password"></label>
+                <input type="password" name="password" id="lay-login-password" lay-verify="pass" placeholder="密码" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-bg-purple layui-btn-fluid" lay-submit lay-filter="lay_login_submit">登 入</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['jquery', 'form'], function ($, form) {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                form.submit('lay_login_submit');
+            }
+        });
+        form.on('submit(lay_login_submit)', function (obj) {
+            form.verify({
+                pass: [ /^[\S]{5,12}$/, '密码必须5到12位，且不能出现空格' ]
+            });
+
+            $.post('/login', obj.field, function (data) {
+                if (data.code === -1) {
+                    layer.msg(data.msg, {icon: 5, time: 1000});
+                } else {
+                    layer.msg(data.msg, {icon: 6, time: 2000, end: function () {parent.window.location.reload();}});
+                }
+            }, 'json').fail(function (event) {
+                layer.msg(event.responseText, {icon: 5, time: 1000});
+            });
+        });
+    });
+</script>
+</html>

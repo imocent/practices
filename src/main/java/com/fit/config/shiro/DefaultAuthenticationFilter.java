@@ -1,5 +1,6 @@
 package com.fit.config.shiro;
 
+import com.fit.base.AjaxResult;
 import com.fit.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
@@ -15,26 +16,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.interfaces.RSAPrivateKey;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 支持动态 loginUrl 的自定义表单认证拦截器
  * 规则：
  * - 访问 /admin/** -> 跳到 /admin/login
  * - 其他未登录 -> 跳到 /login?redirect=原始URL
+ * - AJAX请求 -> 返回JSON响应
  */
 @Slf4j
 public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
 
-    /**
-     * 是否需要验证码
-     */
-    public static final String CAPTCHA_REQUIRED_KEY = "shiroCaptchaRequired";
-    /**
-     * 验证码错误次数
-     */
-    public static final String CAPTCHA_ERROR_COUNT_KEY = "shiroCaptchaErrorCount";
+    private static final String AJAX_HEADER = "X-Requested-With"; //AJAX请求头标识
+    public static final String CAPTCHA_REQUIRED_KEY = "shiroCaptchaRequired"; //是否需要验证码
+    public static final String CAPTCHA_ERROR_COUNT_KEY = "shiroCaptchaErrorCount"; //验证码错误次数
     public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
+    private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
 
     /**
      * 根据请求动态决定 loginUrl（只支持 /admin/login 与 /login 两种）
@@ -86,6 +87,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
                 token.setLoginType(LoginType.ADMIN.toString());
                 Object code = session.getAttribute("code");
                 if (code == null || captcha == null || !code.toString().equalsIgnoreCase(captcha)) {
+                    session.setAttribute(CAPTCHA_ERROR_COUNT_KEY, errorCount + 1);
                     return onLoginFailure(token, new AuthenticationException("验证码错误"), request, servletResponse);
                 } else {
                     session.removeAttribute(CAPTCHA_REQUIRED_KEY);
@@ -112,13 +114,8 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
             subject.getSession().setAttribute("username", loginName);
             // 调用父类登录成功处理（会触发 issueSuccessRedirect）
             return super.onLoginSuccess(token, subject, request, servletResponse);
-        } catch (AuthenticationException ae) {
-            log.debug("登录认证失败: {}", ae.getMessage());
-            session.setAttribute(CAPTCHA_ERROR_COUNT_KEY, errorCount + 1);
-            return onLoginFailure(token, ae, servletRequest, servletResponse);
         } catch (Exception e) {
             log.error("登录失败: {}", e.getMessage(), e);
-            session.setAttribute(CAPTCHA_ERROR_COUNT_KEY, errorCount + 1);
             return onLoginFailure(token, new AuthenticationException("登录失败，请稍后重试"), servletRequest, servletResponse);
         }
     }
@@ -147,6 +144,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
 
     /**
      * 登录失败回调：构建动态 loginUrl，并保留 redirect 参数（优先使用已传来的 redirect）
+     * 支持AJAX请求返回JSON响应
      */
     @Override
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
@@ -154,6 +152,12 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession session = req.getSession();
         session.setAttribute("errorMsg", getErrorMessage(e));
+        // 如果是AJAX请求，返回JSON响应
+        if (isAjaxRequest(req)) {
+            handleAjaxResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "登录失败", getErrorMessage(e));
+            return false;
+        }
+
         try {
             String loginUrl = resolveLoginUrl(req);
             String redirectParam = req.getParameter("redirect");
@@ -179,10 +183,17 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
     /**
      * 登录成功后的重定向逻辑（redirect 参数优先 -> savedRequest -> successUrl）
      * 规则：如果原始请求是后台路径，统一跳转到后台首页 /admin/index
+     * 支持AJAX请求返回JSON响应
      */
     @Override
     protected void issueSuccessRedirect(ServletRequest request, ServletResponse response) throws Exception {
         log.debug("=== 登录成功重定向 ===");
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        // 如果是AJAX请求，返回成功JSON
+        if (isAjaxRequest(httpRequest)) {
+            handleAjaxResponse(response, HttpServletResponse.SC_OK, "登录成功", null);
+            return;
+        }
         // 1. 优先使用 redirect 参数
         String redirectUrl = request.getParameter("redirect");
         if (StringUtils.hasLength(redirectUrl) && isValidRedirectUrl(redirectUrl)) {
@@ -233,6 +244,9 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         return uri != null && (uri.startsWith("/admin") || uri.startsWith("/admin/"));
     }
 
+    /**
+     * 访问被拒绝时的处理（支持AJAX请求）
+     */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -243,17 +257,24 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
             log.debug("=== 错误页面，允许访问 ===");
             return true;
         }
+        // 非AJAX请求，使用原有逻辑
         return super.onAccessDenied(request, response);
     }
 
     /**
      * 保存请求并跳转登录页（使用动态 loginUrl，并将原始请求作为 redirect 参数）
+     * 支持AJAX请求返回JSON响应
      */
     @Override
     protected void saveRequestAndRedirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-
+        // 如果是AJAX请求，返回JSON响应
+        if (isAjaxRequest(httpRequest)) {
+            log.debug("=== AJAX请求重定向到登录，返回JSON响应 ===");
+            handleAjaxResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "未登录或会话已过期", "请重新登录");
+            return;
+        }
         // 保存原始请求（Shiro 会在 session 中保存 SavedRequest）
         super.saveRequest(request);
         // 获取刚保存的请求
@@ -307,5 +328,42 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         if (e instanceof ExcessiveAttemptsException) return "登录失败次数过多，请稍后再试";
         if (e instanceof UnknownAccountException) return "用户名不存在";
         return e.getMessage() != null ? e.getMessage() : "登录失败，请稍后重试";
+    }
+
+    /**
+     * 判断是否为AJAX请求
+     */
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        return XML_HTTP_REQUEST.equals(request.getHeader(AJAX_HEADER)) || "application/json".equals(request.getContentType()) || "application/json".equals(request.getHeader("Accept")) || (request.getHeader("Accept") != null && request.getHeader("Accept").contains("application/json"));
+    }
+
+    /**
+     * 处理AJAX响应，返回JSON格式数据
+     */
+    private void handleAjaxResponse(ServletResponse response, int code, String msg, Object obj) {
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpResponse.setStatus(code == 0 ? HttpServletResponse.SC_OK : code);
+        httpResponse.setContentType("application/json;charset=UTF-8");
+        httpResponse.setCharacterEncoding("UTF-8");
+
+        try (PrintWriter out = httpResponse.getWriter()) {
+            HashMap<String, Object> json = new HashMap<String, Object>();
+            json.put("code", code);
+            json.put("msg", msg);
+            json.put("data", obj);
+            if (code == HttpServletResponse.SC_UNAUTHORIZED) {
+                json.put("redirect", true); // 告诉前端需要重定向到登录页
+            }
+            StringBuilder sb = new StringBuilder("{");
+            for (String key : json.keySet()) {
+                sb.append("\"").append(key).append("\":\"").append(json.get(key)).append("\",");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("}");
+            out.print(sb.toString());
+            out.flush();
+        } catch (IOException e) {
+            log.error("写入AJAX响应失败: {}", e.getMessage(), e);
+        }
     }
 }

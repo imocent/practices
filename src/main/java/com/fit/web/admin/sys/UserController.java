@@ -36,7 +36,6 @@ public class UserController extends BaseController {
 
     @Autowired
     private SysUserService userService;
-
     @Autowired
     private HashedCredentialsMatcher hashedCredentialsMatcher;
 

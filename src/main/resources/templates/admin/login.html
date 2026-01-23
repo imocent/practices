@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('登录')"></head>
 <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" />
-<body>
+<body style="background-image: url("/static/images/loginbg.jpg");">
 <div class="lay-user-login-top lay-user-display-show" id="lay-user-login" style="display: none;">
     <div class="lay-user-login-main">
         <div class="lay-user-login-box lay-user-login-header">
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <button id="LAY-submit" class="layui-btn layui-btn-fluid" lay-submit lay-filter="lay-login-submit">登 入</button>
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="lay_login_submit">登 入</button>
                 <input type="hidden" id="tips" th:value="${tips}" />
             </div>
         </form>
@@ -60,7 +60,7 @@
             }
         }
         //提交
-        form.on('submit(lay-login-submit)', function (data) {
+        form.on('submit(lay_login_submit)', function (data) {
             form.verify({
                 pass: [ /^[\S]{5,12}$/, '密码必须5到12位，且不能出现空格' ]
             });

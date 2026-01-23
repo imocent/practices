@@ -43,9 +43,11 @@ function openView(opType, title, widthParam, heightParam, isFull, in_content) {
 function advices(data, tier) {
     if (data.code === 0) {
         layer.msg(data.msg, {icon: 6}, function () {
-            let index = tier.layer.getFrameIndex(window.name);
-            tier.location.replace(tier.location.href)
-            tier.layer.close(index);
+            if (tier){
+                let index = tier.layer.getFrameIndex(window.name);
+                tier.location.replace(tier.location.href)
+                tier.layer.close(index);
+            }
         });
     } else {
         layer.msg(data.msg, {icon: 5});
@@ -55,7 +57,7 @@ function advices(data, tier) {
 function toError(answer) {
     if (answer.status === 401) {
         layer.msg("登录超时", {icon: 5, time: 2000});
-        parent.window.location.reload(true);//刷新当前页
+        parent.window.location.reload();//刷新当前页
     } else {
         layer.msg(answer.responseText, {icon: 5, time: 1000});
     }
@@ -74,7 +76,7 @@ function modifyReq(url, dataParam, isReload) {
         if (data.code === 0) {
             layer.msg(data.msg, {icon: 6, time: 1000});
             if (isReload) {
-                window.location.reload(true);//刷新当前页
+                window.location.reload();//刷新当前页
             }
         } else {
             layer.msg(data.msg, {icon: 5});

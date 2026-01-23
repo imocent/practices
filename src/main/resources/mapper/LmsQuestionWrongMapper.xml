@@ -4,12 +4,13 @@
   <resultMap id="BaseResultMap" type="com.fit.entity.LmsQuestionWrong">
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="USER_ID" jdbcType="BIGINT" property="userId" />
+    <result column="ROOM_ID" jdbcType="BIGINT" property="roomId" />
     <result column="QUESTION_ID" jdbcType="BIGINT" property="questionId" />
     <result column="WRONG_COUNT" jdbcType="INTEGER" property="wrongCount" />
     <result column="LAST_WRONG_TIME" jdbcType="TIMESTAMP" property="lastWrongTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, USER_ID, QUESTION_ID, WRONG_COUNT, LAST_WRONG_TIME
+    ID, USER_ID, ROOM_ID, QUESTION_ID, WRONG_COUNT, LAST_WRONG_TIME
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,6 +31,9 @@
       <if test="userId != null">
         USER_ID,
       </if>
+      <if test="roomId != null">
+        ROOM_ID,
+      </if>
       <if test="questionId != null">
         QUESTION_ID,
       </if>
@@ -47,6 +51,9 @@
       <if test="userId != null">
         #{userId,jdbcType=BIGINT},
       </if>
+      <if test="roomId != null">
+        #{roomId,jdbcType=BIGINT},
+      </if>
       <if test="questionId != null">
         #{questionId,jdbcType=BIGINT},
       </if>
@@ -63,6 +70,9 @@
     <set>
       <if test="userId != null">
         USER_ID = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="roomId != null">
+        ROOM_ID = #{roomId,jdbcType=BIGINT},
       </if>
       <if test="questionId != null">
         QUESTION_ID = #{questionId,jdbcType=BIGINT},
@@ -83,6 +93,9 @@
       </if>
       <if test="userId != null and userId != ''">
          and USER_ID = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="roomId != null and roomId != ''">
+         and ROOM_ID = #{roomId,jdbcType=BIGINT}
       </if>
       <if test="questionId != null and questionId != ''">
          and QUESTION_ID = #{questionId,jdbcType=BIGINT}
