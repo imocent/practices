@@ -2,7 +2,8 @@
 SQLyog v10.2 
 MySQL - 5.7.9 : Database - fit
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -188,11 +189,12 @@ CREATE TABLE `lms_question_answer_user` (
   `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
   `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='用户答题表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户答题表';
 
 /*Data for the table `lms_question_answer_user` */
 
-insert  into `lms_question_answer_user`(`ID`,`CTIME`,`CUSER`,`EXAM_ROOM_ID`,`EXAM_ROOM_NAME`,`SUBJECT_NAME`,`TOTAL_SCORE`,`ANSWER_SCORE`,`DURATION`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,NULL,1,NULL,NULL),(3,'2026-01-23 19:37:51',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,'',0,NULL,NULL);
+insert  into `lms_question_answer_user`(`ID`,`CTIME`,`CUSER`,`EXAM_ROOM_ID`,`EXAM_ROOM_NAME`,`SUBJECT_NAME`,`TOTAL_SCORE`,`ANSWER_SCORE`,
+                                        `DURATION`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,NULL,1,NULL,NULL),(2,'2026-01-23 19:37:51',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,'',0,NULL,NULL);
 
 /*Table structure for table `lms_question_learn` */
 
