@@ -83,7 +83,7 @@ body {
     text-align: center;
 }
 
-.home-user .layui-card-body{
+.home-user .layui-card-body {
     height: 540px;
     text-align: center;
 }
@@ -106,7 +106,7 @@ body {
 
 .index-footer {
     background: #2c3e50;
-    color: #fff;
+    color: white;
     padding-top: 20px;
     margin-top: auto;
 }
@@ -138,7 +138,7 @@ body {
 }
 
 .layui-search-btn .layui-icon {
-    color: #FFF;
+    color: white;
 }
 
 .layui-input-group > .layui-input-suffix {
@@ -150,6 +150,10 @@ body {
     height: 24px;
     margin-right: 10px;
     vertical-align: middle;
+}
+
+#mainNav .layui-layout-left .layui-nav-item a {
+    color: white !important;
 }
 
 .options {
@@ -185,7 +189,7 @@ body {
 
 .room-right {
     float: right;
-    color: #FFF;
+    color: white;
 }
 
 .room-body {
@@ -207,7 +211,7 @@ body {
 }
 
 .search-section {
-    background-color: #fff;
+    background-color: white;
     padding: 40px 0;
 }
 

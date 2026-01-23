@@ -74,7 +74,27 @@ public class LmsUserController extends BaseController {
             return AjaxResult.error("请登录后提交");
         } else {
             Map<String, Object> map = WebUtil.getRequestMap(request);
+            LmsQuestionAnswerUser bean = BeanUtil.map2Bean(LmsQuestionAnswerUser.class, map);
+            bean.setCuser(userId);
+            bean.setCtime(new Date());
+            this.answerUserService.save(bean);
             return AjaxResult.success();
+        }
+    }
+
+    @PostMapping("/answerDel")
+    @ResponseBody
+    public AjaxResult answerDel(Long id) {
+        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+        if (userId == null) {
+            return AjaxResult.error("请登录后提交");
+        } else {
+            int delete = this.answerUserService.delete(id);
+            if (delete > 0) {
+                return AjaxResult.success("删除成功");
+            } else {
+                return AjaxResult.error("删除失败");
+            }
         }
     }
 

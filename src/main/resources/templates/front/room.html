@@ -29,6 +29,9 @@
                 <div class="layui-card-body layui-hide" id="ID-flow">
                     <div class="layui-form room-body">
                         <input type="hidden" name="duration" id="duration"/>
+                        <input type="hidden" name="examRoomId" id="examRoomId" th:value="${room?.id}"/>
+                        <input type="hidden" name="examRoomName" id="examRoomName" th:value="${room?.title}"/>
+                        <input type="hidden" name="subjectName" id="subjectName" th:value="${room?.subjectName}"/>
                         <div class="question-container" th:id="${#strings.concat('q_', qStat.index)}" th:each="q,qStat : ${questions}">
                             <span th:text="${qStat.index+1}"></span>.
                             <div class="question-content" th:text="${q?.CONTENT}">问题</div>
@@ -170,6 +173,7 @@
         }
 
         form.on('submit(sbt_form)', function (obj) {
+            $(this).prop('disabled', true).addClass('layui-btn-disabled');
             switch (obj.elem.getAttribute('data-id')) {
                 case 'check':
                     var verify = validateExamForm();
@@ -193,7 +197,7 @@
                 case 'submit':
                     break;
             }
-            form.render();
+            $(this).prop('disabled', true).removeClass('layui-btn-disabled');
             return false;
         });
 
