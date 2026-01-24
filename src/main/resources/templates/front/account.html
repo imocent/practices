@@ -2,36 +2,33 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 基本资料')"></head>
 <body>
-<div class="layui-container layui-fluid">
-    <div class="layui-row layui-card">
-        <div class="layui-card-header"><i class="layui-icon">&#xe66f; 基本资料</i></div>
-        <div class="layui-card-body layui-form">
-            <div class="layui-form-item" style="text-align: center">
-                <img class="home-avatar" th:src="${user?.userImg?:'/images/logo.png'}" width="32" height="32"/>
-                <h4 th:text="${user?.username}"></h4>
+<div class="layui-container index-body">
+    <div class="layui-row layui-form">
+        <div class="layui-form-item" style="text-align: center">
+            <img class="home-avatar" th:src="${user?.userImg?:'/images/logo.png'}" width="32" height="32"/>
+            <h4 th:text="${user?.username}"></h4>
+        </div>
+        <div class="layui-form-item" th:if="${user?.deptName!= ''}">
+            <label for="dept_name" class="layui-form-label">部门</label>
+            <div class="layui-input-block">
+                <input type="text" id="dept_name" th:value="${user?.deptName}" class="layui-input" disabled/>
             </div>
-            <div class="layui-form-item" th:if="${user?.deptName!= ''}">
-                <label for="dept_name" class="layui-form-label">部门</label>
-                <div class="layui-input-block">
-                    <input type="text" id="dept_name" th:value="${user?.deptName}" class="layui-input" disabled/>
-                </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" id="name" name="name" th:value="${user?.name}" class="layui-input"/>
             </div>
-            <div class="layui-form-item">
-                <label for="name" class="layui-form-label">用户名</label>
-                <div class="layui-input-block">
-                    <input type="text" id="name" name="name" th:value="${user?.name}" class="layui-input"/>
-                </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="desc" class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <input type="text" id="desc" name="notes" th:value="${user?.notes}" class="layui-input"/>
             </div>
-            <div class="layui-form-item">
-                <label for="desc" class="layui-form-label">描述</label>
-                <div class="layui-input-block">
-                    <input type="text" id="desc" name="notes" th:value="${user?.notes}" class="layui-input"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block layui-align">
-                    <button class="layui-btn layui-bg-purple" lay-submit lay-filter="submit-form">保存</button>
-                </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block layui-align">
+                <button class="layui-btn layui-bg-purple" lay-submit lay-filter="submit-form">保存</button>
             </div>
         </div>
     </div>

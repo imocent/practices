@@ -92,6 +92,18 @@ body {
     margin: 10px;
 }
 
+.index-body {
+    margin: 20px 0;
+    position:relative;
+}
+
+.index-footer {
+    background: #2c3e50;
+    color: white;
+    padding-top: 20px;
+    margin-top: auto;
+}
+
 .index-icon-search {
     position: absolute;
     left: 10px;
@@ -104,12 +116,6 @@ body {
     padding-left: 30px;
 }
 
-.index-footer {
-    background: #2c3e50;
-    color: white;
-    padding-top: 20px;
-    margin-top: auto;
-}
 
 .index-search {
     position: absolute;

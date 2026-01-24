@@ -2,32 +2,29 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 修改密码')"></head>
 <body>
-<div class="layui-container layui-fluid">
-    <div class="layui-row layui-card">
-        <div class="layui-card-header"><i class="layui-icon">&#xe673; 修改密码</i></div>
-        <div class="layui-card-body layui-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">当前密码</label>
-                <div class="layui-input-block">
-                    <input type="password" name="oldPassword" lay-verify="required" placeholder="6到16个字符" class="layui-input"/>
-                </div>
+<div class="layui-container index-body">
+    <div class="layui-row layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">当前密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="oldPassword" lay-verify="required" placeholder="6到16个字符" class="layui-input"/>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">新密码</label>
-                <div class="layui-input-block">
-                    <input type="password" id="npw" name="password" lay-verify="required" placeholder="6到16个字符" class="layui-input"/>
-                </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-block">
+                <input type="password" id="npw" name="password" lay-verify="required" placeholder="6到16个字符" class="layui-input"/>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">确认新密码</label>
-                <div class="layui-input-block">
-                    <input type="password" id="cpw" name="newPassword" lay-verify="repass" placeholder="6到16个字符" class="layui-input"/>
-                </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认新密码</label>
+            <div class="layui-input-block">
+                <input type="password" id="cpw" name="newPassword" lay-verify="repass" placeholder="6到16个字符" class="layui-input"/>
             </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn layui-bg-purple" lay-submit lay-filter="lay_submit">确认修改</button>
-                </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-bg-purple" lay-submit lay-filter="lay_submit">确认修改</button>
             </div>
         </div>
     </div>

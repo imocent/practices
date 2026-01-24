@@ -43,7 +43,7 @@
 
         function layOpen(title, url, lo_w, lo_h) {
             lo_w = typeof lo_w === 'undefined' ? '50%' : lo_w;
-            lo_h = typeof lo_h === 'undefined' ? '40%' : lo_h;
+            lo_h = typeof lo_h === 'undefined' ? '50%' : lo_h;
             layer.open({type: 2, title: title, area: [lo_w, lo_h], shade: 0.8, content: url});
         }
 
@@ -111,13 +111,13 @@
             $('#mainNav').on("click", "*[lay-event]", function (e) {
                 switch ($(this).attr("lay-event")) {
                     case 'login':
-                        layOpen('用户登录', '/user/login', '360px', '240px');
+                        layOpen('用户登录', '/user/login', '360px', '260px');
                         break;
                     case 'userInfo':
-                        layOpen('用户登录', '/user/account');
+                        layOpen('<i class="layui-icon">&#xe66f; 基本资料</i>', '/user/account');
                         break;
                     case 'userPwd':
-                        layOpen('修改密码', '/user/adjust');
+                        layOpen('<i class="layui-icon">&#xe673; 修改密码</i>', '/user/adjust');
                         break;
                 }
             });
