@@ -33,7 +33,7 @@
     delete from sys_resources
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.SysResources">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.SysResources" useGeneratedKeys="true">
     insert into sys_resources
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

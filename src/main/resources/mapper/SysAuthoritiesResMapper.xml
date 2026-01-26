@@ -19,7 +19,7 @@
     delete from sys_authorities_res
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.SysAuthoritiesRes">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.SysAuthoritiesRes" useGeneratedKeys="true">
     insert into sys_authorities_res
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

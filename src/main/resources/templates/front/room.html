@@ -28,7 +28,7 @@
                 </div>
                 <div class="layui-card-body layui-hide" id="ID-flow">
                     <div class="layui-form room-body">
-                        <input type="hidden" name="duration" id="duration"/>
+                        <input type="hidden" name="duration" id="duration" th:value="${duration?:0}"/>
                         <input type="hidden" name="enabled" id="enabled" value="1"/>
                         <input type="hidden" name="examRoomId" id="examRoomId" th:value="${room?.id}"/>
                         <input type="hidden" name="examRoomName" id="examRoomName" th:value="${room?.title}"/>
@@ -38,10 +38,10 @@
                             <div class="question-content" th:text="${q?.CONTENT}">问题</div>
                             <ul class="options">
                                 <li th:each="info,infoStat : ${#strings.arraySplit(q?.answer_info, ';')}">
-                                    <input type="radio" class="layui-input"
-                                           th:name="${#strings.concat('q_', q.ID)}"
-                                           th:value="${#strings.arraySplit(info, '|')[0]}"
-                                           th:text="${#strings.arraySplit(info, '|')[1]}"/>
+                                    <input th:with="parts=${#strings.arraySplit(info?.trim(), '|')},isCheck=${parts[0] == q?.checked?true:false}"
+                                           th:name="${#strings.concat('q_', q.ID,'_',parts[2])}" th:value="${parts[0]}" th:text="${parts[1]}"
+                                           th:data-a="${parts[0]}" th:data-b="${q?.checked}" th:checked="${isCheck}" type="radio"
+                                           class="layui-input"/>
                                 </li>
                             </ul>
                         </div>
@@ -130,7 +130,7 @@
         // 初始化折叠面板
         element.render('collapse');
 
-        var intervalId, totalSeconds = 0;
+        var intervalId, totalSeconds = parseInt($("#duration").val()) || 0;
         $('.room').on('click', '.layui-btn', function (e) {
             e.stopPropagation();
             var $btn = $(this);
@@ -143,6 +143,7 @@
                 intervalId = setInterval(function () {
                     totalSeconds += 1000;
                     $("#timer").text(new Date(totalSeconds).Format("HH:mm:ss", true));
+                    $("#duration").val(totalSeconds);
                 }, 1000);
                 $('#ID-body').addClass('layui-hide');
                 $('#ID-flow').removeClass('layui-hide');
@@ -186,7 +187,6 @@
                 case 'save':
                     $("#enabled").val(0);
                 case 'submit':
-                    $('#duration').val(totalSeconds);
                     $.post('/user/answerSave', obj.field, function (data) {
                         if (data.code === -1) {
                             layer.msg(data.msg, {icon: 5, time: 1000});

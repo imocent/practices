@@ -19,7 +19,7 @@
     delete from sys_role_auth
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.SysRoleAuth">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.SysRoleAuth" useGeneratedKeys="true">
     insert into sys_role_auth
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

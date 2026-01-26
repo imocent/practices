@@ -34,7 +34,7 @@ public class LmsQuestionUserAnswer extends BaseEntity<LmsQuestionUserAnswer> {
     /**
      * 用户答题内容
      */
-    private Long qoValue;
+    private String qoValue;
 
     /**
      * 是否正确: 0-错误,1-正确

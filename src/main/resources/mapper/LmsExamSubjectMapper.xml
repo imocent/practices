@@ -27,7 +27,7 @@
     delete from lms_exam_subject
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.LmsExamSubject">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.LmsExamSubject" useGeneratedKeys="true">
     insert into lms_exam_subject
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

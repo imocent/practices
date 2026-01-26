@@ -70,7 +70,7 @@
                     console.log('see')
                     break;
                 case "gon":
-                    console.log('gon')
+                    window.open(`/room?id=${obj.data.examRoomId}&quaid=${obj.data.id}`, '_blank', 'noopener');
                     break;
                 case "del":
                     formAjax('/user/answerDel', {'id': obj.data.id});

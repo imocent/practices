@@ -29,7 +29,7 @@
     delete from lms_question_user
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.LmsQuestionUser">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.LmsQuestionUser" useGeneratedKeys="true">
     insert into lms_question_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

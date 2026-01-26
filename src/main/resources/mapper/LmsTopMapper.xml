@@ -31,7 +31,7 @@
     delete from lms_top
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.LmsTop">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.LmsTop" useGeneratedKeys="true">
     insert into lms_top
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

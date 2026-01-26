@@ -20,7 +20,7 @@
     delete from lms_question_answer
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.LmsQuestionAnswer">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.LmsQuestionAnswer" useGeneratedKeys="true">
     insert into lms_question_answer
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

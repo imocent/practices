@@ -3,7 +3,9 @@ package com.fit.web.front;
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.LmsQuestionUser;
+import com.fit.entity.LmsQuestionUserAnswer;
 import com.fit.entity.SysUser;
+import com.fit.service.LmsQuestionUserAnswerService;
 import com.fit.service.LmsQuestionUserService;
 import com.fit.service.SysUserService;
 import com.fit.util.BeanUtil;
@@ -41,6 +43,8 @@ public class LmsUserController extends BaseController {
     private SysUserService userService;
     @Autowired
     private LmsQuestionUserService questionUserService;
+    @Autowired
+    private LmsQuestionUserAnswerService questionUserAnswerService;
 
     @GetMapping("/login")
     public String userLogin(HttpServletRequest request, Model model) {
@@ -80,7 +84,24 @@ public class LmsUserController extends BaseController {
             LmsQuestionUser bean = BeanUtil.map2Bean(LmsQuestionUser.class, map);
             bean.setCuser(userId);
             bean.setCtime(new Date());
-            this.questionUserService.save(bean);
+            try {
+                Long quid = this.questionUserService.save(bean);
+                for (String key : map.keySet()) {
+                    if (key.startsWith("q_")) {
+                        LmsQuestionUserAnswer answer = new LmsQuestionUserAnswer();
+                        String[] keys = key.split("_");
+                        answer.setCuser(userId);
+                        answer.setCtime(new Date());
+                        answer.setQuid(quid);
+                        answer.setQid(Long.parseLong(keys[1]));
+                        answer.setQoValue(map.get(key).toString());
+                        answer.setEnabled(keys[2].equals("1"));
+                        this.questionUserAnswerService.save(answer);
+                    }
+                }
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
             return AjaxResult.success();
         }
     }

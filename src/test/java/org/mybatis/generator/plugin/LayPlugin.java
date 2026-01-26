@@ -190,6 +190,9 @@ public class LayPlugin extends PluginAdapter {
             }
         }
         element.addAttribute(new Attribute("id", "save"));
+        element.addAttribute(new Attribute("keyColumn", "id"));
+        element.addAttribute(new Attribute("keyProperty", "id"));
+        element.addAttribute(new Attribute("useGeneratedKeys", "true"));
         Collections.reverse(attributes);
         return true;
     }

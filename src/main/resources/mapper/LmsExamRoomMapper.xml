@@ -48,7 +48,7 @@
     delete from lms_exam_room
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.LmsExamRoom">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.LmsExamRoom" useGeneratedKeys="true">
     insert into lms_exam_room
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

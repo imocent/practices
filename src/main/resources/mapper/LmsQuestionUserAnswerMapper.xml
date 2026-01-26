@@ -7,7 +7,7 @@
     <result column="CUSER" jdbcType="BIGINT" property="cuser" />
     <result column="QUID" jdbcType="BIGINT" property="quid" />
     <result column="QID" jdbcType="BIGINT" property="qid" />
-    <result column="QO_VALUE" jdbcType="BIGINT" property="qoValue" />
+    <result column="QO_VALUE" jdbcType="VARCHAR" property="qoValue" />
     <result column="ENABLED" jdbcType="BIT" property="enabled" />
     <result column="ETIME" jdbcType="TIMESTAMP" property="etime" />
     <result column="EUSER" jdbcType="BIGINT" property="euser" />
@@ -25,7 +25,7 @@
     delete from lms_question_user_answer
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.LmsQuestionUserAnswer">
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.LmsQuestionUserAnswer" useGeneratedKeys="true">
     insert into lms_question_user_answer
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -73,7 +73,7 @@
         #{qid,jdbcType=BIGINT},
       </if>
       <if test="qoValue != null">
-        #{qoValue,jdbcType=BIGINT},
+        #{qoValue,jdbcType=VARCHAR},
       </if>
       <if test="enabled != null">
         #{enabled,jdbcType=BIT},
@@ -102,7 +102,7 @@
         QID = #{qid,jdbcType=BIGINT},
       </if>
       <if test="qoValue != null">
-        QO_VALUE = #{qoValue,jdbcType=BIGINT},
+        QO_VALUE = #{qoValue,jdbcType=VARCHAR},
       </if>
       <if test="enabled != null">
         ENABLED = #{enabled,jdbcType=BIT},
@@ -137,7 +137,7 @@
          and QID = #{qid,jdbcType=BIGINT}
       </if>
       <if test="qoValue != null and qoValue != ''">
-         and QO_VALUE = #{qoValue,jdbcType=BIGINT}
+         and QO_VALUE = #{qoValue,jdbcType=VARCHAR}
       </if>
       <if test="enabled != null and enabled != ''">
          and ENABLED = #{enabled,jdbcType=BIT}

@@ -1,6 +1,6 @@
 /*
 SQLyog v10.2 
-MySQL - 5.6.40-log : Database - fit
+MySQL - 5.7.9 : Database - fit
 *********************************************************************
 */
 
@@ -229,7 +229,7 @@ CREATE TABLE `lms_question_user_answer` (
   `CUSER` bigint(30) DEFAULT NULL COMMENT '创建人',
   `QUID` bigint(30) NOT NULL COMMENT '用户答题记录ID',
   `QID` bigint(30) NOT NULL COMMENT '题目ID',
-  `QO_VALUE` bigint(30) NOT NULL COMMENT '用户答题内容',
+  `QO_VALUE` varchar(30) NOT NULL COMMENT '用户答题内容',
   `ENABLED` tinyint(1) DEFAULT '0' COMMENT '是否正确: 0-错误,1-正确',
   `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
   `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',

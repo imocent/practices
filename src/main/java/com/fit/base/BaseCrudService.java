@@ -73,8 +73,12 @@ public abstract class BaseCrudService<D extends BaseCrudDao<T>, T extends BaseEn
      * @param entity
      */
     @Transactional
-    public void save(T entity) {
-        dao.save(entity);
+    public Long save(T entity) {
+        int rows = dao.save(entity);
+        if (rows > 0) {
+            return entity.getId();
+        }
+        return 0L;
     }
 
     /**
