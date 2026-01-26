@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fit.dao.LmsQuestionAnswerUserDao">
-  <resultMap id="BaseResultMap" type="com.fit.entity.LmsQuestionAnswerUser">
+<mapper namespace="com.fit.dao.LmsQuestionUserDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsQuestionUser">
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
     <result column="CUSER" jdbcType="BIGINT" property="cuser" />
@@ -22,15 +22,15 @@
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from lms_question_answer_user
+    from lms_question_user
     where ID = #{id,jdbcType=BIGINT}
   </select>
   <delete id="delete" parameterType="java.lang.Long">
-    delete from lms_question_answer_user
+    delete from lms_question_user
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="com.fit.entity.LmsQuestionAnswerUser">
-    insert into lms_question_answer_user
+  <insert id="save" parameterType="com.fit.entity.LmsQuestionUser">
+    insert into lms_question_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         ID,
@@ -108,8 +108,8 @@
       </if>
     </trim>
   </insert>
-  <update id="update" parameterType="com.fit.entity.LmsQuestionAnswerUser">
-    update lms_question_answer_user
+  <update id="update" parameterType="com.fit.entity.LmsQuestionUser">
+    update lms_question_user
     <set>
       <if test="ctime != null">
         CTIME = #{ctime,jdbcType=TIMESTAMP},
@@ -196,7 +196,7 @@
   <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM lms_question_answer_user
+    FROM lms_question_user
     <include refid="Base_Where_List" />
     order by ID desc
     <if test="page != null and limit != null">
@@ -205,16 +205,16 @@
     </if>
   </select>
   <select id="findCount" resultType="java.lang.Integer">
-    SELECT count(1) FROM lms_question_answer_user
+    SELECT count(1) FROM lms_question_user
     <include refid="Base_Where_List" />
   </select>
   <delete id="batchDelete" parameterType="java.util.List">
-    delete from lms_question_answer_user where ID in
+    delete from lms_question_user where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">
       #{id}
     </foreach>
   </delete>
   <update id="deleteTable">
-    truncate table lms_question_answer_user
+    truncate table lms_question_user
   </update>
 </mapper>

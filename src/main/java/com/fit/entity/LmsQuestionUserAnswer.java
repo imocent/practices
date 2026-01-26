@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.*;
 
 @Data
-public class LmsQuestionAnswerUser extends BaseEntity<LmsQuestionAnswerUser> {
+public class LmsQuestionUserAnswer extends BaseEntity<LmsQuestionUserAnswer> {
     /**
      * 题目ID
      */
@@ -22,37 +22,22 @@ public class LmsQuestionAnswerUser extends BaseEntity<LmsQuestionAnswerUser> {
     private Long cuser;
 
     /**
-     * 答题室ID
+     * 用户答题记录ID
      */
-    private Long examRoomId;
+    private Long quid;
 
     /**
-     * 答题室名
+     * 题目ID
      */
-    private String examRoomName;
+    private Long qid;
 
     /**
-     * 学科名
+     * 用户答题内容
      */
-    private String subjectName;
+    private Long qoValue;
 
     /**
-     * 题总分数
-     */
-    private String totalScore;
-
-    /**
-     * 答题分数
-     */
-    private String answerScore;
-
-    /**
-     * 答题用时
-     */
-    private String duration;
-
-    /**
-     * 是否启用: 0-临时,1-答完
+     * 是否正确: 0-错误,1-正确
      */
     private Boolean enabled;
 
@@ -75,12 +60,9 @@ public class LmsQuestionAnswerUser extends BaseEntity<LmsQuestionAnswerUser> {
         sb.append(", id=").append(id);
         sb.append(", ctime=").append(ctime);
         sb.append(", cuser=").append(cuser);
-        sb.append(", examRoomId=").append(examRoomId);
-        sb.append(", examRoomName=").append(examRoomName);
-        sb.append(", subjectName=").append(subjectName);
-        sb.append(", totalScore=").append(totalScore);
-        sb.append(", answerScore=").append(answerScore);
-        sb.append(", duration=").append(duration);
+        sb.append(", quid=").append(quid);
+        sb.append(", qid=").append(qid);
+        sb.append(", qoValue=").append(qoValue);
         sb.append(", enabled=").append(enabled);
         sb.append(", etime=").append(etime);
         sb.append(", euser=").append(euser);

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.LmsQuestionUserAnswerDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsQuestionUserAnswer">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CTIME" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="CUSER" jdbcType="BIGINT" property="cuser" />
+    <result column="QUID" jdbcType="BIGINT" property="quid" />
+    <result column="QID" jdbcType="BIGINT" property="qid" />
+    <result column="QO_VALUE" jdbcType="BIGINT" property="qoValue" />
+    <result column="ENABLED" jdbcType="BIT" property="enabled" />
+    <result column="ETIME" jdbcType="TIMESTAMP" property="etime" />
+    <result column="EUSER" jdbcType="BIGINT" property="euser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, CTIME, CUSER, QUID, QID, QO_VALUE, ENABLED, ETIME, EUSER
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lms_question_user_answer
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from lms_question_user_answer
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.fit.entity.LmsQuestionUserAnswer">
+    insert into lms_question_user_answer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="ctime != null">
+        CTIME,
+      </if>
+      <if test="cuser != null">
+        CUSER,
+      </if>
+      <if test="quid != null">
+        QUID,
+      </if>
+      <if test="qid != null">
+        QID,
+      </if>
+      <if test="qoValue != null">
+        QO_VALUE,
+      </if>
+      <if test="enabled != null">
+        ENABLED,
+      </if>
+      <if test="etime != null">
+        ETIME,
+      </if>
+      <if test="euser != null">
+        EUSER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null">
+        #{cuser,jdbcType=BIGINT},
+      </if>
+      <if test="quid != null">
+        #{quid,jdbcType=BIGINT},
+      </if>
+      <if test="qid != null">
+        #{qid,jdbcType=BIGINT},
+      </if>
+      <if test="qoValue != null">
+        #{qoValue,jdbcType=BIGINT},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
+      <if test="etime != null">
+        #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="euser != null">
+        #{euser,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.LmsQuestionUserAnswer">
+    update lms_question_user_answer
+    <set>
+      <if test="ctime != null">
+        CTIME = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null">
+        CUSER = #{cuser,jdbcType=BIGINT},
+      </if>
+      <if test="quid != null">
+        QUID = #{quid,jdbcType=BIGINT},
+      </if>
+      <if test="qid != null">
+        QID = #{qid,jdbcType=BIGINT},
+      </if>
+      <if test="qoValue != null">
+        QO_VALUE = #{qoValue,jdbcType=BIGINT},
+      </if>
+      <if test="enabled != null">
+        ENABLED = #{enabled,jdbcType=BIT},
+      </if>
+      <if test="etime != null">
+        ETIME = #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="euser != null">
+        EUSER = #{euser,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="id != null and id != ''">
+         and ID = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="ctime != null ">
+         and CTIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and CTIME &lt;= #{etime } 
+      </if>
+      <if test="cuser != null and cuser != ''">
+         and CUSER = #{cuser,jdbcType=BIGINT}
+      </if>
+      <if test="quid != null and quid != ''">
+         and QUID = #{quid,jdbcType=BIGINT}
+      </if>
+      <if test="qid != null and qid != ''">
+         and QID = #{qid,jdbcType=BIGINT}
+      </if>
+      <if test="qoValue != null and qoValue != ''">
+         and QO_VALUE = #{qoValue,jdbcType=BIGINT}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and ENABLED = #{enabled,jdbcType=BIT}
+      </if>
+      <if test="ctime != null ">
+         and ETIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and ETIME &lt;= #{etime } 
+      </if>
+      <if test="euser != null and euser != ''">
+         and EUSER = #{euser,jdbcType=BIGINT}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_question_user_answer
+    <include refid="Base_Where_List" />
+    order by ID desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM lms_question_user_answer
+    <include refid="Base_Where_List" />
+  </select>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from lms_question_user_answer where ID in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table lms_question_user_answer
+  </update>
+</mapper>

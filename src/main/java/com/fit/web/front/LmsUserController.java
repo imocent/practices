@@ -2,9 +2,9 @@ package com.fit.web.front;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
-import com.fit.entity.LmsQuestionAnswerUser;
+import com.fit.entity.LmsQuestionUser;
 import com.fit.entity.SysUser;
-import com.fit.service.LmsQuestionAnswerUserService;
+import com.fit.service.LmsQuestionUserService;
 import com.fit.service.SysUserService;
 import com.fit.util.BeanUtil;
 import com.fit.util.WebUtil;
@@ -15,7 +15,10 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -37,7 +40,7 @@ public class LmsUserController extends BaseController {
     @Autowired
     private SysUserService userService;
     @Autowired
-    private LmsQuestionAnswerUserService answerUserService;
+    private LmsQuestionUserService questionUserService;
 
     @GetMapping("/login")
     public String userLogin(HttpServletRequest request, Model model) {
@@ -60,8 +63,8 @@ public class LmsUserController extends BaseController {
         } else {
             Map<String, Object> map = WebUtil.getRequestMap(request);
             map.put("cuser", userId);
-            List<LmsQuestionAnswerUser> list = answerUserService.findList(map);
-            int count = answerUserService.findCount(map);
+            List<LmsQuestionUser> list = questionUserService.findList(map);
+            int count = questionUserService.findCount(map);
             return AjaxResult.tables(count, list);
         }
     }
@@ -74,10 +77,10 @@ public class LmsUserController extends BaseController {
             return AjaxResult.error("请登录后提交");
         } else {
             Map<String, Object> map = WebUtil.getRequestMap(request);
-            LmsQuestionAnswerUser bean = BeanUtil.map2Bean(LmsQuestionAnswerUser.class, map);
+            LmsQuestionUser bean = BeanUtil.map2Bean(LmsQuestionUser.class, map);
             bean.setCuser(userId);
             bean.setCtime(new Date());
-            this.answerUserService.save(bean);
+            this.questionUserService.save(bean);
             return AjaxResult.success();
         }
     }
@@ -89,7 +92,7 @@ public class LmsUserController extends BaseController {
         if (userId == null) {
             return AjaxResult.error("请登录后提交");
         } else {
-            int delete = this.answerUserService.delete(id);
+            int delete = this.questionUserService.delete(id);
             if (delete > 0) {
                 return AjaxResult.success("删除成功");
             } else {
