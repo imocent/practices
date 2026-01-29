@@ -5,6 +5,7 @@ import com.fit.base.BaseController;
 import com.fit.entity.*;
 import com.fit.service.*;
 import com.fit.util.BeanUtil;
+import com.fit.util.JsonRepair;
 import com.fit.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -198,5 +199,11 @@ public class IndexController extends BaseController {
     @GetMapping("/tools")
     public String tools(HttpServletRequest request, Model model) {
         return "front/tools";
+    }
+
+    @GetMapping("/json/repair")
+    @ResponseBody
+    public Object json_repair(String json) {
+        return AjaxResult.success(JsonRepair.getInstance(json));
     }
 }

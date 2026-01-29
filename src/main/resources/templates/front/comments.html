@@ -2,49 +2,51 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 留言')"></head>
 <body>
-<th:block th:include="include :: f_header"></th:block>
-<div class="layui-container layui-fluid">
-    <div class="layui-row layui-card">
-        <form lay-filter="searchForm" class="layui-form">
-            <div class="layui-card-body">
-                <div class="layui-row layui-col-space10">
-                    <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
-                        <i class="layui-icon layui-icon-search index-icon-search"></i>
-                        <input type="text" name="content" th:value="${content}" class="layui-input index-input" placeholder="请输入留言..."/>
-                        <button type="button" id="resetBtn" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
-                    </div>
-                    <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
-                        <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
-                            <i class="layui-icon">&#xe615; 搜索</i>
-                        </button>
+<div class="home-body">
+    <th:block th:include="include :: f_header"></th:block>
+    <div class="layui-container layui-fluid">
+        <div class="layui-row layui-card">
+            <form lay-filter="searchForm" class="layui-form">
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space10">
+                        <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
+                            <i class="layui-icon layui-icon-search index-icon-search"></i>
+                            <input type="text" name="content" th:value="${content}" class="layui-input index-input" placeholder="请输入留言..."/>
+                            <button type="button" id="resetBtn" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
+                            <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
+                                <i class="layui-icon">&#xe615; 搜索</i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
-    </div>
-    <div class="layui-row layui-card">
-        <div class="layui-col-xs12" style="padding: 15px 0; border-bottom: 1px solid #eee;" th:each="comment : ${comments}">
-            <div class="layui-col-md1 layui-col-sm1 layui-col-xs2  laytable-cell-space">
-                <img src="/images/logo.png" alt="头像" style="width: 40px; height: 40px; border-radius: 50%;">
-            </div>
-            <div class="layui-col-md10 layui-col-sm10 layui-col-xs6 ">
-                <div style="font-weight: bold;" th:text="${comment.username}">用户名</div>
-                <div style="color: #999; font-size: 12px;" th:text="${#dates.format(comment.ctime, 'yyyy-MM-dd HH:mm:ss')}">留言时间</div>
-                <div style="color: #666; font-size: 12px; margin-top: 5px;" th:text="${comment.content}">内容</div>
-            </div>
-            <div class="layui-col-md1 layui-col-sm1 layui-col-xs4 layui-btn-container layui-table-pagebar">
-                <button class="layui-btn layui-btn-sm layui-btn-xs layui-btn-normal" th:data-id="${comment.id}">收藏</button>
-                <button class="layui-btn layui-btn-sm layui-btn-xs" th:data-id="${comment.id}">点赞</button>
+            </form>
+        </div>
+        <div class="layui-row layui-card">
+            <div class="layui-col-xs12" style="padding: 15px 0; border-bottom: 1px solid #eee;" th:each="comment : ${comments}">
+                <div class="layui-col-md1 layui-col-sm1 layui-col-xs2  laytable-cell-space">
+                    <img src="/images/logo.png" alt="头像" style="width: 40px; height: 40px; border-radius: 50%;">
+                </div>
+                <div class="layui-col-md10 layui-col-sm10 layui-col-xs6 ">
+                    <div style="font-weight: bold;" th:text="${comment.username}">用户名</div>
+                    <div style="color: #999; font-size: 12px;" th:text="${#dates.format(comment.ctime, 'yyyy-MM-dd HH:mm:ss')}">留言时间</div>
+                    <div style="color: #666; font-size: 12px; margin-top: 5px;" th:text="${comment.content}">内容</div>
+                </div>
+                <div class="layui-col-md1 layui-col-sm1 layui-col-xs4 layui-btn-container layui-table-pagebar">
+                    <button class="layui-btn layui-btn-sm layui-btn-xs layui-btn-normal" th:data-id="${comment.id}">收藏</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-xs" th:data-id="${comment.id}">点赞</button>
+                </div>
             </div>
         </div>
+        <div class="layui-row layui-card">
+            <!-- 分页 -->
+            <div id="pagination" class="laytable-cell-space layui-fluid"></div>
+        </div>
     </div>
-    <div class="layui-row layui-card">
-        <!-- 分页 -->
-        <div id="pagination" class="laytable-cell-space layui-fluid"></div>
-    </div>
+    <!-- 底部信息 -->
+    <th:block th:include="include :: f_footer"></th:block>
 </div>
-<!-- 底部信息 -->
-<th:block th:include="include :: f_footer"></th:block>
 <script>
     layui.use(['jquery', 'form', 'laypage'], function ($, form) {
         layPage('pagination', "[[${count}]]");
@@ -60,7 +62,7 @@
         });
 
         document.querySelectorAll('.layui-btn-container.layui-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 if (this.textContent.includes('已收藏')) {
                     this.classList.remove('layui-btn-primary');
                     this.classList.add('layui-btn-normal');

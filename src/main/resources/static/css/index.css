@@ -2,22 +2,6 @@ html, body {
     height: 100%;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.category-item {
-    text-align: center;
-    padding: 20px 10px;
-    transition: all 0.3s;
-}
-
-.category-item:hover {
-    background-color: #f8f8f8;
-    transform: translateY(-3px);
-}
-
 .comments-icon {
     overflow: hidden;
     float: left;
@@ -29,15 +13,6 @@ body {
     line-height: 30px;
     margin-right: 15px;
     color: #C4CBCF;
-}
-
-.course-card, .teacher-card {
-    transition: all 0.3s;
-}
-
-.course-card:hover, .teacher-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .fixed-content-height {
@@ -79,13 +54,10 @@ body {
     border-color: #1E9FFF;
 }
 
-.home-user .layui-card {
-    text-align: center;
-}
-
-.home-user .layui-card-body {
-    height: 540px;
-    text-align: center;
+.home-body {
+    display: flex;
+    flex-direction: column;
+    height: inherit;
 }
 
 .home-avatar {
@@ -94,13 +66,13 @@ body {
 
 .index-body {
     margin: 20px 0;
-    position:relative;
+    position: relative;
 }
 
 .index-footer {
     background: #2c3e50;
     color: white;
-    padding-top: 20px;
+    padding: 20px;
     margin-top: auto;
 }
 
@@ -116,7 +88,6 @@ body {
     padding-left: 30px;
 }
 
-
 .index-search {
     position: absolute;
     right: 6px;
@@ -127,29 +98,46 @@ body {
     border-color: #FFF;
 }
 
+.layui-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.layui-logo {
+    color: #fff;
+    font-size: 22px;
+}
+
+.layui-nav {
+    background: transparent;
+}
+
+#LAY_NAV_TOP .layui-nav-item a {
+    color: #fff;
+}
+
 .layui-room {
     min-height: 200px;
     max-height: 300px;
 }
 
-.layui-search {
-    height: 50px;
-    font-size: 16px;
+.layui-transfer {
+    display: flex;
+    align-items: stretch;
 }
 
-.layui-search-btn {
-    height: 50px;
-    width: 120px;
-    font-size: 16px;
+.layui-transfer .layui-transfer-active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.layui-search-btn .layui-icon {
-    color: white;
-}
-
-.layui-input-group > .layui-input-suffix {
-    width: 140px;
-    border-left: 0;
+.layui-transfer-box .layui-transfer-data {
+    border-color: #eee;
+    border-style: solid;
+    height: 90%;
+    width: 100%;
+    resize: none;
 }
 
 .logo-footer {
@@ -159,6 +147,81 @@ body {
 
 #mainNav .layui-layout-left .layui-nav-item a {
     color: white !important;
+}
+
+.mobile-nav-show .layui-header {
+    z-index: 1003;
+}
+
+.mobile-nav-show .header-menu .layui-nav {
+    display: block;
+    right: 0;
+}
+
+.mobile-header-more {
+    display: none;
+    line-height: 60px;
+    padding: 0 16px;
+    cursor: pointer
+}
+
+.mobile-logo {
+    color: #fff;
+    font-size: 22px;
+    height: 60px;
+    line-height: 60px;
+    position: absolute;
+    text-align: center;
+    width: 240px;
+}
+
+.mobile-header-menu {
+    position: absolute;
+    right: 16px;
+    top: 0;
+    width: 80%;
+}
+
+@media screen and (max-width: 768px) {
+    .mobile-logo {
+        left: 50%;
+        margin-left: -120px;
+    }
+
+    .mobile-header-menu {
+        display: none;
+        width: 95%;
+    }
+
+    .mobile-header-menu .layui-nav {
+        border-radius: 0;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+        height: 60px;
+        left: 0;
+        top: 60px;
+        z-index: 1003;
+    }
+
+    .mobile-header-more {
+        display: block;
+    }
+
+    .mobile-nav-show .layui-header {
+        padding-bottom: 130px;
+    }
+
+    .mobile-nav-show .mobile-header-menu {
+        display: block;
+    }
+
+    .mobile-nav-show .mobile-shade {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, .7);
+    }
 }
 
 .options {
@@ -185,16 +248,6 @@ body {
 .question-content {
     font-size: 16px;
     margin-bottom: 10px;
-}
-
-.room-header {
-    background: #E2E2E2;
-    color: black;
-}
-
-.room-right {
-    float: right;
-    color: white;
 }
 
 .room-body {

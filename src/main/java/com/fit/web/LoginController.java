@@ -25,6 +25,6 @@ public class LoginController {
     @GetMapping(value = {"/login", "/admin/login", "/admin/login.do"})
     public String login(HttpServletRequest request, Model model) {
         model.addAttribute("captchaOnOff", request.getRequestURI().startsWith("/admin") ? captcha : false);
-        return "login";
+        return "admin/login";
     }
 }

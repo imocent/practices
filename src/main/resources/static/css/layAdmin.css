@@ -195,6 +195,10 @@
     vertical-align: unset;
 }
 
+.layui-layout-admin .layui-header .layui-nav .layui-nav-item cite {
+    margin: 0 5px;
+}
+
 .layui-layout-admin .layui-header .layui-nav-item .layui-icon {
     font-size: 16px;
 }
@@ -334,7 +338,7 @@
     cursor: pointer;
     transition: all .3s;
     border-left: 1px solid #eee;
-    z-index: 1000;
+    z-index: 994;
     background-color: white
 }
 
@@ -1346,12 +1350,12 @@ html {
     overflow: auto;
 }
 
-.open-body{
-    background-color:#fff;
-    overflow:hidden;
+.open-body {
+    background-color: #fff;
+    overflow: hidden;
 }
 
-.open-container{
+.open-container {
     margin: 15px;
 }
 

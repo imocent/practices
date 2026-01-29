@@ -2,53 +2,55 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 首页')"></head>
 <body>
-<th:block th:include="include :: f_header"></th:block>
-<div class="layui-container layui-fluid">
-    <div class="layui-row layui-card">
-        <div class="layui-card-header">
-            <h1 style="text-align: center;font-size: 28px;color: #333;margin: 20px 0;">探索知识，收听意见</h1>
-            <div class="layui-form">
-                <input type="hidden" name="username" th:if="${session.username!= null}" th:value="${session?.username}"/>
-                <div class="layui-form-item" th:unless="${session.username!= null}">
-                    <input type="text" name="username" lay-verify="required" placeholder="请输入昵称" class="layui-input"/>
-                </div>
-                <div class="layui-form-item layui-form-text">
-                    <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
-                </div>
-                <div class="layui-form-item" style="overflow: hidden;">
-                    <div class="comments-icon">
-                        <a href="javascript:;"><i class="layui-icon layui-icon-face-smile-b"></i></a>
-                        <a href="javascript:;"><i class="layui-icon layui-icon-picture"></i></a>
-                        <a href="javascript:;"><i class="layui-icon layui-icon-link"></i></a>
+<div class="home-body">
+    <th:block th:include="include :: f_header"></th:block>
+    <div class="layui-container layui-fluid">
+        <div class="layui-row layui-card">
+            <div class="layui-card-header">
+                <h1 style="text-align: center;font-size: 28px;color: #333;margin: 20px 0;">探索知识，收听意见</h1>
+                <div class="layui-form">
+                    <input type="hidden" name="username" th:if="${session.username!= null}" th:value="${session?.username}"/>
+                    <div class="layui-form-item" th:unless="${session.username!= null}">
+                        <input type="text" name="username" lay-verify="required" placeholder="请输入昵称" class="layui-input"/>
                     </div>
-                    <div style="float: right;">
-                        <button class="layui-btn layui-btn-primary layui-border-purple" lay-submit lay-filter="submit-form">发表</button>
+                    <div class="layui-form-item layui-form-text">
+                        <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                    </div>
+                    <div class="layui-form-item" style="overflow: hidden;">
+                        <div class="comments-icon">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-face-smile-b"></i></a>
+                            <a href="javascript:;"><i class="layui-icon layui-icon-picture"></i></a>
+                            <a href="javascript:;"><i class="layui-icon layui-icon-link"></i></a>
+                        </div>
+                        <div style="float: right;">
+                            <button class="layui-btn layui-btn-primary layui-border-purple" lay-submit lay-filter="submit-form">发表</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="layui-row layui-card">
-        <div class="layui-col-xs12" style="padding: 15px 0; border-bottom: 1px solid #eee;" th:each="comment : ${comments}">
-            <!-- 头像 -->
-            <div class="layui-col-md1 layui-col-sm1 layui-col-xs3 laytable-cell-space">
-                <img src="/images/logo.png" alt="头像" style="width: 40px; height: 40px; border-radius: 50%;">
+        <div class="layui-row layui-card">
+            <div class="layui-col-xs12" style="padding: 15px 0; border-bottom: 1px solid #eee;" th:each="comment : ${comments}">
+                <!-- 头像 -->
+                <div class="layui-col-md1 layui-col-sm1 layui-col-xs3 laytable-cell-space">
+                    <img src="/images/logo.png" alt="头像" style="width: 40px; height: 40px; border-radius: 50%;">
+                </div>
+                <div class="layui-col-md11 layui-col-sm11 layui-col-xs9">
+                    <div style="font-weight: bold;" th:text="${comment.username}">用户名</div>
+                    <div style="color: #999; font-size: 12px;" th:text="${#dates.format(comment.ctime, 'yyyy-MM-dd HH:mm:ss')}">留言时间</div>
+                    <div style="color: #666; font-size: 12px; margin-top: 5px;" th:text="${comment.content}">内容</div>
+                </div>
             </div>
-            <div class="layui-col-md11 layui-col-sm11 layui-col-xs9">
-                <div style="font-weight: bold;" th:text="${comment.username}">用户名</div>
-                <div style="color: #999; font-size: 12px;" th:text="${#dates.format(comment.ctime, 'yyyy-MM-dd HH:mm:ss')}">留言时间</div>
-                <div style="color: #666; font-size: 12px; margin-top: 5px;" th:text="${comment.content}">内容</div>
+        </div>
+        <div class="layui-row layui-card">
+            <div class="layui-card-body laytable-cell-space">
+                <a th:href="@{/comments}" class="layui-btn layui-btn-primary layui-border-purple">更多</a>
             </div>
         </div>
     </div>
-    <div class="layui-row layui-card">
-        <div class="layui-card-body laytable-cell-space">
-            <a th:href="@{/comments}" class="layui-btn layui-btn-primary layui-border-purple">更多</a>
-        </div>
-    </div>
+    <!-- 底部信息 -->
+    <th:block th:include="include :: f_footer"></th:block>
 </div>
-<!-- 底部信息 -->
-<th:block th:include="include :: f_footer"></th:block>
 <script>
     layui.use(['jquery', 'form'], function ($, form) {
         form.on('submit(submit-form)', function (obj) {
