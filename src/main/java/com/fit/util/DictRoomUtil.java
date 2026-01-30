@@ -1,7 +1,6 @@
 package com.fit.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @AUTO
@@ -39,5 +38,13 @@ public class DictRoomUtil {
             default:
                 return "未知类型";
         }
+    }
+
+    public static List shuffle(String arraySplit, Boolean optSort) {
+        List<String> list = Arrays.asList(arraySplit.split(";"));
+        if (optSort) {
+            Collections.shuffle(list);
+        }
+        return list;
     }
 }

@@ -1,6 +1,7 @@
 package com.fit.web;
 
 import com.fit.util.CaptchaUtil;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,16 @@ public class LoginController {
 
     @GetMapping(value = {"/login", "/admin/login", "/admin/login.do"})
     public String login(HttpServletRequest request, Model model) {
-        model.addAttribute("captchaOnOff", request.getRequestURI().startsWith("/admin") ? captcha : false);
-        return "admin/login";
+        boolean isAdmin = request.getRequestURI().startsWith("/admin");
+        if (SecurityUtils.getSubject().isAuthenticated()) {
+            if (isAdmin) {
+                return "redirect:/admin/index";
+            } else {
+                return "redirect:/index";
+            }
+        } else {
+            model.addAttribute("captchaOnOff", isAdmin ? captcha : false);
+            return "admin/login";
+        }
     }
 }

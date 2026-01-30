@@ -214,10 +214,10 @@
                         </a>
                     </li>
                 </ul>
-                <ul class="layui-nav layui-layout-right" th:if="${session?.username!= null}">
+                <ul class="layui-nav layui-layout-right" style="width: 150px!important;" th:if="${session?.username!= null}">
                     <li class="layui-nav-item" data-page="users">
                         <a href="javascript:;">
-                            <img th:src="@{/images/logo.png}" class="layui-nav-img" alt="头像">
+                            <img th:src="@{/images/logo.png}" class="mobile-nav-img" alt="头像">
                             <cite th:text="${session?.username?:'用户'}"></cite>
                         </a>
                         <dl class="layui-nav-child">

@@ -57,7 +57,6 @@ html, body {
 .home-body {
     display: flex;
     flex-direction: column;
-    height: inherit;
 }
 
 .home-avatar {
@@ -113,6 +112,7 @@ html, body {
 
 #LAY_NAV_TOP .layui-nav-item a {
     color: #fff;
+    padding: 0px 15px;
 }
 
 .layui-room {
@@ -149,6 +149,12 @@ html, body {
     color: white !important;
 }
 
+.mobile-nav-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
 .mobile-nav-show .layui-header {
     z-index: 1003;
 }
@@ -165,6 +171,13 @@ html, body {
     cursor: pointer
 }
 
+.mobile-header-menu {
+    position: absolute;
+    right: 1%;
+    top: 0;
+    width: 80%;
+}
+
 .mobile-logo {
     color: #fff;
     font-size: 22px;
@@ -172,20 +185,22 @@ html, body {
     line-height: 60px;
     position: absolute;
     text-align: center;
-    width: 240px;
-}
-
-.mobile-header-menu {
-    position: absolute;
-    right: 16px;
-    top: 0;
-    width: 80%;
+    width: 20%;
 }
 
 @media screen and (max-width: 768px) {
+    .home-body {
+        height: inherit;
+    }
+
+    .layui-nav {
+        padding: 0 1px;
+    }
+
     .mobile-logo {
         left: 50%;
         margin-left: -120px;
+        width: 55%;
     }
 
     .mobile-header-menu {
@@ -197,8 +212,8 @@ html, body {
         border-radius: 0;
         box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
         height: 60px;
-        left: 0;
         top: 60px;
+        width: 80%;
         z-index: 1003;
     }
 

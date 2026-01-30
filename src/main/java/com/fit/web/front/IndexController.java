@@ -168,9 +168,10 @@ public class IndexController extends BaseController {
             }
         }
         model.addAttribute("duration", duration);
+        model.addAttribute("optSort", room.getSubjectOptSortMode());
+        model.addAttribute("questions", questions);
         model.addAttribute("room", room);
         model.addAttribute("total", toInt(Math.ceil((double) questions.size() / 6)));
-        model.addAttribute("questions", questions);
         return "front/room";
     }
 

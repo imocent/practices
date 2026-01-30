@@ -5,7 +5,7 @@
 <div class="home-body">
     <th:block th:include="include :: f_header"></th:block>
     <div class="layui-container layui-fluid" style="margin-top:10px">
-        <div class="layui-row layui-col-space20">
+        <div class="layui-row layui-col-space20" th:with="util=${T(com.fit.util.DictRoomUtil)}">
             <!-- 左侧：课程信息 -->
             <div class="layui-col-md8">
                 <div class="layui-card">
@@ -35,10 +35,10 @@
                             <input type="hidden" name="examRoomName" id="examRoomName" th:value="${room?.title}"/>
                             <input type="hidden" name="subjectName" id="subjectName" th:value="${room?.subjectName}"/>
                             <div class="question-container" th:id="${#strings.concat('q_', qStat.index)}" th:each="q,qStat : ${questions}">
-                                <span th:text="${qStat.index+1}"></span>.
-                                <div class="question-content" th:text="${q?.CONTENT}">问题</div>
+                                <span th:text="${qStat.index+1}">序号</span>.
+                                <span class="question-content" th:text="${q?.CONTENT}">问题</span>
                                 <ul class="options">
-                                    <li th:each="info,infoStat : ${#strings.arraySplit(q?.answer_info, ';')}">
+                                    <li th:each="info,infoStat : ${util.shuffle(q?.answer_info,optSort)}">
                                         <input th:with="parts=${#strings.arraySplit(info?.trim(), '|')},isCheck=${parts[0] == q?.checked?true:false}"
                                                th:name="${#strings.concat('q_', q.ID,'_',parts[2])}" th:value="${parts[0]}" th:text="${parts[1]}"
                                                th:data-a="${parts[0]}" th:data-b="${q?.checked}" th:checked="${isCheck}" type="radio"
@@ -69,7 +69,7 @@
                         <span class="layui-badge" style="float:right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
                     </div>
                     <div class="room layui-card-body">
-                        <ul class="layui-row layui-col-space10" th:with="util=${T(com.fit.util.DictRoomUtil)}">
+                        <ul class="layui-row layui-col-space10">
                             <li class="layui-col-md12">
                                 <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">状态:</span>
                                 <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${util.getDict(0, room?.enabled)}"></span>
