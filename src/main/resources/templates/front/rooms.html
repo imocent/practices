@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 答题室')"></head>
 <body>
-<th:block th:include="include :: f_header"></th:block>
-<div class="layui-container layui-fluid">
+<th:block th:include="include :: main_head"></th:block>
+<div class="layui-container">
     <div class="layui-row search-section">
         <form lay-filter="searchForm" class="layui-card layui-form">
             <div class="layui-card-header" style="background-color: #E2E2E2">分类筛选</div>
@@ -89,14 +89,12 @@
         </div>
     </div>
     <div class="layui-row layui-card">
-        <!-- 分页 -->
         <div id="pagination" class="laytable-cell-space layui-fluid"></div>
     </div>
 </div>
-<!-- 底部信息 -->
-<th:block th:include="include :: f_footer"></th:block>
+<th:block th:include="include :: main_foot"></th:block>
 <script>
-    layui.use(['jquery', 'element', 'form', 'laypage'], function ($, element, form, laypage) {
+    layui.use(['jquery', 'element', 'form'], function ($, element, form) {
         $(function () {
             layPage('pagination', "[[${count}]]")
             $('.filter-tag[data-pid]').removeClass('active').filter('[data-pid="[[${pid}]]"]').addClass('active');

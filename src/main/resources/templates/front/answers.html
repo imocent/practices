@@ -7,7 +7,7 @@
     }
 </style>
 <body>
-<th:block th:include="include :: f_header"></th:block>
+<th:block th:include="include :: main_head"></th:block>
 <div class="layui-container layui-fluid">
     <div class="layui-row layui-card">
         <div class="layui-card-header"><i class="layui-icon">&#xe705; 我的答题</i></div>
@@ -28,7 +28,7 @@
     </div>
 </div>
 <!-- 底部信息 -->
-<th:block th:include="include :: f_footer"></th:block>
+<th:block th:include="include :: main_foot"></th:block>
 <script>
     layui.use(['jquery', 'table', 'form'], function ($, table, form) {
         table.render({

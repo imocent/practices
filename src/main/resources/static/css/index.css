@@ -1,5 +1,13 @@
 html, body {
     height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .comments-icon {
@@ -13,6 +21,11 @@ html, body {
     line-height: 30px;
     margin-right: 15px;
     color: #C4CBCF;
+}
+
+.comments-more {
+    margin-top: 20px;
+    text-align: center;
 }
 
 .fixed-content-height {
@@ -54,9 +67,20 @@ html, body {
     border-color: #1E9FFF;
 }
 
-.home-body {
-    display: flex;
-    flex-direction: column;
+.index-footer {
+    background: #2c3e50;
+    bottom: 0;
+    color: white;
+    left: 0;
+    padding: 20px 0;
+    position: sticky;
+    width: 100%;
+}
+
+.index-footer .layui-font-14 a {
+    color: #bdc3c7;
+    display: block;
+    margin: 0 15px 10px 0;
 }
 
 .home-avatar {
@@ -66,13 +90,6 @@ html, body {
 .index-body {
     margin: 20px 0;
     position: relative;
-}
-
-.index-footer {
-    background: #2c3e50;
-    color: white;
-    padding: 20px;
-    margin-top: auto;
 }
 
 .index-icon-search {
@@ -97,6 +114,14 @@ html, body {
     border-color: #FFF;
 }
 
+.layui-container {
+    flex: 1;
+}
+
+.layui-footer {
+    text-align: center;
+}
+
 .layui-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
@@ -112,7 +137,7 @@ html, body {
 
 #LAY_NAV_TOP .layui-nav-item a {
     color: #fff;
-    padding: 0px 15px;
+    padding: 0 15px;
 }
 
 .layui-room {
@@ -138,6 +163,23 @@ html, body {
     height: 90%;
     width: 100%;
     resize: none;
+}
+
+.learnContent {
+    background-color: #f8f8f8;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    line-height: 1.6;
+    min-height: 200px;
+    padding: 15px;
+}
+
+.learnDetail {
+    background-color: #f2f2f2;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    min-height: 80px;
+    padding: 10px;
 }
 
 .logo-footer {

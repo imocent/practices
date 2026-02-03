@@ -2,78 +2,76 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 小工具')"></head>
 <body>
-<div class="home-body">
-    <th:block th:include="include :: f_header"></th:block>
-    <div class="layui-container layui-fluid">
-        <div class="layui-row search-section">
-            <div class="layui-row layui-card">
-                <div class="layui-card-header" style="background-color: #E2E2E2">常用工具</div>
-                <div class="layui-card-body layui-tabs layui-tabs-card" lay-options="{index: 0}">
-                    <ul class="layui-tabs-header">
-                        <li>JSON格式化</li>
-                        <li>Base64加解密</li>
-                        <li>URL编码解码工具</li>
-                    </ul>
-                    <div class="layui-tabs-body layui-form">
-                        <div class="layui-tabs-item">
-                            <div class="layui-transfer layui-border-box">
-                                <div class="layui-transfer-box" style="width: 47%;">
-                                    <div class="layui-transfer-header">原始文本</div>
-                                    <textarea class="layui-transfer-data" id="json_encrypt" placeholder="请输入原始数据"></textarea>
-                                </div>
-                                <div class="layui-transfer-active" style="width: 6%;">
-                                    <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="json">
-                                        <i class="layui-icon" th:alt="格式化">&#xe65b;</i>
-                                    </button>
-                                    <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="json_repair">
-                                        <i class="layui-icon" th:alt="修复数据">&#xe631;</i>
-                                    </button>
-                                </div>
-                                <div class="layui-transfer-box" style="width: 47%;">
-                                    <div class="layui-transfer-header">JSON结构</div>
-                                    <textarea class="layui-transfer-data" id="json_decrypt" placeholder="暂无数据"></textarea>
-                                </div>
+<th:block th:include="include :: main_head"></th:block>
+<div class="layui-container">
+    <div class="search-section">
+        <div class="layui-card">
+            <div class="layui-card-header" style="background-color: #E2E2E2">常用工具</div>
+            <div class="layui-row layui-tabs layui-tabs-card" lay-options="{index: 0}">
+                <ul class="layui-tabs-header">
+                    <li>JSON格式化</li>
+                    <li>Base64加解密</li>
+                    <li>URL编码解码工具</li>
+                </ul>
+                <div class="layui-tabs-body layui-form">
+                    <div class="layui-tabs-item">
+                        <div class="layui-transfer layui-border-box">
+                            <div class="layui-transfer-box" style="width: 47%;">
+                                <div class="layui-transfer-header">原始文本</div>
+                                <textarea class="layui-transfer-data" id="json_encrypt" placeholder="请输入原始数据"></textarea>
                             </div>
-                            <span style="padding: 20px 0 0 20px; color: #999;">字符数: <span id="json_count">0</span></span>
-                        </div>
-                        <div class="layui-tabs-item">
-                            <div class="layui-transfer layui-border-box">
-                                <div class="layui-transfer-box" style="width: 47%;">
-                                    <div class="layui-transfer-header">原始文本</div>
-                                    <textarea class="layui-transfer-data" id="base_encrypt" placeholder="请输入原始数据"></textarea>
-                                </div>
-                                <div class="layui-transfer-active" style="width: 6%;">
-                                    <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="base_n">
-                                        <i class="layui-icon">&#xe65b;</i>
-                                    </button>
-                                    <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="base_p">
-                                        <i class="layui-icon">&#xe65a;</i>
-                                    </button>
-                                </div>
-                                <div class="layui-transfer-box" style="width: 47%;">
-                                    <div class="layui-transfer-header">Base64编码</div>
-                                    <textarea class="layui-transfer-data" id="base_decrypt" placeholder="请输入加密数据"></textarea>
-                                </div>
+                            <div class="layui-transfer-active" style="width: 6%;">
+                                <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="json">
+                                    <i class="layui-icon" th:alt="格式化">&#xe65b;</i>
+                                </button>
+                                <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="json_repair">
+                                    <i class="layui-icon" th:alt="修复数据">&#xe631;</i>
+                                </button>
+                            </div>
+                            <div class="layui-transfer-box" style="width: 47%;">
+                                <div class="layui-transfer-header">JSON结构</div>
+                                <textarea class="layui-transfer-data" id="json_decrypt" placeholder="暂无数据"></textarea>
                             </div>
                         </div>
-                        <div class="layui-tabs-item">
-                            <div class="layui-transfer layui-border-box">
-                                <div class="layui-transfer-box" style="width: 47%;">
-                                    <div class="layui-transfer-header">原始数据</div>
-                                    <textarea class="layui-transfer-data" id="url_encrypt" placeholder="请输入原始数据"></textarea>
-                                </div>
-                                <div class="layui-transfer-active" style="width: 6%;">
-                                    <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="url_e">
-                                        <i class="layui-icon">&#xe65b;编码</i>
-                                    </button>
-                                    <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="url_d">
-                                        <i class="layui-icon">&#xe65a;解码</i>
-                                    </button>
-                                </div>
-                                <div class="layui-transfer-box" style="width: 47%;">
-                                    <div class="layui-transfer-header">编码数据</div>
-                                    <textarea class="layui-transfer-data" id="url_decrypt" placeholder="请输入解码数据"></textarea>
-                                </div>
+                        <span style="padding: 20px 0 0 20px; color: #999;">字符数: <span id="json_count">0</span></span>
+                    </div>
+                    <div class="layui-tabs-item">
+                        <div class="layui-transfer layui-border-box">
+                            <div class="layui-transfer-box" style="width: 47%;">
+                                <div class="layui-transfer-header">原始文本</div>
+                                <textarea class="layui-transfer-data" id="base_encrypt" placeholder="请输入原始数据"></textarea>
+                            </div>
+                            <div class="layui-transfer-active" style="width: 6%;">
+                                <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="base_n">
+                                    <i class="layui-icon">&#xe65b;</i>
+                                </button>
+                                <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="base_p">
+                                    <i class="layui-icon">&#xe65a;</i>
+                                </button>
+                            </div>
+                            <div class="layui-transfer-box" style="width: 47%;">
+                                <div class="layui-transfer-header">Base64编码</div>
+                                <textarea class="layui-transfer-data" id="base_decrypt" placeholder="请输入加密数据"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-tabs-item">
+                        <div class="layui-transfer layui-border-box">
+                            <div class="layui-transfer-box" style="width: 47%;">
+                                <div class="layui-transfer-header">原始数据</div>
+                                <textarea class="layui-transfer-data" id="url_encrypt" placeholder="请输入原始数据"></textarea>
+                            </div>
+                            <div class="layui-transfer-active" style="width: 6%;">
+                                <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="url_e">
+                                    <i class="layui-icon">&#xe65b;编码</i>
+                                </button>
+                                <button lay-submit lay-filter="sbt_form" class="layui-btn layui-btn-primary" data-action="url_d">
+                                    <i class="layui-icon">&#xe65a;解码</i>
+                                </button>
+                            </div>
+                            <div class="layui-transfer-box" style="width: 47%;">
+                                <div class="layui-transfer-header">编码数据</div>
+                                <textarea class="layui-transfer-data" id="url_decrypt" placeholder="请输入解码数据"></textarea>
                             </div>
                         </div>
                     </div>
@@ -81,9 +79,8 @@
             </div>
         </div>
     </div>
-    <!-- 底部信息 -->
-    <th:block th:include="include :: f_footer"></th:block>
 </div>
+<th:block th:include="include :: main_foot"></th:block>
 <script>
     layui.use(['jquery', 'element', 'form'], function ($, element, form) {
         form.on('submit(sbt_form)', function (obj) {
