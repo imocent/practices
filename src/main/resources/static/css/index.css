@@ -21,6 +21,45 @@ body, html {
     text-align: center;
 }
 
+.fixed-content-height {
+    min-height: 240px;
+    flex-direction: column;
+}
+
+.fixed-content-height .content-area {
+    flex: 1;
+    font-size: 16px;
+    max-height: 80px;
+    margin: 10px 0;
+    min-height: 60px;
+    overflow-y: auto;
+}
+
+.filter-tag {
+    background: #f6f6f6;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    color: #666;
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    padding: 0 15px;
+}
+
+.filter-tag:hover {
+    background: #e8f4ff;
+    color: #1E9FFF;
+}
+
+.filter-tag.active {
+    background: #1E9FFF;
+    border-color: #1E9FFF;
+    color: white;
+}
+
 .index-icon-search {
     color: #999;
     left: 10px;
