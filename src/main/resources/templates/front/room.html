@@ -3,118 +3,116 @@
 <head th:include="include :: head('做题吧 - 答题室')"></head>
 <body class="layui-layout">
 <th:block th:include="include :: main_head"></th:block>
-<div class="layui-container">
-    <div class="layui-row layui-col-space20" th:with="util=${T(com.fit.util.DictRoomUtil)}">
-        <!-- 左侧：课程信息 -->
-        <div class="layui-col-md8">
-            <div class="layui-card">
-                <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="layui-icon layui-icon-template-1"></i>
-                    <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
+<div id="LAY_MAIN" class="layui-container" th:with="util=${T(com.fit.util.DictRoomUtil)}">
+    <!-- 左侧：课程信息 -->
+    <div class="layui-col-md8">
+        <div class="layui-card">
+            <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                <i class="layui-icon layui-icon-template-1"></i>
+                <span style="color: #fff;" th:text="${room?.title}">实战课程</span>
+            </div>
+            <div class="layui-card-body" id="ID-body" th:text="${room?.content}">
+                <div class="room-body">
+                    <ul class="layui-timeline">
+                        <li class="layui-timeline-item">
+                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                            <div class="layui-timeline-content layui-text">
+                                <h3 class="layui-timeline-title">Vue 3.0 核心特性</h3>
+                                <p>全面讲解Composition API、响应式系统、Teleport、Fragments等Vue 3.0新特性</p>
+                            </div>
+                        </li>
+                        <li class="layui-timeline-item">我是广告位</li>
+                    </ul>
                 </div>
-                <div class="layui-card-body" id="ID-body" th:text="${room?.content}">
-                    <div class="room-body">
-                        <ul class="layui-timeline">
-                            <li class="layui-timeline-item">
-                                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-                                <div class="layui-timeline-content layui-text">
-                                    <h3 class="layui-timeline-title">Vue 3.0 核心特性</h3>
-                                    <p>全面讲解Composition API、响应式系统、Teleport、Fragments等Vue 3.0新特性</p>
-                                </div>
+            </div>
+            <div class="layui-card-body layui-hide" id="ID-flow">
+                <div class="layui-form room-body">
+                    <input type="hidden" name="duration" id="duration" th:value="${duration?:0}"/>
+                    <input type="hidden" name="enabled" id="enabled" value="1"/>
+                    <input type="hidden" name="examRoomId" id="examRoomId" th:value="${room?.id}"/>
+                    <input type="hidden" name="examRoomName" id="examRoomName" th:value="${room?.title}"/>
+                    <input type="hidden" name="subjectName" id="subjectName" th:value="${room?.subjectName}"/>
+                    <div class="question-container" th:id="${#strings.concat('q_', qStat.index)}" th:each="q,qStat : ${questions}">
+                        <span th:text="${qStat.index+1}">序号</span>.
+                        <span class="question-content" th:text="${q?.CONTENT}">问题</span>
+                        <ul class="options">
+                            <li th:each="info,infoStat : ${util.shuffle(q?.answer_info,optSort)}">
+                                <input th:with="parts=${#strings.arraySplit(info?.trim(), '|')},isCheck=${parts[0] == q?.checked?true:false}"
+                                       th:name="${#strings.concat('q_', q.ID,'_',parts[2])}" th:value="${parts[0]}" th:text="${parts[1]}"
+                                       th:data-a="${parts[0]}" th:data-b="${q?.checked}" th:checked="${isCheck}" type="radio"
+                                       class="layui-input"/>
                             </li>
-                            <li class="layui-timeline-item">我是广告位</li>
                         </ul>
                     </div>
-                </div>
-                <div class="layui-card-body layui-hide" id="ID-flow">
-                    <div class="layui-form room-body">
-                        <input type="hidden" name="duration" id="duration" th:value="${duration?:0}"/>
-                        <input type="hidden" name="enabled" id="enabled" value="1"/>
-                        <input type="hidden" name="examRoomId" id="examRoomId" th:value="${room?.id}"/>
-                        <input type="hidden" name="examRoomName" id="examRoomName" th:value="${room?.title}"/>
-                        <input type="hidden" name="subjectName" id="subjectName" th:value="${room?.subjectName}"/>
-                        <div class="question-container" th:id="${#strings.concat('q_', qStat.index)}" th:each="q,qStat : ${questions}">
-                            <span th:text="${qStat.index+1}">序号</span>.
-                            <span class="question-content" th:text="${q?.CONTENT}">问题</span>
-                            <ul class="options">
-                                <li th:each="info,infoStat : ${util.shuffle(q?.answer_info,optSort)}">
-                                    <input th:with="parts=${#strings.arraySplit(info?.trim(), '|')},isCheck=${parts[0] == q?.checked?true:false}"
-                                           th:name="${#strings.concat('q_', q.ID,'_',parts[2])}" th:value="${parts[0]}" th:text="${parts[1]}"
-                                           th:data-a="${parts[0]}" th:data-b="${q?.checked}" th:checked="${isCheck}" type="radio"
-                                           class="layui-input"/>
-                                </li>
-                            </ul>
+                    <!-- 使用负边距消除缝隙 -->
+                    <div class="room-footer layui-row">
+                        <div class="layui-col-md4">
+                            <i class="layui-icon layui-icon-time"> <span id="timer">00:00:00</span></i>
                         </div>
-                        <!-- 使用负边距消除缝隙 -->
-                        <div class="room-footer layui-row">
-                            <div class="layui-col-md4">
-                                <i class="layui-icon layui-icon-time"> <span id="timer">00:00:00</span></i>
-                            </div>
-                            <div class="layui-col-md8">
-                                <button class="layui-btn layui-btn-normal" data-id="check" lay-submit lay-filter="sbt_form">检查</button>
-                                <button class="layui-btn layui-btn-warm" data-id="save" lay-submit lay-filter="sbt_form">保存</button>
-                                <button class="layui-btn layui-btn-danger" data-id="submit" lay-submit lay-filter="sbt_form">交卷</button>
-                            </div>
+                        <div class="layui-col-md8">
+                            <button class="layui-btn layui-btn-normal" data-id="check" lay-submit lay-filter="sbt_form">检查</button>
+                            <button class="layui-btn layui-btn-warm" data-id="save" lay-submit lay-filter="sbt_form">保存</button>
+                            <button class="layui-btn layui-btn-danger" data-id="submit" lay-submit lay-filter="sbt_form">交卷</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- 右侧：答题室信息 -->
-        <div class="layui-col-md4">
-            <div class="layui-card">
-                <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                    <i class="layui-icon layui-icon-cols"></i><span style="color:#FFF;"> 答题室</span>
-                    <span class="layui-badge" style="float:right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
-                </div>
-                <div class="room layui-card-body">
-                    <ul class="layui-row layui-col-space10">
-                        <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">状态:</span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${util.getDict(0, room?.enabled)}"></span>
-                        </li>
-                        <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">类型:</span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${util.getDict(1, room?.examMode)}"></span>
-                        </li>
-                        <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">条件:</span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10"
-                                  th:text="${util.getDict(2, room?.examineeMode)}"></span>
-                        </li>
-                        <li class="layui-col-md12">
-                            <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">分类:</span>
-                            <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${room?.subjectName}">默认答题室</span>
-                        </li>
-                    </ul>
-                    <div class="layui-card-body laytable-cell-space" style="background: #f8f8f8; margin: 8px 0;">
-                        <div style="font-size: 32px; color: #1E9FFF; font-weight: bold;">1/1</div>
-                        <div style="color: #666;">进入答题室人数</div>
-                    </div>
-                    <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red" th:data-room-id="${room.id}">
-                        <i class="layui-icon">&#xe652; 开始答题</i>
-                        <i class="layui-icon layui-hide">&#xe6cc; 结束答题</i>
-                    </button>
-                </div>
+    </div>
+    <!-- 右侧：答题室信息 -->
+    <div class="layui-col-md4">
+        <div class="layui-card">
+            <div class="layui-card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                <i class="layui-icon layui-icon-cols"></i><span style="color:#FFF;"> 答题室</span>
+                <span class="layui-badge" style="float:right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
             </div>
-            <div class="layui-card" style="margin-top: 20px;">
-                <div class="layui-card-header"><i class="layui-icon">&#xe702; 答题须知</i></div>
-                <div class="layui-card-body">
-                    <div class="layui-collapse">
-                        <div class="layui-colla-item">
-                            <h2 class="layui-colla-title">答题规则</h2>
-                            <div class="layui-colla-content layui-show">
-                                <p>1. 答题时长限制为<span th:text="${room?.timeLen}"></span>分钟，超时自动提交</p>
-                                <p>2. 答题过程中不可切换页面，否则可能被判定为异常</p>
-                                <p>3. 每人仅有一次答题机会，请谨慎作答</p>
-                            </div>
+            <div class="room layui-card-body">
+                <ul class="layui-row layui-col-space10">
+                    <li class="layui-col-md12">
+                        <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">状态:</span>
+                        <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${util.getDict(0, room?.enabled)}"></span>
+                    </li>
+                    <li class="layui-col-md12">
+                        <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">类型:</span>
+                        <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${util.getDict(1, room?.examMode)}"></span>
+                    </li>
+                    <li class="layui-col-md12">
+                        <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">条件:</span>
+                        <span class="layui-col-xs10 layui-col-sm10 layui-col-md10"
+                              th:text="${util.getDict(2, room?.examineeMode)}"></span>
+                    </li>
+                    <li class="layui-col-md12">
+                        <span class="layui-col-xs2 layui-col-sm2 layui-col-md2">分类:</span>
+                        <span class="layui-col-xs10 layui-col-sm10 layui-col-md10" th:text="${room?.subjectName}">默认答题室</span>
+                    </li>
+                </ul>
+                <div class="layui-card-body laytable-cell-space" style="background: #f8f8f8; margin: 8px 0;">
+                    <div style="font-size: 32px; color: #1E9FFF; font-weight: bold;">1/1</div>
+                    <div style="color: #666;">进入答题室人数</div>
+                </div>
+                <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red" th:data-room-id="${room.id}">
+                    <i class="layui-icon">&#xe652; 开始答题</i>
+                    <i class="layui-icon layui-hide">&#xe6cc; 结束答题</i>
+                </button>
+            </div>
+        </div>
+        <div class="layui-card" style="margin-top: 20px;">
+            <div class="layui-card-header"><i class="layui-icon">&#xe702; 答题须知</i></div>
+            <div class="layui-card-body">
+                <div class="layui-collapse">
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">答题规则</h2>
+                        <div class="layui-colla-content layui-show">
+                            <p>1. 答题时长限制为<span th:text="${room?.timeLen}"></span>分钟，超时自动提交</p>
+                            <p>2. 答题过程中不可切换页面，否则可能被判定为异常</p>
+                            <p>3. 每人仅有一次答题机会，请谨慎作答</p>
                         </div>
-                        <div class="layui-colla-item">
-                            <h2 class="layui-colla-title">评分标准</h2>
-                            <div class="layui-colla-content">
-                                <p>1. 答题正确率需达到60%以上方可通过</p>
-                                <p>2. 答题结束后可立即查看分数和解析</p>
-                            </div>
+                    </div>
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">评分标准</h2>
+                        <div class="layui-colla-content">
+                            <p>1. 答题正确率需达到60%以上方可通过</p>
+                            <p>2. 答题结束后可立即查看分数和解析</p>
                         </div>
                     </div>
                 </div>

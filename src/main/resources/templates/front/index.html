@@ -3,7 +3,7 @@
 <head th:include="include :: head('做题吧 - 首页')"></head>
 <body class="layui-layout">
 <th:block th:include="include :: main_head"></th:block>
-<div class="layui-container">
+<div id="LAY_MAIN" class="layui-container">
     <!-- 搜索区域 -->
     <div class="layui-row search-section">
         <div class="layui-carousel" id="banner">
@@ -41,7 +41,7 @@
             <span>热门课程</span>
             <a th:href="@{/rooms}" class="layui-btn layui-btn-primary layui-btn-sm" style="float: right;">更多课程</a>
         </div>
-        <div class="rooms">
+        <div class="rooms layui-col-space20">
             <div class="layui-col-md4 layui-col-sm6" th:each="room : ${rooms}" th:data-room-id="${room.id}">
                 <div class="layui-card" style="border: 1px solid #EEEEEE">
                     <div class="layui-card-header" style="background: #E2E2E2; color: black;">

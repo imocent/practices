@@ -1,5 +1,4 @@
 body, html {
-    height: 100%;
     margin: 0;
 }
 
@@ -22,7 +21,7 @@ body, html {
 }
 
 .fixed-content-height {
-    min-height: 240px;
+    min-height: 260px;
     flex-direction: column;
 }
 
@@ -94,8 +93,9 @@ body, html {
     width: 100%;
 }
 
-.layui-layout .layui-container {
-    flex: 1;
+.layui-room {
+    min-height: 220px;
+    max-height: 300px;
 }
 
 .layui-transfer {
@@ -128,6 +128,10 @@ body, html {
     color: #bdc3c7;
     display: block;
     margin: 10px 10px;
+}
+
+#LAY_MAIN {
+    flex: 1;
 }
 
 .layui-nav {
