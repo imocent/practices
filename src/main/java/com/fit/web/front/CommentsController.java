@@ -2,9 +2,13 @@ package com.fit.web.front;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
+import com.fit.dao.LmsCommentsDao;
 import com.fit.entity.LmsComments;
+import com.fit.entity.LmsCommentsLike;
+import com.fit.service.LmsCommentsLikeService;
 import com.fit.service.LmsCommentsService;
 import com.fit.util.BeanUtil;
+import com.fit.util.IpUtil;
 import com.fit.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -32,6 +36,8 @@ public class CommentsController extends BaseController {
 
     @Autowired
     private LmsCommentsService commentsService;
+    @Autowired
+    private LmsCommentsLikeService commentsLikeService;
 
     @GetMapping("/comment")
     public String comment(HttpServletRequest request, Model model) {
@@ -39,7 +45,7 @@ public class CommentsController extends BaseController {
         if (!SecurityUtils.getSubject().isAuthenticated()) {
             map.put("enabled", 1);
         }
-        map.put("limit", 2);
+        map.put("limit", 3);
         map.put("page", 0);
         List<LmsComments> comments = this.commentsService.findList(map);
         model.addAttribute("comments", comments);
@@ -84,5 +90,48 @@ public class CommentsController extends BaseController {
         } catch (NumberFormatException e) {
             return AjaxResult.error();
         }
+    }
+
+    @PostMapping("/comments/like")
+    @ResponseBody
+    public Object like(HttpServletRequest request) {
+        Map<String, Object> map = WebUtil.getRequestMap(request);
+        String ip = IpUtil.getClientIp(request);
+        map.put("ip", ip);
+        if (SecurityUtils.getSubject().isAuthenticated()) {
+            map.put("userId", SecurityUtils.getSubject().getPrincipal());
+        }
+        Long commentId = Long.valueOf(map.get("commentId").toString());
+        List<LmsCommentsLike> list = this.commentsLikeService.findList(map);
+        LmsComments comments = this.commentsService.get(commentId);
+        if (list.size() > 0) {
+            LmsCommentsLike commentsLike = list.get(0);
+            commentsLike.setEtime(new Date());
+            if (commentsLike.getEnabled()) {
+                commentsLike.setEnabled(false);
+                if (comments.getLikeCount() > 0) {
+                    comments.setLikeCount(comments.getLikeCount() - 1);
+                    this.commentsService.update(comments);
+                }
+            } else {
+                commentsLike.setEnabled(true);
+                comments.setLikeCount(comments.getLikeCount() + 1);
+                this.commentsService.update(comments);
+            }
+            this.commentsLikeService.update(commentsLike);
+        } else {
+            LmsCommentsLike commentsLike = new LmsCommentsLike();
+            commentsLike.setEtime(new Date());
+            commentsLike.setIp(ip);
+            commentsLike.setCommentId(commentId);
+            if (map.containsKey("userId")) {
+                commentsLike.setUserId(Long.valueOf(map.get("userId").toString()));
+            }
+            commentsLike.setEnabled(true);
+            this.commentsLikeService.save(commentsLike);
+            comments.setLikeCount(comments.getLikeCount() + 1);
+            this.commentsService.update(comments);
+        }
+        return AjaxResult.success();
     }
 }

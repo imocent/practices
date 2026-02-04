@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.LmsCommentsLikeDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.LmsCommentsLike">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="ETIME" jdbcType="TIMESTAMP" property="etime" />
+    <result column="USER_ID" jdbcType="BIGINT" property="userId" />
+    <result column="COMMENT_ID" jdbcType="BIGINT" property="commentId" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="ENABLED" jdbcType="BIT" property="enabled" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, ETIME, USER_ID, COMMENT_ID, IP, ENABLED
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lms_comments_like
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from lms_comments_like
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.LmsCommentsLike" useGeneratedKeys="true">
+    insert into lms_comments_like
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="etime != null">
+        ETIME,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="commentId != null">
+        COMMENT_ID,
+      </if>
+      <if test="ip != null">
+        IP,
+      </if>
+      <if test="enabled != null">
+        ENABLED,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="etime != null">
+        #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="commentId != null">
+        #{commentId,jdbcType=BIGINT},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.LmsCommentsLike">
+    update lms_comments_like
+    <set>
+      <if test="etime != null">
+        ETIME = #{etime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="commentId != null">
+        COMMENT_ID = #{commentId,jdbcType=BIGINT},
+      </if>
+      <if test="ip != null">
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        ENABLED = #{enabled,jdbcType=BIT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="id != null and id != ''">
+         and ID = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="ctime != null ">
+         and ETIME &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and ETIME &lt;= #{etime } 
+      </if>
+      <if test="userId != null and userId != ''">
+         and USER_ID = #{userId,jdbcType=BIGINT}
+      </if>
+      <if test="commentId != null and commentId != ''">
+         and COMMENT_ID = #{commentId,jdbcType=BIGINT}
+      </if>
+      <if test="ip != null and ip != ''">
+         and IP = #{ip,jdbcType=VARCHAR}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and ENABLED = #{enabled,jdbcType=BIT}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_comments_like
+    <include refid="Base_Where_List" />
+    order by ID desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM lms_comments_like
+    <include refid="Base_Where_List" />
+  </select>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from lms_comments_like where ID in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table lms_comments_like
+  </update>
+</mapper>

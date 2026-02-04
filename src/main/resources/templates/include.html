@@ -17,6 +17,7 @@
     <script type="text/javascript" th:src="@{/js/respond.min.js}"></script><![endif]--><!--[if IE 6]>
     <script type="text/javascript" th:src="@{/js/DD_belatedPNG_0.0.8a-min.js}"></script>
     <script type="text/javascript">DD_belatedPNG.fix('*');</script><![endif]-->
+    <script type="text/javascript" th:src="@{/js/lay-base.js}"></script>
     <script type="text/javascript" th:src="@{/js/lay-config.js}" th:if="${#request.servletPath.startsWith('/admin')}"></script>
     <script type="text/javascript" th:unless="${#request.servletPath.startsWith('/admin')}">
         function layPage(id, count, curr, limit) {

@@ -26,7 +26,7 @@ CREATE TABLE `lms_comments` (
   `USER_ID` bigint(30) DEFAULT NULL COMMENT '用户ID',
   `USERNAME` varchar(50) NOT NULL COMMENT '用户名',
   `CONTENT` text COMMENT '内容',
-  `MODE` varchar(20) DEFAULT NULL COMMENT '留言方式: web-网页, android-安卓, ios-苹果',
+  `MODE` varchar(20) DEFAULT NULL COMMENT '留言方式: web-网页, apk-安卓, ios-苹果',
   `LIKE_COUNT` int(20) DEFAULT '0' COMMENT '点赞计数',
   `VOTE_COUNT` int(20) DEFAULT '0' COMMENT '投票计数',
   `ENABLED` tinyint(1) DEFAULT '0' COMMENT '审核状态: 0-禁用,1-显示',
@@ -35,7 +35,25 @@ CREATE TABLE `lms_comments` (
 
 /*Data for the table `lms_comments` */
 
-insert  into `lms_comments`(`ID`,`CTIME`,`USER_ID`,`USERNAME`,`CONTENT`,`MODE`,`LIKE_COUNT`,`VOTE_COUNT`,`ENABLED`) values (1,'2026-01-06 15:10:47',NULL,'aim','1111','网页',0,0,1),(2,'2026-01-06 15:11:45',1,'admin','222222','安卓',0,0,1),(3,'2026-01-06 15:44:01',1,'admin','33333',NULL,0,0,0);
+insert  into `lms_comments`(`ID`,`CTIME`,`USER_ID`,`USERNAME`,`CONTENT`,`MODE`,`LIKE_COUNT`,`VOTE_COUNT`,`ENABLED`) values (1,'2026-01-06 15:10:47',1,'aim','1111','PC',0,0,1),(2,'2026-01-06 15:11:45',1,'admin','222222','APK',2,0,1),(3,'2026-01-06 15:44:01',1,'admin','33333','IOS',10,0,1);
+
+/*Table structure for table `lms_comments_like` */
+
+DROP TABLE IF EXISTS `lms_comments_like`;
+
+CREATE TABLE `lms_comments_like` (
+  `ID` bigint(30) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `ETIME` datetime DEFAULT NULL COMMENT '编辑时间',
+  `USER_ID` bigint(30) DEFAULT NULL COMMENT '用户ID',
+  `COMMENT_ID` bigint(30) DEFAULT NULL COMMENT '留言ID',
+  `IP` varchar(50) DEFAULT NULL COMMENT '点赞IP',
+  `ENABLED` tinyint(1) DEFAULT '0' COMMENT '状态: 0-删除,1-显示',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='留言点赞表';
+
+/*Data for the table `lms_comments_like` */
+
+insert  into `lms_comments_like`(`ID`,`ETIME`,`USER_ID`,`COMMENT_ID`,`IP`,`ENABLED`) values (1,'2026-02-04 19:26:45',NULL,3,'127.0.0.1',0);
 
 /*Table structure for table `lms_exam_log` */
 
@@ -213,11 +231,11 @@ CREATE TABLE `lms_question_user` (
   `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
   `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户答题表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='用户答题表';
 
 /*Data for the table `lms_question_user` */
 
-insert  into `lms_question_user`(`ID`,`CTIME`,`CUSER`,`EXAM_ROOM_ID`,`EXAM_ROOM_NAME`,`SUBJECT_NAME`,`TOTAL_SCORE`,`ANSWER_SCORE`,`DURATION`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,NULL,1,NULL,NULL),(2,'2026-01-23 19:37:51',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,'',0,NULL,NULL);
+insert  into `lms_question_user`(`ID`,`CTIME`,`CUSER`,`EXAM_ROOM_ID`,`EXAM_ROOM_NAME`,`SUBJECT_NAME`,`TOTAL_SCORE`,`ANSWER_SCORE`,`DURATION`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,NULL,1,NULL,NULL),(2,'2026-01-23 19:37:51',1,1,'驾照 / 科目一 / 第1章','驾照 / 科目一 / 第1章：道路交通安全法律、法规和规章',NULL,NULL,'',0,NULL,NULL),(3,'2026-01-26 15:47:53',1,4,'演示语文','语文 / 二年级',NULL,NULL,'4000',0,NULL,NULL),(4,'2026-01-26 15:49:04',1,4,'演示语文','语文 / 二年级',NULL,NULL,'3000',0,NULL,NULL),(5,'2026-01-26 15:51:06',1,4,'演示语文','语文 / 二年级',NULL,NULL,'5000',0,NULL,NULL),(6,'2026-01-26 15:53:32',1,4,'演示语文','语文 / 二年级',NULL,NULL,'4000',0,NULL,NULL);
 
 /*Table structure for table `lms_question_user_answer` */
 
@@ -234,9 +252,11 @@ CREATE TABLE `lms_question_user_answer` (
   `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
   `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户答题表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='用户答题表';
 
 /*Data for the table `lms_question_user_answer` */
+
+insert  into `lms_question_user_answer`(`ID`,`CTIME`,`CUSER`,`QUID`,`QID`,`QO_VALUE`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2026-01-26 15:48:00',1,3,2302,'6926',0,NULL,NULL),(2,'2026-01-26 15:49:07',1,4,2302,'6925',0,NULL,NULL),(3,'2026-01-26 15:51:07',1,5,2302,'6926',0,NULL,NULL),(4,'2026-01-26 15:53:36',1,6,2302,'6926',1,NULL,NULL);
 
 /*Table structure for table `lms_question_wrong` */
 

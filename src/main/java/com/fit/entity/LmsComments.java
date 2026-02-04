@@ -32,7 +32,7 @@ public class LmsComments extends BaseEntity<LmsComments> {
     private String content;
 
     /**
-     * 留言方式: web-网页, android-安卓, ios-苹果
+     * 留言方式: web-网页, apk-安卓, ios-苹果
      */
     private String mode;
 
