@@ -1,125 +1,294 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="include :: head('做题吧 - 首页')"></head>
-<body>
-<th:block th:include="include :: main_head"></th:block>
-<div class="layui-container">
-    <!-- 学习路径/学科分类 -->
-    <div class="layui-card">
-        <div class="layui-card-header layui-bg-blue">
-            <i class="layui-icon layui-icon-list"></i> 学科分类
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>官方网站</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/layui.css}" media="all"/>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
+        .index-icon-search {
+            color: #999;
+            left: 10px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .index-input {
+            padding-left: 30px;
+        }
+
+        .index-search {
+            border-color: #FFF;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 10px;
+            position: absolute;
+            right: 6px;
+            top: 14%;
+        }
+
+        .layui-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .layui-layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: auto;
+            width: 100%;
+        }
+
+        footer.layui-footer {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 0;
+        }
+
+        footer .layui-font-14 a {
+            color: #bdc3c7;
+            display: block;
+            margin: 10px 10px;
+        }
+
+        .layui-nav {
+            background: transparent;
+        }
+
+        #LAY_NAV_TOP .layui-nav-item a {
+            color: #fff;
+            padding: 0 15px;
+        }
+
+        .mobile-nav-img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+        .mobile-nav-show .layui-header {
+            z-index: 1003;
+        }
+
+        .mobile-nav-show .header-menu .layui-nav {
+            display: block;
+            right: 0;
+        }
+
+        .mobile-header-more {
+            display: none;
+            line-height: 60px;
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+
+        .mobile-header-menu {
+            position: absolute;
+            right: 1%;
+            top: 0;
+            width: 80%;
+        }
+
+        .mobile-logo {
+            color: #fff;
+            font-size: 22px;
+            height: 60px;
+            line-height: 60px;
+            position: absolute;
+            text-align: center;
+            width: 20%;
+        }
+
+        .search-section {
+            background-color: white;
+            padding: 40px 0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-logo {
+                left: 50%;
+                margin-left: -120px;
+                width: 55%;
+            }
+
+            .mobile-header-menu {
+                display: none;
+                width: 95%;
+            }
+
+            .mobile-header-menu .layui-nav {
+                border-radius: 0;
+                box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+                height: 60px;
+                top: 60px;
+                width: 80%;
+                z-index: 1003;
+            }
+
+            .mobile-header-more {
+                display: block;
+            }
+
+            .mobile-nav-show .layui-header {
+                padding-bottom: 130px;
+            }
+
+            .mobile-nav-show .mobile-header-menu {
+                display: block;
+            }
+
+            .mobile-nav-show .site-mobile-shade {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: rgba(0, 0, 0, .7);
+            }
+        }
+    </style>
+</head>
+<body class="layui-layout">
+<!-- 导航栏 -->
+<div id="mainNav" class="layui-header">
+    <div class="layui-container layui-row layui-col-space15">
+        <div class="mobile-logo"><img th:src="@{/images/logo.png}" alt="logo"/> 做题吧</div>
+        <div class="mobile-header-more">
+            <i id="mobile-menu" class="layui-icon layui-icon-spread-left"></i>
         </div>
-        <div class="layui-card-body">
-            <div class="layui-row layui-col-space20">
-                <div class="layui-col-md2 layui-col-sm4 layui-col-xs6">
-                    <a class="layui-btn layui-btn-fluid layui-bg-green"
-                       style="margin-bottom: 10px; height: 80px; line-height: 80px; font-size: 18px;" href="#">
-                        <i class="layui-icon layui-icon-chart"></i><br>数学
+        <div class="mobile-header-menu">
+            <ul class="layui-nav" id="LAY_NAV_TOP" lay-nav-id="LAY_NAV_TOP">
+                <li class="layui-nav-item" data-page="home">
+                    <a href="/">首页</a>
+                </li>
+                <li class="layui-nav-item LAY_TRIGGER" data-page="rooms">
+                    <a href="/rooms">课程中心 <i class="layui-icon">&#xe61a;</i></a>
+                </li>
+                <li class="layui-nav-item LAY_TRIG" data-page="learns">
+                    <a href="/learns">知识库 <i class="layui-icon">&#xe61a;</i></a>
+                </li>
+                <li class="layui-nav-item" data-page="comments">
+                    <a href="/comment">问答社区</a>
+                </li>
+                <li class="layui-nav-item" data-page="tools">
+                    <a href="/tools">常用工具</a>
+                </li>
+                <li class="layui-nav-item layui-layout-right" th:unless="${session?.username!= null}">
+                    <a lay-event="login" href="javascript:;" style="color: #fff;">
+                        <i class="layui-icon layui-icon-username"></i> 登录
                     </a>
-                </div>
-                <div class="layui-col-md2 layui-col-sm4 layui-col-xs6">
-                    <a class="layui-btn layui-btn-fluid layui-bg-orange"
-                       style="margin-bottom: 10px; height: 80px; line-height: 80px; font-size: 18px;" href="#">
-                        <i class="layui-icon layui-icon-template-1"></i><br>语文
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right" style="width: 150px!important;" th:if="${session?.username!= null}">
+                <li class="layui-nav-item" data-page="users">
+                    <a href="javascript:;">
+                        <img th:src="@{/images/logo.png}" class="mobile-nav-img" alt="头像">
+                        <cite th:text="${session?.username?:'用户'}"></cite>
                     </a>
-                </div>
-                <div class="layui-col-md2 layui-col-sm4 layui-col-xs6">
-                    <a class="layui-btn layui-btn-fluid layui-bg-blue"
-                       style="margin-bottom: 10px; height: 80px; line-height: 80px; font-size: 18px;" href="#">
-                        <i class="layui-icon layui-icon-fonts-u"></i><br>英语
-                    </a>
-                </div>
-                <div class="layui-col-md2 layui-col-sm4 layui-col-xs6">
-                    <a class="layui-btn layui-btn-fluid layui-bg-red"
-                       style="margin-bottom: 10px; height: 80px; line-height: 80px; font-size: 18px;" href="#">
-                        <i class="layui-icon layui-icon-layouts"></i><br>物理
-                    </a>
-                </div>
-                <div class="layui-col-md2 layui-col-sm4 layui-col-xs6">
-                    <a class="layui-btn layui-btn-fluid layui-bg-purple"
-                       style="margin-bottom: 10px; height: 80px; line-height: 80px; font-size: 18px;" href="#">
-                        <i class="layui-icon layui-icon-component"></i><br>化学
-                    </a>
-                </div>
-                <div class="layui-col-md2 layui-col-sm4 layui-col-xs6">
-                    <a class="layui-btn layui-btn-fluid layui-bg-cyan"
-                       style="margin-bottom: 10px; height: 80px; line-height: 80px; font-size: 18px;" href="#">
-                        <i class="layui-icon layui-icon-more"></i><br>更多
-                    </a>
-                </div>
-            </div>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a th:href="@{/user/answers}" lay-event="userAns"><i class="layui-icon">&#xe705;</i> 我的答题室</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-event="userInfo"><i class="layui-icon">&#xe66f;</i> 基本资料</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" lay-event="userPwd"><i class="layui-icon">&#xe673;</i> 修改密码</a>
+                        </dd>
+                        <hr>
+                        <dd><a th:href="@{/logout}"><i class="layui-icon">&#xe682;</i> 退出</a></dd>
+                    </dl>
+                </li>
+            </ul>
         </div>
     </div>
-    <!-- 热门学习内容 -->
-    <div class="layui-card" style="margin-top: 20px;">
-        <div class="layui-card-header layui-bg-green">
-            <i class="layui-icon layui-icon-fire"></i> 热门学习内容
-        </div>
-        <div class="layui-card-body">
-            <div class="layui-row layui-col-space20" id="hotContent">
-                <!-- 热门内容将通过JS动态加载 -->
+</div>
+<!-- 主体内容 -->
+<div class="layui-container" style="flex: 1;margin-top: 20px;">
+    <!-- 搜索区域 -->
+    <div class="layui-row search-section">
+        <div class="layui-carousel" id="banner">
+            <div carousel-item>
+                <div th:each="top : ${tops}">
+                    <img th:src="${#strings.isEmpty(top.url)?'/images/none.png':top.url}" th:alt="${top.title}"/>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- 最新学习内容 -->
-    <div class="layui-card" style="margin-top: 20px;">
-        <div class="layui-card-header layui-bg-orange">
-            <i class="layui-icon layui-icon-time"></i> 最新学习内容
-        </div>
-        <div class="layui-card-body">
-            <div class="layui-row layui-col-space20" id="newContent">
-                <!-- 最新内容将通过JS动态加载 -->
+        <div class="layui-col-md8 layui-col-md-offset2">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-size: 28px; color: #333; margin-bottom: 20px;">探索知识，提升技能</h1>
+                <p style="color: #666; font-size: 16px;">专业的IT技能学习平台，助力您的职业成长</p>
             </div>
-        </div>
-    </div>
-    <!-- 学习内容详情模态框 -->
-    <div id="learnDetail" style="display: none; padding: 20px;">
-        <div class="layui-card">
-            <div class="layui-card-header" id="detailSubjectName" style="background-color: #5FB878; color: white;">
-                <h3 id="detailTitle">学习内容详情</h3>
-            </div>
-            <div class="layui-card-body">
-                <div class="layui-row">
-                    <div class="layui-col-md8">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label" style="width: 80px;">作者:</label>
-                            <div class="layui-input-block">
-                                <div class="layui-text" id="detailAuthor" style="margin-left: 0;" th:text="${learn?.author}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-col-md4">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label" style="width: 80px;">发布时间:</label>
-                            <div class="layui-input-block">
-                                <div class="layui-text" id="detailTime" style="margin-left: 0;" th:text="${learn?.ctime}"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="layui-form-item">
-                    <label class="layui-form-label" style="width: 80px;">学习内容:</label>
-                    <div class="layui-input-block">
-                        <div class="layui-text learnContent" id="detailContent" th:text="${learn?.content}"></div>
+            <div class="layui-row layui-card layui-form">
+                <form class="layui-col-space10">
+                    <div class="layui-col-xs12 layui-col-sm10 layui-col-md10">
+                        <i class="layui-icon layui-icon-search index-icon-search"></i>
+                        <input type="text" name="title" class="layui-input index-input" placeholder="搜索答题室内容..."/>
+                        <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm index-search">×</button>
                     </div>
-                </div>
-
-                <div class="layui-form-item" id="notesSection" style="display: none;">
-                    <label class="layui-form-label" style="width: 80px;">学习提示:</label>
-                    <div class="layui-input-block">
-                        <div class="layui-text learnDetail" id="detailNotes"></div>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-input-block" style="margin-left: 0; text-align: center;">
-                        <button class="layui-btn layui-btn-primary" id="closeDetail">关闭</button>
-                        <button class="layui-btn layui-btn-normal" id="collectBtn">
-                            <i class="layui-icon layui-icon-star"></i> 收藏
+                    <div class="layui-col-xs12 layui-col-sm2 layui-col-md2">
+                        <button class="layui-btn layui-btn-fluid layui-bg-purple" id="search" lay-submit lay-filter="search">
+                            <i class="layui-icon">&#xe615; 搜索</i>
                         </button>
-                        <button class="layui-btn layui-btn-warm" id="shareBtn">
-                            <i class="layui-icon layui-icon-share"></i> 分享
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 热门课程 -->
+    <div class="layui-row">
+        <div class="section-title">
+            <span>热门课程</span>
+            <a th:href="@{/rooms}" class="layui-btn layui-btn-primary layui-btn-sm" style="float: right;">更多课程</a>
+        </div>
+        <div class="rooms">
+            <div class="layui-col-md4 layui-col-sm6" th:each="room : ${rooms}" th:data-room-id="${room.id}">
+                <div class="layui-card" style="border: 1px solid #EEEEEE">
+                    <div class="layui-card-header" style="background: #E2E2E2; color: black;">
+                        <i class="layui-icon layui-icon-component"></i>
+                        <span th:text="${room?.title}">答题室标题</span>
+                        <span class="layui-badge" style="float: right;" th:text="${room?.timeMode==1?'限时答题':'永久有效'}">永久有效</span>
+                    </div>
+                    <div class="layui-card-body fixed-content-height" th:with="util=${T(com.fit.util.DictRoomUtil)}">
+                        <div class="layui-col-xs8 layui-col-sm8 layui-col-md8 layui-room">
+                            <p class="content-area" th:text="${room?.content}">答题室内容</p>
+                            <span style="margin-top: 5px;" class="layui-badge layui-bg-green">进行中</span><br>
+                            <span class="layui-badge layui-bg-blue" th:text="${util.getDict(1, room?.examMode)}">标准答题</span><br>
+                            考试分类: <span style="color: #666; margin: 5px 0 0 10px;" th:text="${room?.subjectName}">考试分类</span><br>
+                            答题时间: <span class="layui-border-red" th:text="${room?.timeLen}">15</span>分钟<br>
+                        </div>
+                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4" style="text-align: center;">
+                            <img src="/images/zuotiba.png" width="95%"/>
+                        </div>
+                        <div class="layui-col-space5" style="margin-top: 10px;" th:classappend="${role==5?'layui-hide':''}">
+                            <hr/>
+                            <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                                <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-red">
+                                    <i class="layui-icon layui-icon-edit"></i> 阅卷
+                                </button>
+                            </div>
+                            <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                                <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-orange">
+                                    <i class="layui-icon layui-icon-file-b"></i> 报告
+                                </button>
+                            </div>
+                        </div>
+                        <button class="layui-btn layui-btn-fluid layui-btn-primary layui-border-purple">
+                            <i class="layui-icon layui-icon-play"></i> 进入答题室
                         </button>
                     </div>
                 </div>
@@ -127,18 +296,49 @@
         </div>
     </div>
 </div>
-<th:block th:include="include :: main_foot"></th:block>
+<!-- 页脚 -->
+<footer class="layui-footer">
+    <div class="layui-container layui-row">
+        <div class="layui-col-md5 layui-col-md-offset1 layui-col-xs-offset1">
+            <div class="layui-font-20">
+                <img class="logo-footer" src="/images/logo.png" alt="logo"/> 做题吧平台
+            </div>
+            <div class="layui-font-14" style="color: #bdc3c7; line-height: 1.6; margin: 10px 40px 10px 0;">
+                专注于提供高质量的在线做题平台，帮助您实现成长。我们致力于为用户提供最优质的学习体验。
+            </div>
+        </div>
+        <div class="layui-col-md5 layui-col-md-offset1 layui-col-xs-offset1">
+            <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                <div class="layui-font-16">学习资源</div>
+                <div class="layui-font-14">
+                    <a href="/rooms">课程中心</a>
+                    <a href="/learns">知识文库</a>
+                </div>
+            </div>
+            <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                <div class="layui-font-16">服务支持</div>
+                <div class="layui-font-14">
+                    <a href="#">帮助中心</a>
+                    <a href="#">常见问题</a>
+                    <a href="#">联系我们</a>
+                </div>
+            </div>
+            <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                <div class="layui-font-16">关于我们</div>
+                <div class="layui-font-14">
+                    <a href="#">公司介绍</a>
+                    <a href="#">加入我们</a>
+                    <a href="#">隐私政策</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script type="text/javascript" th:src="@{/js/layui.js}"></script>
 <script>
-    layui.use(['element', 'form', 'laypage',], function (element, form, laypage) {
-        laypage.render({
-            elem: 'demo-laypage-theme',
-            count: 100,
-            theme: '#B55AD0',
-            first: '首页',
-            last: '尾页',
-            prev: '<em>←</em>',
-            next: '<em>→</em>'
-        });
+    layui.use('carousel', function (carousel) {
+        carousel.render({elem: '#test1', width: '100%', arrow: 'always'});
     });
 </script>
 </body>

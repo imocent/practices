@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 小工具')"></head>
-<body>
+<body class="layui-layout">
 <th:block th:include="include :: main_head"></th:block>
 <div class="layui-container">
-    <div class="search-section">
+    <div class="layui-row search-section">
         <div class="layui-card">
             <div class="layui-card-header" style="background-color: #E2E2E2">常用工具</div>
             <div class="layui-row layui-tabs layui-tabs-card" lay-options="{index: 0}">
@@ -81,6 +81,7 @@
     </div>
 </div>
 <th:block th:include="include :: main_foot"></th:block>
+</body>
 <script>
     layui.use(['jquery', 'element', 'form'], function ($, element, form) {
         form.on('submit(sbt_form)', function (obj) {
@@ -126,5 +127,4 @@
         });
     });
 </script>
-</body>
 </html>

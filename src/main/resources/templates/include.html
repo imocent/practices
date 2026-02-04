@@ -31,7 +31,8 @@
             });
         }
 
-        layui.use(['jquery', 'element', 'form', 'carousel', 'dropdown'], function ($, element, form, carousel, dropdown) {
+        layui.use(['jquery', 'carousel', 'dropdown', 'element', 'util'], function ($, carousel, dropdown, element, util) {
+            util.fixbar();
             var pageMap = {
                 '/': 'home', '/index': 'home', '/index.html': 'home',
                 '/room': 'rooms', '/room.html': 'rooms',
@@ -169,8 +170,8 @@
 </div>
 
 <div th:fragment="main_head">
-    <header id="mainNav" class="layui-header">
-        <div class="layui-row">
+    <div id="mainNav" class="layui-header">
+        <div class="layui-container layui-row">
             <div class="mobile-logo"><img th:src="@{/images/logo.png}" alt="logo"/> 做题吧</div>
             <div class="mobile-header-more">
                 <i id="mobile-menu" class="layui-icon layui-icon-spread-left"></i>
@@ -221,45 +222,46 @@
                 </ul>
             </div>
         </div>
-    </header>
+    </div>
 </div>
 
 <div th:fragment="main_foot">
-    <div class="index-footer">
-        <div class="layui-col-md5 layui-col-md-offset1 layui-col-xs-offset1">
-            <div class="layui-font-20">
-                <img class="logo-footer" src="/images/logo.png" alt="logo"/> 做题吧平台
+    <div id="LAY_FOOT" class="layui-footer">
+        <div class="layui-container layui-row">
+            <div class="layui-col-md5 layui-col-md-offset1 layui-col-xs-offset1">
+                <div class="layui-font-20">
+                    <img class="logo-footer" src="/images/logo.png" alt="logo"/> 做题吧平台
+                </div>
+                <div class="layui-font-14" style="color: #bdc3c7; line-height: 1.6; margin: 10px 40px 10px 0;">
+                    专注于提供高质量的在线做题平台，帮助您实现成长。我们致力于为用户提供最优质的学习体验。
+                </div>
             </div>
-            <div class="layui-font-14" style="color: #bdc3c7; line-height: 1.6; margin: 10px 40px 10px 0;">
-                专注于提供高质量的在线做题平台，帮助您实现成长。我们致力于为用户提供最优质的学习体验。
+            <div class="layui-col-md5 layui-col-md-offset1 layui-col-xs-offset1">
+                <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                    <div class="layui-font-16">学习资源</div>
+                    <div class="layui-font-14">
+                        <a href="/rooms">课程中心</a>
+                        <a href="/learns">知识文库</a>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                    <div class="layui-font-16">服务支持</div>
+                    <div class="layui-font-14">
+                        <a href="#">帮助中心</a>
+                        <a href="#">常见问题</a>
+                        <a href="#">联系我们</a>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                    <div class="layui-font-16">关于我们</div>
+                    <div class="layui-font-14">
+                        <a href="#">公司介绍</a>
+                        <a href="#">加入我们</a>
+                        <a href="#">隐私政策</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="layui-col-md5 layui-col-md-offset1 layui-col-xs-offset1">
-            <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                <div class="layui-font-16">学习资源</div>
-                <div class="layui-font-14">
-                    <a href="/rooms">课程中心</a>
-                    <a href="/learns">知识文库</a>
-                </div>
-            </div>
-            <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                <div class="layui-font-16">服务支持</div>
-                <div class="layui-font-14">
-                    <a href="#">帮助中心</a>
-                    <a href="#">常见问题</a>
-                    <a href="#">联系我们</a>
-                </div>
-            </div>
-            <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                <div class="layui-font-16">关于我们</div>
-                <div class="layui-font-14">
-                    <a href="#">公司介绍</a>
-                    <a href="#">加入我们</a>
-                    <a href="#">隐私政策</a>
-                </div>
-            </div>
-        </div>
-        <th:block th:include="include :: footer"></th:block>
     </div>
 </div>
 </html>
