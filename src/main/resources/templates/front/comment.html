@@ -4,19 +4,15 @@
 <body class="layui-layout">
 <th:block th:include="include :: main_head"></th:block>
 <div id="LAY_MAIN" class="layui-container">
-    <div class="layui-card">
-        <div class="layui-card-header">
-            <h1 style="text-align: center;font-size: 28px;color: #333;margin: 20px 0;">探索知识，收听意见</h1>
-            <div class="layui-form">
-                <input type="hidden" name="username" th:if="${session.username!= null}" th:value="${session?.username}"/>
-                <div class="layui-form-item" th:unless="${session.username!= null}">
-                    <input type="text" name="username" lay-verify="required" placeholder="请输入昵称" class="layui-input"/>
-                </div>
-                <div class="layui-form-item" style="position: relative;">
-                    <textarea id="content" name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
-                    <button class="layui-btn layui-btn-primary layui-border-purple comments-issue" lay-submit lay-filter="submit-form">发表</button>
-                </div>
-            </div>
+    <div class="layui-row layui-form" style="margin: 2px;;">
+        <h1 style="text-align: center;font-size: 28px;color: #333;margin: 20px 0;">探索知识，收听意见</h1>
+        <input type="hidden" name="username" th:if="${session.username!= null}" th:value="${session?.username}"/>
+        <div class="layui-form-item" th:unless="${session.username!= null}">
+            <input type="text" name="username" lay-verify="required" placeholder="请输入昵称" class="layui-input"/>
+        </div>
+        <div class="layui-form-item" style="position: relative;">
+            <textarea id="content" name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+            <button class="layui-btn layui-btn-primary layui-border-purple comments-issue" lay-submit lay-filter="submit-form">发表</button>
         </div>
     </div>
     <div class="news layui-row">
