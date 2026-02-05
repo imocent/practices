@@ -42,24 +42,47 @@ public class CommentsController extends BaseController {
     @GetMapping("/comment")
     public String comment(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
-        if (!SecurityUtils.getSubject().isAuthenticated()) {
-            map.put("enabled", 1);
-        }
+        map.put("enabled", 1);
         map.put("limit", 3);
         map.put("page", 0);
         List<LmsComments> comments = this.commentsService.findList(map);
         model.addAttribute("comments", comments);
+        getLikes(request, model);
         return "front/comment";
     }
 
     @GetMapping("/comments")
     public String comments(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
+        map.put("enabled", 1);
+        map.put("limit", 8);
+        if (!map.containsKey("page")) {
+            map.put("page", 0);
+        }
+        model.addAttribute("page", map.get("page"));
         model.addAttribute("content", map.get("content"));
         List<LmsComments> comments = this.commentsService.findList(map);
+        int count = this.commentsService.findCount(map);
         model.addAttribute("comments", comments);
-        model.addAttribute("count", comments.size());
+        model.addAttribute("count", count);
+
         return "front/comments";
+    }
+
+    private void getLikes(HttpServletRequest request, Model model) {
+        Map<String, Object> map = new HashMap<>();
+        Map<Long, Object> likes = new HashMap<>();
+        if (SecurityUtils.getSubject().isAuthenticated()) {
+            map.put("userId", SecurityUtils.getSubject().getPrincipal());
+        } else {
+            map.put("ip", IpUtil.getClientIp(request));
+            map.put("signed", IpUtil.getSigned(request));
+        }
+        List<LmsCommentsLike> list = this.commentsLikeService.findList(map);
+        for (LmsCommentsLike commentsLike : list) {
+            likes.put(commentsLike.getCommentId(), commentsLike.getEnabled());
+        }
+        model.addAttribute("likes", likes);
     }
 
     @PostMapping("/comments/save")
@@ -78,11 +101,11 @@ public class CommentsController extends BaseController {
             }
             String userAgent = request.getHeader("User-Agent");
             if (userAgent.toLowerCase().contains("android")) {
-                bean.setMode("安卓");
+                bean.setMode("apk");
             } else if (userAgent.toLowerCase().contains("iphone") || userAgent.toLowerCase().contains("ipad") || userAgent.toLowerCase().contains("ipod")) {
                 bean.setMode("ios");
             } else {
-                bean.setMode("网页");
+                bean.setMode("web");
             }
             bean.setCtime(new Date());
             this.commentsService.save(bean);
@@ -97,12 +120,14 @@ public class CommentsController extends BaseController {
     public Object like(HttpServletRequest request) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         String ip = IpUtil.getClientIp(request);
+        String signed = IpUtil.getSigned(request);
         map.put("ip", ip);
+        map.put("signed", signed);
         if (SecurityUtils.getSubject().isAuthenticated()) {
-            map.put("userId", SecurityUtils.getSubject().getPrincipal());
+            map.put("userId", SecurityUtils.getSubject().getPrincipal().toString());
         }
-        Long commentId = Long.valueOf(map.get("commentId").toString());
         List<LmsCommentsLike> list = this.commentsLikeService.findList(map);
+        Long commentId = Long.valueOf(map.get("commentId").toString());
         LmsComments comments = this.commentsService.get(commentId);
         if (list.size() > 0) {
             LmsCommentsLike commentsLike = list.get(0);
@@ -123,6 +148,7 @@ public class CommentsController extends BaseController {
             LmsCommentsLike commentsLike = new LmsCommentsLike();
             commentsLike.setEtime(new Date());
             commentsLike.setIp(ip);
+            commentsLike.setSigned(signed);
             commentsLike.setCommentId(commentId);
             if (map.containsKey("userId")) {
                 commentsLike.setUserId(Long.valueOf(map.get("userId").toString()));

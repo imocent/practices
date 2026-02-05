@@ -7,10 +7,11 @@
     <result column="USER_ID" jdbcType="BIGINT" property="userId" />
     <result column="COMMENT_ID" jdbcType="BIGINT" property="commentId" />
     <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="SIGNED" jdbcType="VARCHAR" property="signed" />
     <result column="ENABLED" jdbcType="BIT" property="enabled" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, ETIME, USER_ID, COMMENT_ID, IP, ENABLED
+    ID, ETIME, USER_ID, COMMENT_ID, IP, SIGNED, ENABLED
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -40,6 +41,9 @@
       <if test="ip != null">
         IP,
       </if>
+      <if test="signed != null">
+        SIGNED,
+      </if>
       <if test="enabled != null">
         ENABLED,
       </if>
@@ -60,6 +64,9 @@
       <if test="ip != null">
         #{ip,jdbcType=VARCHAR},
       </if>
+      <if test="signed != null">
+        #{signed,jdbcType=VARCHAR},
+      </if>
       <if test="enabled != null">
         #{enabled,jdbcType=BIT},
       </if>
@@ -79,6 +86,9 @@
       </if>
       <if test="ip != null">
         IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="signed != null">
+        SIGNED = #{signed,jdbcType=VARCHAR},
       </if>
       <if test="enabled != null">
         ENABLED = #{enabled,jdbcType=BIT},
@@ -105,6 +115,9 @@
       </if>
       <if test="ip != null and ip != ''">
          and IP = #{ip,jdbcType=VARCHAR}
+      </if>
+      <if test="signed != null and signed != ''">
+         and SIGNED = #{signed,jdbcType=VARCHAR}
       </if>
       <if test="enabled != null and enabled != ''">
          and ENABLED = #{enabled,jdbcType=BIT}

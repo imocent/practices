@@ -32,6 +32,11 @@ public class LmsCommentsLike extends BaseEntity<LmsCommentsLike> {
     private String ip;
 
     /**
+     * 数字指纹
+     */
+    private String signed;
+
+    /**
      * 状态: 0-删除,1-显示
      */
     private Boolean enabled;
@@ -47,6 +52,7 @@ public class LmsCommentsLike extends BaseEntity<LmsCommentsLike> {
         sb.append(", userId=").append(userId);
         sb.append(", commentId=").append(commentId);
         sb.append(", ip=").append(ip);
+        sb.append(", signed=").append(signed);
         sb.append(", enabled=").append(enabled);
         sb.append("]");
         return sb.toString();

@@ -1,8 +1,11 @@
 package com.fit.util;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @AUTO
@@ -15,6 +18,24 @@ public class IpUtil {
     private static final String LOCALHOST_IPV4 = "127.0.0.1";
     private static final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
     private static final String[] HEADER_NAMES = {"X-Real-IP", "X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR", "CF-Connecting-IP"};
+
+    public static String getSigned(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.getHeader("User-Agent"));
+        sb.append("^").append(request.getHeader("Accept-Language"));
+        sb.append("^").append(getClientIp(request));
+        try {
+            MessageDigest sign = MessageDigest.getInstance("MD5");
+            byte[] digest = sign.digest(sb.toString().getBytes("UTF-8"));
+            sb.setLength(0);
+            for (byte b : digest) {
+                sb.append(Integer.toHexString((b & 0xFF) | 0x100).substring(1, 3));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("生成指纹失败:", e);
+        }
+    }
 
     /**
      * 获取客户端真实 IP 地址

@@ -12,34 +12,29 @@
                 <div class="layui-form-item" th:unless="${session.username!= null}">
                     <input type="text" name="username" lay-verify="required" placeholder="请输入昵称" class="layui-input"/>
                 </div>
-                <div class="layui-form-item layui-form-text">
-                    <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
-                </div>
-                <div class="layui-form-item" style="overflow: hidden;">
-                    <div class="comments-icon">
-                        <a href="javascript:;"><i class="layui-icon layui-icon-face-smile-b"></i></a>
-                        <a href="javascript:;"><i class="layui-icon layui-icon-picture"></i></a>
-                        <a href="javascript:;"><i class="layui-icon layui-icon-link"></i></a>
-                    </div>
-                    <div style="float: right;">
-                        <button class="layui-btn layui-btn-primary layui-border-purple" lay-submit lay-filter="submit-form">发表</button>
-                    </div>
+                <div class="layui-form-item" style="position: relative;">
+                    <textarea id="content" name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                    <button class="layui-btn layui-btn-primary layui-border-purple comments-issue" lay-submit lay-filter="submit-form">发表</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="news layui-row">
-        <div class="layui-col-xs12" style="border-bottom: 1px solid #eee;" th:each="comment : ${comments}">
+        <div class="layui-col-xs12 comments-info" th:each="comment : ${comments}">
             <div class="layui-col-md1 layui-col-sm1 layui-col-xs2 laytable-cell-space">
                 <img src="/images/logo.png" alt="头像" style="width: 40px; height: 40px; border-radius: 50%;">
             </div>
             <div class="layui-col-md10 layui-col-sm10 layui-col-xs6">
-                <div style="font-weight: bold;" th:text="${comment.username}">用户名</div>
-                <div style="color: #999; font-size: 12px;" th:text="${#dates.format(comment.ctime, 'yyyy-MM-dd HH:mm:ss')}">留言时间</div>
-                <div style="color: #666; font-size: 12px; margin-top: 5px;" th:text="${comment.content}">内容</div>
+                <div class="layui-col-md2">
+                    <div style="font-weight: bold;" th:text="${comment.username}">用户名</div>
+                    <div style="color: #999; font-size: 12px;" th:text="${#dates.format(comment.ctime, 'yyyy-MM-dd HH:mm:ss')}">留言时间</div>
+                </div>
+                <div class="layui-col-md10" th:text="${comment.content}">内容</div>
             </div>
             <div class="layui-col-md1 layui-col-sm1 layui-col-xs4 layui-btn-container layui-table-pagebar">
-                <button class="layui-btn layui-btn-xs layui-btn-primary layui-border-green" th:data-id="${comment.id}">点赞</button>
+                <button class="layui-btn layui-btn-xs layui-btn-primary layui-border-green" th:data-id="${comment.id}"
+                        th:text="${likes == null ?'点赞': likes.get(comment.id)} ? '已点赞' : '点赞'">点赞
+                </button>
             </div>
         </div>
     </div>
@@ -47,13 +42,22 @@
 </div>
 <th:block th:include="include :: main_foot"></th:block>
 <script>
-    layui.use(['jquery', 'form'], function ($, form) {
+    layui.extend({layEditor: 'js/layEditor'}).use(['jquery', 'form', 'layEditor'], function ($, form, editor) {
         form.on('submit(submit-form)', function (obj) {
             $.post('/comments/save', obj.field, function (data) {
                 advices(data, parent);
             }, 'json').fail(function (event) {
                 toError(event);
             });
+        });
+
+        editor.init({
+            elem: '#content',
+            uploadUrl: 'https://upload-z1.qiniup.com',
+            videoUploadUrl: 'https://upload-z1.qiniup.com',
+            videoUploadSize: '102400',
+            uploadSize: '4096',
+            style: 'fangge',
         });
 
         $('.news').on('click', '.layui-btn', function (e) {

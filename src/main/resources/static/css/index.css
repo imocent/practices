@@ -15,6 +15,17 @@ body, html {
     color: #C4CBCF;
 }
 
+.comments-info {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.comments-issue {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
 .comments-more {
     margin: 20px 0;
     text-align: center;
