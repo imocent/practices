@@ -65,7 +65,7 @@ public class CommentsController extends BaseController {
         int count = this.commentsService.findCount(map);
         model.addAttribute("comments", comments);
         model.addAttribute("count", count);
-
+        getLikes(request, model);
         return "front/comments";
     }
 

@@ -33,7 +33,7 @@
             </div>
             <div class="layui-col-md1 layui-col-sm1 layui-col-xs4 layui-btn-container layui-table-pagebar">
                 <button class="layui-btn layui-btn-xs layui-btn-primary layui-border-green" th:data-id="${comment.id}"
-                        th:text="${likes == null ?'点赞': likes.get(comment.id)} ? '已点赞' : '点赞'">点赞
+                        th:text="${likes == null ?false: likes.get(comment.id)} ? '已点赞' : '点赞'">点赞
                 </button>
             </div>
         </div>
