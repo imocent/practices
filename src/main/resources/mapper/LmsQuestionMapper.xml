@@ -9,6 +9,8 @@
     <result column="EXAM_ROOM_NAME" jdbcType="VARCHAR" property="examRoomName" />
     <result column="MOLD" jdbcType="INTEGER" property="mold" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="EXAM_SUBJECT_ID" jdbcType="BIGINT" property="examSubjectId" />
+    <result column="EXAM_SUBJECT_NAME" jdbcType="VARCHAR" property="examSubjectName" />
     <result column="DIFFICULTY" jdbcType="INTEGER" property="difficulty" />
     <result column="SHARE" jdbcType="BIT" property="share" />
     <result column="ENABLED" jdbcType="BIT" property="enabled" />
@@ -16,8 +18,8 @@
     <result column="EUSER" jdbcType="BIGINT" property="euser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CTIME, CUSER, EXAM_ROOM_ID, EXAM_ROOM_NAME, MOLD, CONTENT, DIFFICULTY, `SHARE`, 
-    ENABLED, ETIME, EUSER
+    ID, CTIME, CUSER, EXAM_ROOM_ID, EXAM_ROOM_NAME, MOLD, CONTENT, EXAM_SUBJECT_ID, EXAM_SUBJECT_NAME, 
+    DIFFICULTY, `SHARE`, ENABLED, ETIME, EUSER
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -52,6 +54,12 @@
       </if>
       <if test="content != null">
         CONTENT,
+      </if>
+      <if test="examSubjectId != null">
+        EXAM_SUBJECT_ID,
+      </if>
+      <if test="examSubjectName != null">
+        EXAM_SUBJECT_NAME,
       </if>
       <if test="difficulty != null">
         DIFFICULTY,
@@ -91,6 +99,12 @@
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
       </if>
+      <if test="examSubjectId != null">
+        #{examSubjectId,jdbcType=BIGINT},
+      </if>
+      <if test="examSubjectName != null">
+        #{examSubjectName,jdbcType=VARCHAR},
+      </if>
       <if test="difficulty != null">
         #{difficulty,jdbcType=INTEGER},
       </if>
@@ -128,6 +142,12 @@
       </if>
       <if test="content != null">
         CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="examSubjectId != null">
+        EXAM_SUBJECT_ID = #{examSubjectId,jdbcType=BIGINT},
+      </if>
+      <if test="examSubjectName != null">
+        EXAM_SUBJECT_NAME = #{examSubjectName,jdbcType=VARCHAR},
       </if>
       <if test="difficulty != null">
         DIFFICULTY = #{difficulty,jdbcType=INTEGER},
@@ -172,6 +192,12 @@
       </if>
       <if test="content != null and content != ''">
          and CONTENT like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="examSubjectId != null and examSubjectId != ''">
+         and EXAM_SUBJECT_ID = #{examSubjectId,jdbcType=BIGINT}
+      </if>
+      <if test="examSubjectName != null and examSubjectName != ''">
+         and EXAM_SUBJECT_NAME = #{examSubjectName,jdbcType=VARCHAR}
       </if>
       <if test="difficulty != null and difficulty != ''">
          and DIFFICULTY = #{difficulty,jdbcType=INTEGER}

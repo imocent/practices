@@ -40,11 +40,11 @@
                             <label for="ENABLED" class="layui-form-label">考场状态</label>
                             <div class="layui-input-block">
                                 <select id="ENABLED" name="enabled" lay-search>
+                                    <option value="0">停用</option>
                                     <option value="1">新建</option>
                                     <option value="2">发布</option>
                                     <option value="3">结束</option>
                                     <option value="4">归档</option>
-                                    <option value="0">停用</option>
                                 </select>
                             </div>
                         </div>
@@ -133,14 +133,14 @@
                                 <label for="markMode" class="layui-form-label">阅卷类型</label>
                                 <div class="layui-input-inline">
                                     <input id="markMode" type="checkbox" lay-filter="switch" name="markMode" lay-skin="switch"
-                                           lay-text="自动完成|人工阅卷" th:checked="${bean?.markMode}" value="0"/>
+                                           lay-text="人工阅卷|自动完成" th:checked="${bean?.markMode}" value="0"/>
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label for="ADJUDGE_MODE" class="layui-form-label">阅卷时间</label>
                                 <div class="layui-input-inline">
                                     <input id="ADJUDGE_MODE" type="checkbox" lay-filter="switch" name="adjudgeMode" lay-skin="switch"
-                                           lay-text="用户交卷后|全场收卷后" th:checked="${bean?.adjudgeMode}" value="0"/>
+                                           lay-text="全场收卷后|用户交卷后" th:checked="${bean?.adjudgeMode}" value="0"/>
                                 </div>
                             </div>
                         </div>

@@ -95,7 +95,7 @@ if __name__ == "__main__":
             options = item.get('options', {})
             try:
                 sql = """
-                INSERT INTO `lms_question` (`EXAM_ROOM_ID`, `EXAM_ROOM_NAME`, `MOLD`, `CONTENT`) 
+                INSERT INTO `lms_question` (`EXAM_ROOM_ID`, `EXAM_ROOM_NAME`, `MOLD`, `CONTENT`)
                 VALUES (%s, %s, %s, %s)
                 """
                 mold = 0 if len(options) > 0 else 2

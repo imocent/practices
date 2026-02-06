@@ -2,7 +2,6 @@ package com.fit.web.front;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
-import com.fit.dao.LmsCommentsDao;
 import com.fit.entity.LmsComments;
 import com.fit.entity.LmsCommentsLike;
 import com.fit.service.LmsCommentsLikeService;
@@ -32,7 +31,7 @@ import java.util.Map;
  */
 @Slf4j
 @Controller
-public class CommentsController extends BaseController {
+public class LmsCommentsController extends BaseController {
 
     @Autowired
     private LmsCommentsService commentsService;

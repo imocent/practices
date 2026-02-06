@@ -42,6 +42,16 @@ public class LmsQuestion extends BaseEntity<LmsQuestion> {
     private String content;
 
     /**
+     * 所属分类ID
+     */
+    private Long examSubjectId;
+
+    /**
+     * 所属分类名
+     */
+    private String examSubjectName;
+
+    /**
      * 难度等级 1-5
      */
     private Integer difficulty;
@@ -79,6 +89,8 @@ public class LmsQuestion extends BaseEntity<LmsQuestion> {
         sb.append(", examRoomName=").append(examRoomName);
         sb.append(", mold=").append(mold);
         sb.append(", content=").append(content);
+        sb.append(", examSubjectId=").append(examSubjectId);
+        sb.append(", examSubjectName=").append(examSubjectName);
         sb.append(", difficulty=").append(difficulty);
         sb.append(", share=").append(share);
         sb.append(", enabled=").append(enabled);

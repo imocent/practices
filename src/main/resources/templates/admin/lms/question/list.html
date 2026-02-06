@@ -61,7 +61,7 @@
             cols: [ [
                 {type: 'checkbox'},
                 {type: "numbers", title: '序号', minWidth: 120, templet: function(index){return index+1;}},
-                {field: 'examRoomName', title: '答题室名', minWidth: 100},
+                {field: 'examSubjectName', title: '分类名', minWidth: 100},
                 {field: 'mold', title: '题类型', width: 100,templet:function (d) {return d.mold==0 ? "单选" : d.mold==1 ? "多选" : "判断";}},
                 {field: 'content', title: '内容', minWidth: 120},
                 {field: 'difficulty', title: '难度等级', width: 100},

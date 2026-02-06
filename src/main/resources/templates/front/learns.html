@@ -54,7 +54,7 @@
 <script>
     layui.use(['jquery', 'element', 'form', 'laypage'], function ($, element, form, laypage) {
         $(function () {
-            layPage('pagination', "[[${count}]]");
+            layPage('pagination', "[[${count}]]", "[[${page}]]", "[[${limit}]]");
             $('.filter-tag[data-pid]').removeClass('active').filter('[data-pid="[[${pid}]]"]').addClass('active');
         });
         $('.filter-tag').on('click', function () {

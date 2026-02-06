@@ -2,7 +2,8 @@
 SQLyog v10.2 
 MySQL - 5.7.9 : Database - fit
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -151,21 +152,23 @@ insert  into `lms_exam_subject`(`ID`,`CTIME`,`CUSER`,`PID`,`NAME`,`SORT`,`LEVELS
 DROP TABLE IF EXISTS `lms_question`;
 
 CREATE TABLE `lms_question` (
-  `ID` bigint(30) NOT NULL AUTO_INCREMENT COMMENT '题目ID',
-  `CTIME` datetime DEFAULT NULL COMMENT '创建时间',
-  `CUSER` bigint(30) DEFAULT NULL COMMENT '创建人',
-  `EXAM_ROOM_ID` bigint(30) DEFAULT NULL COMMENT '所属答题室ID',
-  `EXAM_ROOM_NAME` varchar(50) DEFAULT NULL COMMENT '所属答题室名',
-  `MOLD` int(1) NOT NULL DEFAULT '0' COMMENT '题类型：0-单选,1-多选,2-判断',
-  `CONTENT` text NOT NULL COMMENT '题目内容',
-  `DIFFICULTY` int(1) DEFAULT '1' COMMENT '难度等级 1-5',
-  `SHARE` tinyint(1) DEFAULT '1' COMMENT '题目是否公开: 0-私有,1-公开',
-  `ENABLED` tinyint(1) DEFAULT '1' COMMENT '是否启用: 0-禁用,1-正常',
-  `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
-  `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
-  PRIMARY KEY (`ID`),
-  KEY `idx_exam_room` (`EXAM_ROOM_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4769 DEFAULT CHARSET=utf8 COMMENT='题目表';
+    `ID` bigint(30) NOT NULL AUTO_INCREMENT COMMENT '题目ID',
+    `CTIME` datetime DEFAULT NULL COMMENT '创建时间',
+    `CUSER` bigint(30) DEFAULT NULL COMMENT '创建人',
+    `EXAM_ROOM_ID` bigint(30) DEFAULT NULL COMMENT '所属答题室ID',
+    `EXAM_ROOM_NAME` varchar(50) DEFAULT NULL COMMENT '所属答题室名',
+    `MOLD` int(1) NOT NULL DEFAULT '0' COMMENT '题类型：0-单选,1-多选,2-判断',
+    `CONTENT` text NOT NULL COMMENT '题目内容',
+    `EXAM_SUBJECT_ID` bigint(30) DEFAULT NULL COMMENT '所属分类ID',
+    `EXAM_SUBJECT_NAME` varchar(50) DEFAULT NULL COMMENT '所属分类名',
+    `DIFFICULTY` int(1) DEFAULT '1' COMMENT '难度等级 1-5',
+    `SHARE` tinyint(1) DEFAULT '1' COMMENT '题目是否公开: 0-私有,1-公开',
+    `ENABLED` tinyint(1) DEFAULT '1' COMMENT '是否启用: 0-禁用,1-正常',
+    `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
+    `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
+    PRIMARY KEY (`ID`),
+    KEY `idx_exam_room` (`EXAM_SUBJECT_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='题目表'
 
 /*Data for the table `lms_question` */
 
@@ -206,12 +209,11 @@ CREATE TABLE `lms_question_learn` (
   `ENABLED` tinyint(1) DEFAULT '0' COMMENT '禁用状态: 0-禁用,1-正常',
   `ETIME` datetime DEFAULT NULL COMMENT '修改时间',
   `EUSER` bigint(30) DEFAULT NULL COMMENT '修改人',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='题库材料';
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TITLE` (`TITLE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='题库材料'
 
 /*Data for the table `lms_question_learn` */
-
-insert  into `lms_question_learn`(`ID`,`CTIME`,`CUSER`,`SUBJECT_ID`,`SUBJECT_NAME`,`UUID`,`AUTHOR`,`TITLE`,`CONTENT`,`NOTES`,`ENABLED`,`ETIME`,`EUSER`) values (1,'2017-11-11 00:00:00',1,'1,2','演示学类 / 演示科目','1dbb53f6-ceba-11f0-8745-f8cab851439b','王之涣','登鹳雀楼','<p>\n	白日依山尽，\n</p>\n<p>\n	黄河入海流。\n</p>\n<p>\n	欲穷千里目，\n</p>\n<p>\n	更上一层楼。\n</p>','演示材料',1,'2026-01-04 14:14:22',1),(2,'2017-11-11 00:00:00',1,'4,22','语文 / 二年级','2df6c93e-cebc-11f0-8745-f8cab851439b','李白','望庐山瀑布','<p>\n	日照香炉生紫烟，\n</p>\n<p>\n	遥看瀑布挂前川。\n</p>\n<p>\n	飞流直下三千尺，\n</p>\n<p>\n	疑是银河落九天。\n</p>',NULL,0,'2026-01-04 14:10:28',1);
 
 /*Table structure for table `lms_question_user` */
 
