@@ -214,6 +214,11 @@ body, html {
 }
 
 @media screen and (max-width: 768px) {
+
+    .layui-table-view {
+        width: 350px !important;
+    }
+
     .mobile-logo {
         left: 50%;
         margin-left: -120px;
@@ -230,7 +235,7 @@ body, html {
         box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
         height: 60px;
         top: 60px;
-        width: 80%;
+        width: 90%;
         z-index: 1003;
     }
 

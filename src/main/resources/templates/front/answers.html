@@ -9,37 +9,33 @@
 <body class="layui-layout">
 <th:block th:include="include :: main_head"></th:block>
 <div id="LAY_MAIN" class="layui-container">
-    <div class="layui-container layui-fluid">
-        <div class="layui-row layui-card">
-            <div class="layui-card-header"><i class="layui-icon">&#xe705; 我的答题</i></div>
-            <div class="layui-card-body">
-                <table class="layui-hide" id="table-list"></table>
-                <script type="text/html" id="column-toolbar">
-                    {{# if(d.enabled){ }}
-                    <button class="layui-btn layui-btn-sm" lay-event="see">查看答卷</button>
-                    |
-                    <button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="redo">重做错题</button>
-                    {{# } else { }}
-                    <button class="layui-btn layui-btn-sm" lay-event="gon">继续测试</button>
-                    {{# } }}
-                    |
-                    <button class="layui-btn layui-btn-sm layui-bg-red" lay-event="del">删除测试</button>
-                </script>
-            </div>
-        </div>
+    <div class="layui-fluid layui-row">
+        <h2><i class="layui-icon">&#xe705; 我的答题</i></h2>
+        <table class="layui-hide" id="table-list"></table>
+        <script type="text/html" id="column-toolbar">
+            {{# if(d.enabled){ }}
+            <button class="layui-btn layui-btn-sm" lay-event="see">查看答卷</button>
+            |
+            <button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="redo">重做错题</button>
+            {{# } else { }}
+            <button class="layui-btn layui-btn-sm" lay-event="gon">继续测试</button>
+            {{# } }}
+            |
+            <button class="layui-btn layui-btn-sm layui-bg-red" lay-event="del">删除测试</button>
+        </script>
     </div>
 </div>
 <th:block th:include="include :: main_foot"></th:block>
 </body>
 <script>
-    layui.use(['jquery', 'table', 'form'], function ($, table, form) {
+    layui.use(['jquery', 'table'], function ($, table) {
         table.render({
             elem: '#table-list',
             url: '/user/answers',
             method: 'post',
             dataType: 'JSON',
-            height: '450',
-            page: true,
+            height: 'full-400',
+            page: {layout: ['limit', 'count', 'prev', 'page', 'next']},
             cols: [
                 [
                     {field: 'ctime', title: '交卷时间', width: 180},
@@ -47,7 +43,7 @@
                     {field: 'examRoomName', title: '房间名称', minWidth: 80},
                     {field: 'totalScore', title: '总分', width: 80},
                     {field: 'answerScore', title: '得分', width: 80},
-                    {fixed: 'right', title: '操作', minWidth: 200, toolbar: '#column-toolbar'}
+                    {title: '操作', minWidth: 300, toolbar: '#column-toolbar'}
                 ]
             ]
         });
