@@ -42,7 +42,7 @@ public class LmsCommentsController extends BaseController {
     public String comment(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         map.put("enabled", 1);
-        map.put("limit", 3);
+        map.put("limit", 4);
         map.put("page", 0);
         List<LmsComments> comments = this.commentsService.findList(map);
         model.addAttribute("comments", comments);
@@ -54,15 +54,16 @@ public class LmsCommentsController extends BaseController {
     public String comments(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         map.put("enabled", 1);
-        map.put("limit", 8);
-        if (!map.containsKey("page")) {
+        if (!map.containsKey("page") || !map.containsKey("limit")) {
             map.put("page", 0);
+            map.put("limit", 10);
         }
-        model.addAttribute("page", map.get("page"));
         model.addAttribute("content", map.get("content"));
+        model.addAttribute("limit", map.get("limit"));
+        model.addAttribute("page", map.get("page"));
         List<LmsComments> comments = this.commentsService.findList(map);
-        int count = this.commentsService.findCount(map);
         model.addAttribute("comments", comments);
+        int count = this.commentsService.findCount(map);
         model.addAttribute("count", count);
         getLikes(request, model);
         return "front/comments";

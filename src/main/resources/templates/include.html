@@ -20,12 +20,24 @@
     <script type="text/javascript" th:src="@{/js/lay-base.js}"></script>
     <script type="text/javascript" th:src="@{/js/lay-config.js}" th:if="${#request.servletPath.startsWith('/admin')}"></script>
     <script type="text/javascript" th:unless="${#request.servletPath.startsWith('/admin')}">
-        function layPage(id, count, curr, limit) {
+        function layPage(id, count, curr, limit, params) {
             return layui.laypage.render({
                 elem: id, count: count, curr: curr || 1, limit: limit || 8, theme: '#B55AD0',
                 first: '首页', last: '尾页', prev: '<em>←</em>', next: '<em>→</em>', jump: function (obj, first) {
                     if (!first) {
-                        window.location.href = window.location.pathname + "?page=" + obj.curr
+                        if (params && typeof params === 'object') {
+                            var searchParams = new URLSearchParams(window.location.search);
+                            searchParams.set('limit', obj.limit);
+                            searchParams.set('page', obj.curr);
+                            for (var key in params) {
+                                if (params.hasOwnProperty(key) && params[key] !== undefined) {
+                                    searchParams.set(key, params[key]);
+                                }
+                            }
+                            window.location.href = window.location.pathname + "?" + searchParams.toString()
+                        } else {
+                            window.location.href = window.location.pathname + `?page=${obj.curr}&limit=${obj.limit}`;
+                        }
                     }
                 }
             });

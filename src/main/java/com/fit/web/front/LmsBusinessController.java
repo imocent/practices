@@ -70,31 +70,33 @@ public class LmsBusinessController extends BaseController {
     public String rooms(HttpServletRequest request, Model model) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         shiftSubject(map, model);
-        String eid = "", mid = "";
         if (map.containsKey("eid")) {
-            eid = map.get("eid").toString();
+            map.put("examMode", map.get("eid").toString());
+            model.addAttribute("eid", map.get("eid").toString());
             map.remove("eid");
-            map.put("examMode", eid);
         }
-        model.addAttribute("eid", eid);
         if (map.containsKey("mid")) {
-            mid = map.get("mid").toString();
+            map.put("markShowMode", map.get("mid").toString());
+            model.addAttribute("mid", map.get("mid").toString());
             map.remove("mid");
-            map.put("markShowMode", mid);
         }
-        map.put("limit", 6);
-        if (!map.containsKey("page")) {
+        if (map.containsKey("sid")) {
+            map.put("subjectId", map.get("sid").toString());
+            model.addAttribute("sid", map.get("sid").toString());
+            map.remove("sid");
+        }
+        if (!map.containsKey("page") || !map.containsKey("limit")) {
             map.put("page", 0);
+            map.put("limit", 6);
         }
-        model.addAttribute("mid", mid);
         model.addAttribute("title", map.get("title"));
         List<LmsExamRoom> rooms = this.roomService.findList(map);
+        int count = this.roomService.findCount(map);
+        model.addAttribute("count", count);
         model.addAttribute("page", map.get("page"));
         model.addAttribute("limit", map.get("limit"));
         model.addAttribute("rooms", rooms);
         map.clear();
-        int count = this.roomService.findCount(map);
-        model.addAttribute("count", count);
         map.put("enabled", 2);
         List<Map<String, Object>> screens = this.menuService.getScreen("0");
         model.addAttribute("screens", screens);
@@ -149,17 +151,22 @@ public class LmsBusinessController extends BaseController {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         shiftSubject(map, model);
         model.addAttribute("title", map.get("title"));
-        map.put("limit", 3);
-        if (!map.containsKey("page")) {
+        if (!map.containsKey("page") || !map.containsKey("limit")) {
             map.put("page", 0);
+            map.put("limit", 3);
+        }
+        if (map.containsKey("sid")) {
+            map.put("subjectId", map.get("sid").toString());
+            model.addAttribute("sid", map.get("sid").toString());
+            map.remove("sid");
         }
         List<LmsQuestionLearn> learns = this.learnService.findList(map);
-        model.addAttribute("learns", learns);
-        model.addAttribute("page", map.get("page"));
-        model.addAttribute("limit", map.get("limit"));
-        map.clear();
         int count = this.learnService.findCount(map);
         model.addAttribute("count", count);
+        model.addAttribute("learns", learns);
+        model.addAttribute("limit", map.get("limit"));
+        model.addAttribute("page", map.get("page"));
+        map.clear();
         map.put("enabled", 2);
         List<Map<String, Object>> screens = this.menuService.getScreen("0");
         model.addAttribute("screens", screens);

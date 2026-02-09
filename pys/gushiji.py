@@ -73,13 +73,15 @@ class Web(object):
 if __name__ == "__main__":
     url = "https://www.gushiji.cc/gushi/p{}.html"
     web = Web()
-    for i in range(60, 196):
-        datas = web.get_pages(url.format(i))
-        for data in datas:
-            print("https://www.gushiji.cc{}".format(data))
-            try:
-                web.get_html("https://www.gushiji.cc/{}".format(data))
-            except Exception as e:
-                print(e)
-                pass
-    # web.get_html("https://www.gushiji.cc/gushi/2e45204.html")
+    for i in range(1, 197):
+        try:
+            datas = web.get_pages(url.format(i))
+            for data in datas:
+                print("https://www.gushiji.cc{}".format(data))
+                try:
+                    web.get_html("https://www.gushiji.cc/{}".format(data))
+                except Exception as e:
+                    print(e)
+                    pass
+        except:
+            pass
