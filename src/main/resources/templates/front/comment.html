@@ -4,7 +4,7 @@
 <body class="layui-layout">
 <th:block th:include="include :: main_head"></th:block>
 <div id="LAY_MAIN" class="layui-container">
-    <div class="layui-row layui-form" style="margin: 2px;;">
+    <div class="layui-row layui-form" style="margin: 2px;">
         <h1 style="text-align: center;font-size: 28px;color: #333;margin: 20px 0;">探索知识，收听意见</h1>
         <input type="hidden" name="username" th:if="${session.username!= null}" th:value="${session?.username}"/>
         <div class="layui-form-item" th:unless="${session.username!= null}">
@@ -37,6 +37,7 @@
     <div class="comments-more"><a th:href="@{/comments}" class="layui-btn layui-btn-primary layui-border-purple">更多</a></div>
 </div>
 <th:block th:include="include :: main_foot"></th:block>
+</body>
 <script>
     layui.extend({layEditor: 'js/layEditor'}).use(['jquery', 'form', 'layEditor'], function ($, form, editor) {
         form.on('submit(submit-form)', function (obj) {
@@ -75,5 +76,4 @@
         });
     });
 </script>
-</body>
 </html>

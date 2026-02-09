@@ -69,8 +69,8 @@
             carousel.render({elem: '#banner', height: '300px', width: '100%', interval: 3000, anim: 'fade', arrow: 'hover', indicator: 'outside'});
 
             function layOpen(title, url, lo_w, lo_h) {
-                lo_w = typeof lo_w === 'undefined' ? '50%' : lo_w;
-                lo_h = typeof lo_h === 'undefined' ? '50%' : lo_h;
+                lo_w = typeof lo_w === 'undefined' ? '360px' : lo_w;
+                lo_h = typeof lo_h === 'undefined' ? '280px' : lo_h;
                 layer.open({type: 2, title: title, area: [lo_w, lo_h], content: url, shade: 0.8});
             }
 
@@ -106,7 +106,7 @@
             $('#mainNav').on("click", "*[lay-event]", function (e) {
                 switch ($(this).attr("lay-event")) {
                     case 'login':
-                        layOpen('用户登录', '/user/login', '360px', '260px');
+                        layOpen('用户登录', '/user/login');
                         break;
                     case 'userInfo':
                         layOpen('<i class="layui-icon">&#xe66f; 基本资料</i>', '/user/account');
@@ -132,7 +132,7 @@
 <div th:fragment="header">
     <div class="layui-header">
         <div class="layui-logo">
-            <img th:src="@{/images/logo.png}" alt="logo" style="margin-left: -5px;"/>
+            <img th:src="@{/images/logo.png}" title="logo" style="margin-left: -5px;"/>
             <cite>管理系统</cite>
         </div>
         <ul class="layui-nav layui-layout-left">

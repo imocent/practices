@@ -6,29 +6,31 @@
         text-align: center !important;
     }
 </style>
-<body>
+<body class="layui-layout">
 <th:block th:include="include :: main_head"></th:block>
-<div class="layui-container layui-fluid">
-    <div class="layui-row layui-card">
-        <div class="layui-card-header"><i class="layui-icon">&#xe705; 我的答题</i></div>
-        <div class="layui-card-body">
-            <table class="layui-hide" id="table-list"></table>
-            <script type="text/html" id="column-toolbar">
-                {{# if(d.enabled){ }}
-                <button class="layui-btn layui-btn-sm" lay-event="see">查看答卷</button>
-                |
-                <button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="redo">重做错题</button>
-                {{# } else { }}
-                <button class="layui-btn layui-btn-sm" lay-event="gon">继续测试</button>
-                {{# } }}
-                |
-                <button class="layui-btn layui-btn-sm layui-bg-red" lay-event="del">删除测试</button>
-            </script>
+<div id="LAY_MAIN" class="layui-container">
+    <div class="layui-container layui-fluid">
+        <div class="layui-row layui-card">
+            <div class="layui-card-header"><i class="layui-icon">&#xe705; 我的答题</i></div>
+            <div class="layui-card-body">
+                <table class="layui-hide" id="table-list"></table>
+                <script type="text/html" id="column-toolbar">
+                    {{# if(d.enabled){ }}
+                    <button class="layui-btn layui-btn-sm" lay-event="see">查看答卷</button>
+                    |
+                    <button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="redo">重做错题</button>
+                    {{# } else { }}
+                    <button class="layui-btn layui-btn-sm" lay-event="gon">继续测试</button>
+                    {{# } }}
+                    |
+                    <button class="layui-btn layui-btn-sm layui-bg-red" lay-event="del">删除测试</button>
+                </script>
+            </div>
         </div>
     </div>
 </div>
-<!-- 底部信息 -->
 <th:block th:include="include :: main_foot"></th:block>
+</body>
 <script>
     layui.use(['jquery', 'table', 'form'], function ($, table, form) {
         table.render({
@@ -82,5 +84,4 @@
         });
     });
 </script>
-</body>
 </html>

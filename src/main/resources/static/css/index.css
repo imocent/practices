@@ -92,6 +92,10 @@ body, html {
     top: 14%;
 }
 
+.layui-align {
+    text-align: center;
+}
+
 .layui-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
@@ -143,6 +147,10 @@ body, html {
 
 #LAY_MAIN {
     flex: 1;
+}
+
+.layui-mg-t10 {
+    margin-top: 5px;
 }
 
 .layui-nav {

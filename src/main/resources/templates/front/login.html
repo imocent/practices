@@ -1,10 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="include :: head('做题吧 - 首页')"></head>
-<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
 <body style="overflow:hidden;">
 <div class="layui-container index-body lay-user-display-show" id="lay-user-login">
     <div class="lay-user-login-main">
+        <div class="lay-user-login-header">
+            <img th:src="@{/images/logo.png}" title="logo"/>
+        </div>
         <div class="lay-user-login-box lay-user-login-body layui-form">
             <div class="layui-form-item">
                 <label class="lay-user-login-icon layui-icon layui-icon-username" for="lay-login-username"></label>
@@ -30,7 +33,7 @@
         });
         form.on('submit(lay_login_submit)', function (obj) {
             form.verify({
-                pass: [ /^[\S]{5,12}$/, '密码必须5到12位，且不能出现空格' ]
+                pass: [/^[\S]{5,12}$/, '密码必须5到12位，且不能出现空格']
             });
 
             $.post('/login', obj.field, function (data) {
