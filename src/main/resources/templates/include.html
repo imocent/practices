@@ -66,7 +66,15 @@
             // 重新渲染
             element.init();
             // 首页横幅
-            carousel.render({elem: '#banner', height: '300px', width: '100%', interval: 3000, anim: 'fade', arrow: 'hover', indicator: 'outside'});
+            carousel.render({
+                elem: '#banner',
+                height: '300px',
+                width: '100%',
+                interval: 3000,
+                anim: 'fade',
+                arrow: 'hover',
+                indicator: 'outside'
+            });
 
             function layOpen(title, url, lo_w, lo_h) {
                 lo_w = typeof lo_w === 'undefined' ? '360px' : lo_w;
@@ -218,6 +226,10 @@
                             <cite th:text="${session?.username?:'用户'}"></cite>
                         </a>
                         <dl class="layui-nav-child">
+                            <dd th:if="${role ne 5}">
+                                <a th:href="@{/admin}"><i class="layui-icon">&#xe665;</i> 后台管理</a>
+                                <hr>
+                            </dd>
                             <dd>
                                 <a th:href="@{/user/answers}" lay-event="userAns"><i class="layui-icon">&#xe705;</i> 我的答题室</a>
                             </dd>

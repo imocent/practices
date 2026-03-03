@@ -7,11 +7,6 @@ import lombok.*;
 @Data
 public class LmsQuestionWrong extends BaseEntity<LmsQuestionWrong> {
     /**
-     * 记录ID
-     */
-    private Long id;
-
-    /**
      * 用户ID
      */
     private Long userId;

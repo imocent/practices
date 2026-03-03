@@ -7,11 +7,6 @@ import lombok.*;
 @Data
 public class SysFiles extends BaseEntity<SysFiles> {
     /**
-     * 主键
-     */
-    private Long id;
-
-    /**
      * 创建时间
      */
     private Date ctime;

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.WxMsgTemplateDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.WxMsgTemplate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="data" jdbcType="VARCHAR" property="data" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="miniprogram" jdbcType="VARCHAR" property="miniprogram" />
+    <result column="enabled" jdbcType="TINYINT" property="enabled" />
+    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, appid, `name`, title, content, `data`, url, miniprogram, enabled, utime
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wx_msg_template
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from wx_msg_template
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.WxMsgTemplate" useGeneratedKeys="true">
+    insert into wx_msg_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="data != null">
+        `data`,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="miniprogram != null">
+        miniprogram,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+      <if test="utime != null">
+        utime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="data != null">
+        #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="miniprogram != null">
+        #{miniprogram,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="utime != null">
+        #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.WxMsgTemplate">
+    update wx_msg_template
+    <set>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="data != null">
+        `data` = #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="miniprogram != null">
+        miniprogram = #{miniprogram,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="utime != null">
+        utime = #{utime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="appid != null and appid != ''">
+         and appid = #{appid,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+         and `name` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="title != null and title != ''">
+         and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="content != null and content != ''">
+         and content like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="data != null and data != ''">
+         and `data` = #{data,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null and url != ''">
+         and url = #{url,jdbcType=VARCHAR}
+      </if>
+      <if test="miniprogram != null and miniprogram != ''">
+         and miniprogram = #{miniprogram,jdbcType=VARCHAR}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and enabled = #{enabled,jdbcType=TINYINT}
+      </if>
+      <if test="ctime != null ">
+         and utime &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and utime &lt;= #{etime } 
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_msg_template
+    <include refid="Base_Where_List" />
+    order by id desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_msg_template
+    where id = #{obj}
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM wx_msg_template
+    <include refid="Base_Where_List" />
+  </select>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from wx_msg_template where id in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table wx_msg_template
+  </update>
+</mapper>

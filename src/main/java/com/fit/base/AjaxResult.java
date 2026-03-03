@@ -29,6 +29,11 @@ public class AjaxResult extends HashMap<String, Object> {
         return this;
     }
 
+    public AjaxResult put(Object value) {
+        super.put("data", value);
+        return this;
+    }
+
     /**
      * 返回消息
      *
@@ -107,6 +112,13 @@ public class AjaxResult extends HashMap<String, Object> {
      */
     public static AjaxResult error(int code, String msg) {
         return results(code, msg, 0, null);
+    }
+
+    /**
+     * 返回成功消息
+     */
+    public static AjaxResult ok() {
+        return success();
     }
 
     /**

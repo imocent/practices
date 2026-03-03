@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.WxAccountDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.WxAccount">
+    <id column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="appsecret" jdbcType="VARCHAR" property="appsecret" />
+    <result column="aes_key" jdbcType="VARCHAR" property="aesKey" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="verified" jdbcType="TINYINT" property="verified" />
+    <result column="mold" jdbcType="INTEGER" property="mold" />
+    <result column="refresh_interval" jdbcType="INTEGER" property="refreshInterval" />
+    <result column="advance_refresh" jdbcType="INTEGER" property="advanceRefresh" />
+    <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
+    <result column="last_token_time" jdbcType="TIMESTAMP" property="lastTokenTime" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="enabled" jdbcType="BIT" property="enabled" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    appid, appsecret, aes_key, token, `name`, verified, mold, refresh_interval, advance_refresh, 
+    expires_in, last_token_time, notes, enabled
+  </sql>
+  <select id="get" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wx_account
+    where appid = #{appid,jdbcType=VARCHAR}
+  </select>
+  <delete id="delete" parameterType="java.lang.String">
+    delete from wx_account
+    where appid = #{appid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.WxAccount" useGeneratedKeys="true">
+    insert into wx_account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="appsecret != null">
+        appsecret,
+      </if>
+      <if test="aesKey != null">
+        aes_key,
+      </if>
+      <if test="token != null">
+        token,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="verified != null">
+        verified,
+      </if>
+      <if test="mold != null">
+        mold,
+      </if>
+      <if test="refreshInterval != null">
+        refresh_interval,
+      </if>
+      <if test="advanceRefresh != null">
+        advance_refresh,
+      </if>
+      <if test="expiresIn != null">
+        expires_in,
+      </if>
+      <if test="lastTokenTime != null">
+        last_token_time,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="appsecret != null">
+        #{appsecret,jdbcType=VARCHAR},
+      </if>
+      <if test="aesKey != null">
+        #{aesKey,jdbcType=VARCHAR},
+      </if>
+      <if test="token != null">
+        #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="verified != null">
+        #{verified,jdbcType=TINYINT},
+      </if>
+      <if test="mold != null">
+        #{mold,jdbcType=INTEGER},
+      </if>
+      <if test="refreshInterval != null">
+        #{refreshInterval,jdbcType=INTEGER},
+      </if>
+      <if test="advanceRefresh != null">
+        #{advanceRefresh,jdbcType=INTEGER},
+      </if>
+      <if test="expiresIn != null">
+        #{expiresIn,jdbcType=INTEGER},
+      </if>
+      <if test="lastTokenTime != null">
+        #{lastTokenTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.WxAccount">
+    update wx_account
+    <set>
+      <if test="appsecret != null">
+        appsecret = #{appsecret,jdbcType=VARCHAR},
+      </if>
+      <if test="aesKey != null">
+        aes_key = #{aesKey,jdbcType=VARCHAR},
+      </if>
+      <if test="token != null">
+        token = #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="verified != null">
+        verified = #{verified,jdbcType=TINYINT},
+      </if>
+      <if test="mold != null">
+        mold = #{mold,jdbcType=INTEGER},
+      </if>
+      <if test="refreshInterval != null">
+        refresh_interval = #{refreshInterval,jdbcType=INTEGER},
+      </if>
+      <if test="advanceRefresh != null">
+        advance_refresh = #{advanceRefresh,jdbcType=INTEGER},
+      </if>
+      <if test="expiresIn != null">
+        expires_in = #{expiresIn,jdbcType=INTEGER},
+      </if>
+      <if test="lastTokenTime != null">
+        last_token_time = #{lastTokenTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=BIT},
+      </if>
+    </set>
+    where appid = #{appid,jdbcType=VARCHAR}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="appid != null and appid != ''">
+         and appid = #{appid,jdbcType=VARCHAR}
+      </if>
+      <if test="appsecret != null and appsecret != ''">
+         and appsecret = #{appsecret,jdbcType=VARCHAR}
+      </if>
+      <if test="aesKey != null and aesKey != ''">
+         and aes_key = #{aesKey,jdbcType=VARCHAR}
+      </if>
+      <if test="token != null and token != ''">
+         and token = #{token,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+         and `name` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="verified != null and verified != ''">
+         and verified = #{verified,jdbcType=TINYINT}
+      </if>
+      <if test="mold != null and mold != ''">
+         and mold = #{mold,jdbcType=INTEGER}
+      </if>
+      <if test="refreshInterval != null and refreshInterval != ''">
+         and refresh_interval = #{refreshInterval,jdbcType=INTEGER}
+      </if>
+      <if test="advanceRefresh != null and advanceRefresh != ''">
+         and advance_refresh = #{advanceRefresh,jdbcType=INTEGER}
+      </if>
+      <if test="expiresIn != null and expiresIn != ''">
+         and expires_in = #{expiresIn,jdbcType=INTEGER}
+      </if>
+      <if test="ctime != null ">
+         and last_token_time &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and last_token_time &lt;= #{etime } 
+      </if>
+      <if test="notes != null and notes != ''">
+         and notes = #{notes,jdbcType=VARCHAR}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and enabled = #{enabled,jdbcType=BIT}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_account
+    <include refid="Base_Where_List" />
+    order by appid desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_account
+    where appid = #{obj}
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM wx_account
+    <include refid="Base_Where_List" />
+  </select>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from wx_account where appid in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table wx_account
+  </update>
+</mapper>

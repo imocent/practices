@@ -7,11 +7,6 @@ import lombok.*;
 @Data
 public class SysRole extends BaseEntity<SysRole> {
     /**
-     * 主键
-     */
-    private Long id;
-
-    /**
      * 创建时间
      */
     private Date ctime;

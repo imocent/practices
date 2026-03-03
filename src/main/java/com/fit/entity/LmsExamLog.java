@@ -7,11 +7,6 @@ import lombok.*;
 @Data
 public class LmsExamLog extends BaseEntity<LmsExamLog> {
     /**
-     * 记录ID
-     */
-    private Long id;
-
-    /**
      * 创建时间
      */
     private Date ctime;

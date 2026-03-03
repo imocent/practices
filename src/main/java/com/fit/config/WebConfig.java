@@ -51,6 +51,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/favicon.ico");
+        registry.addResourceHandler("/MP_verify_**.txt").addResourceLocations("classpath:/");
         String uploadPath = String.format("%s/%s", System.getProperty("user.dir"), uploadDir);
         String currentDir = System.getProperty("user.dir");
         if (uploadDir.startsWith("./") || uploadDir.startsWith(".\\")) {

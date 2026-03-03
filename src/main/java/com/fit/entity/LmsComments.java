@@ -7,11 +7,6 @@ import lombok.*;
 @Data
 public class LmsComments extends BaseEntity<LmsComments> {
     /**
-     * 主键ID
-     */
-    private Long id;
-
-    /**
      * 创建时间
      */
     private Date ctime;

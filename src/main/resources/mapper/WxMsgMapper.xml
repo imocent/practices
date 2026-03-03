@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.WxMsgDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.WxMsg">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ctime" jdbcType="TIMESTAMP" property="ctime" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="openid" jdbcType="VARCHAR" property="openid" />
+    <result column="in_out" jdbcType="TINYINT" property="inOut" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ctime, appid, openid, in_out, msg_type, detail
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wx_msg
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from wx_msg
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.WxMsg" useGeneratedKeys="true">
+    insert into wx_msg
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="ctime != null">
+        ctime,
+      </if>
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+      <if test="inOut != null">
+        in_out,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ctime != null">
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="inOut != null">
+        #{inOut,jdbcType=TINYINT},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.WxMsg">
+    update wx_msg
+    <set>
+      <if test="ctime != null">
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="inOut != null">
+        in_out = #{inOut,jdbcType=TINYINT},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="ctime != null ">
+         and ctime &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and ctime &lt;= #{etime } 
+      </if>
+      <if test="appid != null and appid != ''">
+         and appid = #{appid,jdbcType=VARCHAR}
+      </if>
+      <if test="openid != null and openid != ''">
+         and openid = #{openid,jdbcType=VARCHAR}
+      </if>
+      <if test="inOut != null and inOut != ''">
+         and in_out = #{inOut,jdbcType=TINYINT}
+      </if>
+      <if test="msgType != null and msgType != ''">
+         and msg_type = #{msgType,jdbcType=VARCHAR}
+      </if>
+      <if test="detail != null and detail != ''">
+         and detail = #{detail,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_msg
+    <include refid="Base_Where_List" />
+    order by id desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_msg
+    where id = #{obj}
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM wx_msg
+    <include refid="Base_Where_List" />
+  </select>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from wx_msg where id in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table wx_msg
+  </update>
+</mapper>

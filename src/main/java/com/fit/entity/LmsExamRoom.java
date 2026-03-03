@@ -7,11 +7,6 @@ import lombok.*;
 @Data
 public class LmsExamRoom extends BaseEntity<LmsExamRoom> {
     /**
-     * 答题室ID
-     */
-    private Long id;
-
-    /**
      * 创建时间
      */
     private Date ctime;

@@ -7,11 +7,6 @@ import lombok.*;
 @Data
 public class SysDict extends BaseEntity<SysDict> {
     /**
-     * 主键id
-     */
-    private Long id;
-
-    /**
      * 创建时间
      */
     private Date ctime;

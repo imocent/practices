@@ -1,0 +1,554 @@
+package com.fit.service;
+
+import com.fit.entity.WxAccount;
+import com.fit.util.WechatUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+/**
+ * 微信Token服务类
+ * 合并了配置管理和token缓存功能
+ * 支持多公众号，配置从数据库读取，yaml提供全局默认值
+ */
+@Slf4j
+@Service
+public class WxApiTokenService {
+
+    @Autowired
+    private WxAccountService wxAccountService;
+
+    // ============= yaml全局默认配置（非static） =============
+    @Value("${wechat.schedule.enabled:true}")
+    private boolean scheduleEnabled = true;
+
+    @Value("${wechat.schedule.token-check-interval:1}")
+    private int tokenCheckInterval = 1;
+
+    @Value("${wechat.schedule.config-check-interval:5}")
+    private int configCheckInterval = 5;
+
+    @Value("${wechat.schedule.core-pool-size:2}")
+    private int corePoolSize = 2;
+
+    // 注意：这些字段不能是static
+    @Value("${wechat.global.default-refresh-interval:5}")
+    private int defaultRefreshInterval = 5;
+
+    @Value("${wechat.global.default-advance-refresh:300}")
+    private int defaultAdvanceRefresh = 300;
+
+    @Value("${wechat.global.default-expires-in:7200}")
+    private int defaultExpiresIn = 7200;
+
+    // ============= 缓存管理 =============
+    // 缓存token和对应的过期时间
+    private final Map<String, String> tokenCache = new ConcurrentHashMap<>();
+    private final Map<String, Long> tokenExpireTimeCache = new ConcurrentHashMap<>();
+    private final Map<String, WxAccount> accountCache = new ConcurrentHashMap<>();
+
+    // ============= 当前公众号配置（ThreadLocal） =============
+    private final AtomicReference<WxAccount> currentWxAccount = new AtomicReference<>();
+
+    private ScheduledExecutorService scheduler;
+
+    @PostConstruct
+    public void init() {
+        log.info("初始化WechatTokenService，配置信息：");
+        log.info("  - 定时任务启用: {}", scheduleEnabled);
+        log.info("  - token检查间隔: {}分钟", tokenCheckInterval);
+        log.info("  - 配置检查间隔: {}分钟", configCheckInterval);
+        log.info("  - 全局默认提前刷新时间: {}秒", defaultAdvanceRefresh);
+        log.info("  - 全局默认token有效期: {}秒", defaultExpiresIn);
+        log.info("  - 全局默认刷新间隔: {}分钟", defaultRefreshInterval);
+
+        if (scheduleEnabled) {
+            this.scheduler = Executors.newScheduledThreadPool(corePoolSize);
+            reloadAccounts();
+            autoSelectDefaultAccount();
+            startTokenCheckTask();
+            startConfigRefreshTask();
+            log.info("WechatTokenService 初始化完成，定时任务已启动");
+        } else {
+            log.info("WechatTokenService 初始化完成，定时任务未启用");
+        }
+    }
+
+    private void autoSelectDefaultAccount() {
+        if (accountCache.isEmpty()) {
+            log.warn("没有可用的公众号配置，无法自动选中默认公众号");
+            return;
+        }
+
+        String firstAppid = accountCache.keySet().iterator().next();
+        switchTo(firstAppid);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdown();
+            try {
+                if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                    scheduler.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                scheduler.shutdownNow();
+            }
+        }
+        currentWxAccount.getAndSet(null);
+        log.info("WechatTokenService 已销毁");
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void onApplicationReady() {
+        log.info("应用启动完成，开始预加载所有公众号token");
+        preloadAllTokens();
+    }
+
+    /**
+     * 预加载所有token
+     */
+    private void preloadAllTokens() {
+        int successCount = 0;
+        for (String appid : accountCache.keySet()) {
+            try {
+                getAccessToken(appid);
+                successCount++;
+                log.debug("预加载token成功 for appid: {}", appid);
+            } catch (Exception e) {
+                log.error("预加载token失败 for appid: {}", appid, e);
+            }
+        }
+        log.info("预加载token完成，成功：{}，总数：{}", successCount, accountCache.size());
+    }
+
+    /**
+     * 重新加载所有启用的公众号配置
+     */
+    public synchronized void reloadAccounts() {
+        try {
+            List<WxAccount> accounts = this.wxAccountService.findList();
+            Map<String, WxAccount> newAccountCache = new HashMap<>();
+            for (WxAccount account : accounts) {
+                newAccountCache.put(account.getAppid(), account);
+            }
+
+            for (String appid : accountCache.keySet()) {
+                if (!newAccountCache.containsKey(appid)) {
+                    tokenCache.remove(appid);
+                    tokenExpireTimeCache.remove(appid);
+                    log.info("公众号 {} 已被禁用或删除，已清除其token缓存", appid);
+                }
+            }
+
+            accountCache.clear();
+            accountCache.putAll(newAccountCache);
+
+            log.info("重新加载公众号配置完成，当前启用数量：{}", accountCache.size());
+        } catch (Exception e) {
+            log.error("加载公众号配置失败", e);
+        }
+    }
+
+    /**
+     * 启动token检查任务
+     */
+    private void startTokenCheckTask() {
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                log.debug("开始检查access_token是否需要刷新");
+                int refreshCount = 0;
+
+                for (String appid : tokenCache.keySet()) {
+                    if (isTokenExpired(appid)) {
+                        log.info("检测到access_token即将过期，主动刷新 for appid: {}", appid);
+                        refreshTokenSync(appid);
+                        refreshCount++;
+                    }
+                }
+
+                for (String appid : accountCache.keySet()) {
+                    if (!tokenCache.containsKey(appid)) {
+                        log.info("检测到新公众号，预加载token for appid: {}", appid);
+                        refreshTokenSync(appid);
+                        refreshCount++;
+                    }
+                }
+
+                if (refreshCount > 0) {
+                    log.info("定时刷新任务完成，共刷新{}个token", refreshCount);
+                }
+            }
+        }, 1, tokenCheckInterval, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 启动配置刷新任务
+     */
+    private void startConfigRefreshTask() {
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                log.debug("开始刷新公众号配置");
+                try {
+                    reloadAccounts();
+                } catch (Exception e) {
+                    log.error("刷新公众号配置失败", e);
+                }
+            }
+        }, configCheckInterval, configCheckInterval, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 获取access_token
+     */
+    public String getAccessToken(String appid) {
+        if (appid == null || appid.trim().isEmpty()) {
+            log.error("appid不能为空");
+            return null;
+        }
+
+        String token = tokenCache.get(appid);
+        if (token != null && !isTokenExpired(appid)) {
+            return token;
+        }
+        synchronized (this) {
+            token = tokenCache.get(appid);
+            if (token != null && !isTokenExpired(appid)) {
+                return token;
+            }
+            return refreshTokenSync(appid);
+        }
+    }
+
+    /**
+     * 判断token是否过期
+     */
+    private boolean isTokenExpired(String appid) {
+        Long expireTime = tokenExpireTimeCache.get(appid);
+        if (expireTime == null) {
+            return true;
+        }
+        return System.currentTimeMillis() >= expireTime;
+    }
+
+    /**
+     * 获取token的过期时间
+     */
+    private long getTokenExpireTime(WxAccount account) {
+        int advanceRefresh = account.getAdvanceRefresh() != null ? account.getAdvanceRefresh() : defaultAdvanceRefresh;
+        int expiresIn = account.getExpiresIn() != null ? account.getExpiresIn() : defaultExpiresIn;
+        return System.currentTimeMillis() + (expiresIn - advanceRefresh) * 1000L;
+    }
+
+    /**
+     * 同步刷新指定appid的token
+     */
+    private String refreshTokenSync(String appid) {
+        try {
+            WxAccount account = accountCache.get(appid);
+            if (account == null) {
+                account = this.wxAccountService.getByObjId(appid);
+                if (account == null) {
+                    log.error("未找到appid: {} 的公众号配置或该公众号已被禁用", appid);
+                    return null;
+                }
+                accountCache.put(appid, account);
+            }
+            String newToken = WechatUtil.getAccessToken(account.getAppid(), account.getAppsecret());
+            if (newToken != null) {
+                tokenCache.put(appid, newToken);
+                tokenExpireTimeCache.put(appid, getTokenExpireTime(account));
+
+                try {
+                    account.setLastTokenTime(new Date());
+                    wxAccountService.update(account);
+                } catch (Exception e) {
+                    log.warn("更新token获取时间失败", e);
+                }
+                log.info("成功获取/刷新access_token for appid: {}, 公众号: {}", appid, account.getName());
+                return newToken;
+            } else {
+                log.error("获取access_token失败 for appid: {}", appid);
+                String oldToken = tokenCache.get(appid);
+                if (oldToken != null) {
+                    log.warn("使用缓存的旧token for appid: {}", appid);
+                    return oldToken;
+                }
+            }
+        } catch (Exception e) {
+            log.error("刷新access_token异常 for appid: {}", appid, e);
+            String oldToken = tokenCache.get(appid);
+            if (oldToken != null) {
+                return oldToken;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取token剩余有效时间（秒）
+     */
+    public long getRemainingTime(String appid) {
+        Long expireTime = tokenExpireTimeCache.get(appid);
+        if (expireTime == null) {
+            return -1;
+        }
+        return Math.max(0, (expireTime - System.currentTimeMillis()) / 1000);
+    }
+
+    /**
+     * 获取token过期时间字符串
+     */
+    public String getExpireTimeStr(String appid) {
+        Long expireTime = tokenExpireTimeCache.get(appid);
+        if (expireTime == null) {
+            return "未获取";
+        }
+        return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date(expireTime));
+    }
+
+    /**
+     * 批量获取多个公众号的token
+     */
+    public Map<String, String> getAccessTokens(List<String> appids) {
+        Map<String, String> result = new HashMap<>();
+        for (String appid : appids) {
+            result.put(appid, getAccessToken(appid));
+        }
+        return result;
+    }
+
+    /**
+     * 获取所有启用的公众号token
+     */
+    public Map<String, String> getAllEnabledTokens() {
+        Map<String, String> result = new HashMap<>();
+        for (String appid : accountCache.keySet()) {
+            result.put(appid, getAccessToken(appid));
+        }
+        return result;
+    }
+
+    /**
+     * 手动刷新指定appid的token
+     */
+    public String manualRefreshToken(String appid) {
+        log.info("手动刷新access_token for appid: {}", appid);
+        tokenCache.remove(appid);
+        tokenExpireTimeCache.remove(appid);
+        return refreshTokenSync(appid);
+    }
+
+    /**
+     * 清除指定appid的token缓存
+     */
+    public void clearToken(String appid) {
+        tokenCache.remove(appid);
+        tokenExpireTimeCache.remove(appid);
+        log.info("已清除access_token缓存 for appid: {}", appid);
+    }
+
+    /**
+     * 清除所有token缓存
+     */
+    public void clearAllTokens() {
+        tokenCache.clear();
+        tokenExpireTimeCache.clear();
+        log.info("已清除所有access_token缓存");
+    }
+
+    /**
+     * 检查token是否有效
+     */
+    public boolean isTokenValid(String appid) {
+        String token = tokenCache.get(appid);
+        return token != null && !isTokenExpired(appid);
+    }
+
+    /**
+     * 检查当前选中的公众号的token是否有效
+     */
+    public boolean isCurrentTokenValid() {
+        WxAccount currentAccount = getCurrentWxAccount();
+        if (currentAccount == null) {
+            return false;
+        }
+        return isTokenValid(currentAccount.getAppid());
+    }
+
+    /**
+     * 获取缓存统计信息
+     */
+    public Map<String, Object> getStats() {
+        long totalRemainingTime = 0;
+        for (String appid : tokenCache.keySet()) {
+            totalRemainingTime += getRemainingTime(appid);
+        }
+
+        long averageRemainingTime = tokenCache.isEmpty() ? 0 : totalRemainingTime / tokenCache.size();
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("cachedCount", tokenCache.size());
+        stats.put("configuredCount", accountCache.size());
+        stats.put("tokenCheckInterval", tokenCheckInterval);
+        stats.put("configCheckInterval", configCheckInterval);
+        stats.put("scheduleEnabled", scheduleEnabled);
+        stats.put("totalRemainingTime", totalRemainingTime);
+        stats.put("averageRemainingTime", averageRemainingTime);
+        stats.put("cachedAppids", new ArrayList<>(tokenCache.keySet()));
+        stats.put("configuredAppids", new ArrayList<>(accountCache.keySet()));
+        stats.put("defaultAdvanceRefresh", defaultAdvanceRefresh);
+        stats.put("defaultExpiresIn", defaultExpiresIn);
+        stats.put("defaultRefreshInterval", defaultRefreshInterval);
+
+        // 添加当前选中的公众号信息
+        WxAccount currentAccount = getCurrentWxAccount();
+        stats.put("currentAppid", currentAccount != null ? currentAccount.getAppid() : null);
+        stats.put("currentAccountName", currentAccount != null ? currentAccount.getName() : null);
+
+        return stats;
+    }
+
+    /**
+     * 获取所有缓存的token详细信息（简化版，不包含完整TokenInfo对象）
+     */
+    public List<Map<String, Object>> getAllCachedTokenInfos() {
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (String appid : tokenCache.keySet()) {
+            Map<String, Object> info = new HashMap<>();
+            info.put("appid", appid);
+            info.put("accessToken", tokenCache.get(appid));
+            info.put("remainingTime", getRemainingTime(appid));
+            info.put("expireTimeStr", getExpireTimeStr(appid));
+
+            WxAccount account = accountCache.get(appid);
+            if (account != null) {
+                info.put("accountName", account.getName());
+                info.put("advanceRefresh", account.getAdvanceRefresh() != null ? account.getAdvanceRefresh() : defaultAdvanceRefresh);
+                info.put("expiresIn", account.getExpiresIn() != null ? account.getExpiresIn() : defaultExpiresIn);
+                info.put("refreshInterval", account.getRefreshInterval() != null ? account.getRefreshInterval() : defaultRefreshInterval);
+            }
+            result.add(info);
+        }
+        return result;
+    }
+
+    /**
+     * 获取公众号信息
+     */
+    public WxAccount getAccountInfo(String appid) {
+        return accountCache.get(appid);
+    }
+
+    /**
+     * 获取所有公众号信息
+     */
+    public List<WxAccount> getAllAccounts() {
+        return new ArrayList<>(accountCache.values());
+    }
+
+    /**
+     * 获取所有启用的公众号appid
+     */
+    public List<String> getAllEnabledAppids() {
+        return new ArrayList<>(accountCache.keySet());
+    }
+
+    // ============= 当前公众号配置管理方法 =============
+
+    /**
+     * 切换当前使用的公众号配置
+     *
+     * @param appid 公众号appid
+     */
+    public void switchTo(String appid) {
+        if (appid == null || appid.trim().isEmpty()) {
+            log.error("appid不能为空");
+            return;
+        }
+        // 先从缓存获取
+        WxAccount config = accountCache.get(appid);
+        if (config == null) { // 如果缓存不存在，从数据库查询
+            config = wxAccountService.getByObjId(appid);
+            if (config != null) { // 存入缓存
+                accountCache.put(appid, config);
+            }
+        }
+        if (config == null) {
+            log.error("未找到公众号配置: {}", appid);
+            return;
+        } else {
+            currentWxAccount.set(config);
+            log.info("切换公众号成功: {} - {}", config.getAppid(), config.getName());
+        }
+    }
+
+    /**
+     * 获取当前选中的公众号配置
+     *
+     * @return 当前选中的公众号配置，如果没有选中则返回null
+     */
+    public WxAccount getCurrentWxAccount() {
+        return currentWxAccount.get();
+    }
+
+    /**
+     * 获取当前选中的公众号的token
+     */
+    public String getCurrentToken() {
+        WxAccount account = currentWxAccount.get();
+        if (account == null) {
+            log.error("当前未选中任何公众号");
+            return null;
+        }
+        return account.getToken();
+    }
+
+    /**
+     * 获取当前选中的公众号appid
+     *
+     * @return 当前选中的公众号appid，如果没有选中则返回null
+     */
+    public String getCurrentAppid() {
+        WxAccount current = currentWxAccount.get();
+        return current != null ? current.getAppid() : null;
+    }
+
+    /**
+     * 重新加载当前选中的公众号配置（从数据库刷新）
+     */
+    public void reloadCurrentAccount() {
+        WxAccount current = getCurrentWxAccount();
+        if (current == null) {
+            log.warn("当前未选中任何公众号，无需重新加载");
+            return;
+        }
+        String appid = current.getAppid();
+        WxAccount freshConfig = wxAccountService.getByObjId(appid);
+        if (freshConfig != null) {
+            // 更新缓存
+            accountCache.put(appid, freshConfig);
+            // 更新ThreadLocal
+            currentWxAccount.set(freshConfig);
+            log.info("重新加载当前公众号配置成功: {}", appid);
+        } else {
+            currentWxAccount.getAndSet(null);
+            log.error("重新加载当前公众号配置失败，公众号可能已被删除: {}", appid);
+        }
+    }
+}

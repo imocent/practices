@@ -14,7 +14,7 @@ import java.sql.Types;
 import java.util.*;
 
 public class LayPlugin extends PluginAdapter {
-    private final List<String> ignoreTables = Arrays.asList("createTime");
+    private final List<String> ignoreTables = Arrays.asList("id");
     private final List<String> likeColumns = Arrays.asList("content", "name", "username", "title", "subjectId");
     private String targetBusine = "";
     private String javaProject = "src/main/java";
@@ -82,46 +82,46 @@ public class LayPlugin extends PluginAdapter {
         XmlElement where = new XmlElement("where");
         // 加入 逻辑删除 del_flag标识 根据选择是否添加
         // where.addElement(new TextElement(" DEL_FLAG != 1 "));
+        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
+        String PrimaryKey = primaryKeyColumns.get(0).getJavaProperty();
         StringBuilder sb = new StringBuilder();
         for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
             XmlElement isNotNullElement = new XmlElement("if");
             String javaProperty = introspectedColumn.getJavaProperty();// java字段名
-            if (ignoreTables.contains(javaProperty)) {
-                continue;
-            }
-            switch (introspectedColumn.getJdbcType()) {
-                case Types.DATE:
-                    handleDate(sb, introspectedColumn, where, isNotNullElement);
-                    break;
-                case Types.TIMESTAMP:
-                    handleDate(sb, introspectedColumn, where, isNotNullElement);
-                    break;
-                default:
-                    sb.setLength(0);
-                    sb.append(javaProperty + " != null and ").append(javaProperty + " != ''");
-                    isNotNullElement.addAttribute(new Attribute("test", sb.toString()));
-                    where.addElement(isNotNullElement);
-                    sb.setLength(0);
-                    sb.append(" and ").append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-                    if (likeColumns.contains(javaProperty)) {
-                        sb.append(" like CONCAT('%',");
-                        sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn)).append(",'%')");
-                    } else {
-                        sb.append(" = ").append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn));
-                    }
-                    isNotNullElement.addElement(new TextElement(sb.toString()));
+            if (!ignoreTables.contains(javaProperty)) {
+                switch (introspectedColumn.getJdbcType()) {
+                    case Types.DATE:
+                    case Types.TIMESTAMP:
+                        handleDate(sb, introspectedColumn, where, isNotNullElement);
+                        break;
+                    default:
+                        sb.setLength(0);
+                        sb.append(javaProperty).append(" != null and ").append(javaProperty).append(" != ''");
+                        isNotNullElement.addAttribute(new Attribute("test", sb.toString()));
+                        where.addElement(isNotNullElement);
+                        sb.setLength(0);
+                        sb.append(" and ").append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
+                        if (likeColumns.contains(javaProperty)) {
+                            sb.append(" like CONCAT('%',");
+                            sb.append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn)).append(",'%')");
+                        } else {
+                            sb.append(" = ").append(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn));
+                        }
+                        isNotNullElement.addElement(new TextElement(sb.toString()));
+                }
             }
         }
         sql.addElement(where);
         rootElement.addElement(sql);
+        // 统一引入参数
+        XmlElement include = new XmlElement("include");
+        include.addAttribute(new Attribute("refid", "Base_Column_List"));
         // 创建根据Map查询数据
         XmlElement e_select = new XmlElement("select");
         e_select.addAttribute(new Attribute("id", "findList"));
         e_select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
         e_select.addAttribute(new Attribute("parameterType", "java.util.Map"));
-        XmlElement include = new XmlElement("include");
         e_select.addElement(new TextElement("SELECT "));
-        include.addAttribute(new Attribute("refid", "Base_Column_List"));
         e_select.addElement(include);
         e_select.addElement(new TextElement("FROM " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
         XmlElement include2 = new XmlElement("include");
@@ -136,6 +136,17 @@ public class LayPlugin extends PluginAdapter {
         pageIf.addElement(new TextElement("limit ${offset.intValue()}, ${limit}"));
         e_select.addElement(pageIf);
         rootElement.addElement(e_select);
+        // 根据主键获取对象
+        XmlElement b_select = new XmlElement("select");
+        b_select.addAttribute(new Attribute("id", "getByObjId"));
+        b_select.addAttribute(new Attribute("resultType", "java.lang.Object"));
+        b_select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
+        b_select.addElement(new TextElement("SELECT "));
+        b_select.addElement(include);
+        b_select.addElement(new TextElement("FROM " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
+        b_select.addElement(new TextElement("where " + PrimaryKey + " = #{obj}"));
+        rootElement.addElement(b_select);
+        // 获取查询数量
         XmlElement c_select = new XmlElement("select");
         c_select.addAttribute(new Attribute("id", "findCount"));
         c_select.addAttribute(new Attribute("resultType", "java.lang.Integer"));
@@ -270,6 +281,13 @@ public class LayPlugin extends PluginAdapter {
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         topLevelClass.setSuperClass(new FullyQualifiedJavaType("BaseEntity<" + introspectedTable.getBaseRecordType() + ">"));
         topLevelClass.addImportedType(new FullyQualifiedJavaType("com.fit.base.BaseEntity"));
+        Iterator<Field> fieldIterator = topLevelClass.getFields().iterator();
+        while (fieldIterator.hasNext()) {
+            Field field = fieldIterator.next();
+            if (ignoreTables.contains(field.getName())) {
+                fieldIterator.remove();
+            }
+        }
         this.addLombokAnnotation(topLevelClass, introspectedTable);
         return true;
     }

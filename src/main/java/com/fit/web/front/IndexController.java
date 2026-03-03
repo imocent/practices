@@ -2,11 +2,18 @@ package com.fit.web.front;
 
 import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
-import com.fit.entity.*;
-import com.fit.service.*;
+import com.fit.entity.LmsExamRoom;
+import com.fit.entity.LmsTop;
+import com.fit.entity.MenuNode;
+import com.fit.entity.SysUser;
+import com.fit.service.LmsExamRoomService;
+import com.fit.service.LmsTopService;
+import com.fit.service.MenuNodeService;
+import com.fit.service.SysUserService;
 import com.fit.util.JsonRepair;
 import com.fit.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +21,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @AUTO
@@ -32,6 +41,8 @@ public class IndexController extends BaseController {
     private LmsTopService topService;
     @Autowired
     private LmsExamRoomService roomService;
+    @Autowired
+    private SysUserService userService;
 
 
     @GetMapping(value = {"", "/", "/index"})
@@ -48,7 +59,13 @@ public class IndexController extends BaseController {
         map.put("enabled", 2);
         List<LmsExamRoom> rooms = this.roomService.findList(map);
         model.addAttribute("rooms", rooms);
-        model.addAttribute("role", 5);
+        Long rid = 5L;
+        if (SecurityUtils.getSubject().isAuthenticated()) {
+            Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+            SysUser sysUser = this.userService.get(userId);
+            rid = sysUser.getRid();
+        }
+        model.addAttribute("role", rid);
         return "front/index";
     }
 

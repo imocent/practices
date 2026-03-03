@@ -24,6 +24,8 @@ public interface BaseCrudDao<T> {
      */
     T get(T entity);
 
+    T getByObjId(Object obj);
+
     /**
      * 查询所有数据
      */

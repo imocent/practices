@@ -249,7 +249,7 @@ public class WebUtil {
     public static String join(String separator, Object[] array) {
         if (array == null) {
             return null;
-        } else if (array.length <= 0) {
+        } else if (array.length < 1) {
             return EMPTY;
         } else if (array.length == 1) {
             return String.valueOf(array[0]);
@@ -301,8 +301,7 @@ public class WebUtil {
      */
     public static String getURL(HttpServletRequest request) {
         String contextPath = request.getContextPath().equals("/") ? "" : request.getContextPath();
-        String scheme = request.getScheme();
-        String url = scheme + "://" + request.getServerName();
+        String url = request.getScheme() + "://" + request.getServerName();
         url = url + ":" + getPort(request) + contextPath;
         return url;
     }
@@ -363,8 +362,7 @@ public class WebUtil {
      * 请求request获取完整请求路径
      */
     public static String getLocation(HttpServletRequest request) {
-        StringBuffer buff = request.getRequestURL();
-        return buff.toString();
+        return request.getRequestURL().toString();
     }
 
     /**
@@ -389,8 +387,8 @@ public class WebUtil {
             PrintWriter out = response.getWriter();
             out.print(str);
             out.flush();
-        } catch (IOException var4) {
-            var4.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

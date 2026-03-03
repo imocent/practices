@@ -68,9 +68,6 @@
   </update>
   <sql id="Base_Where_List">
     <where>
-      <if test="id != null and id != ''">
-         and ID = #{id,jdbcType=BIGINT}
-      </if>
       <if test="questionId != null and questionId != ''">
          and QUESTION_ID = #{questionId,jdbcType=BIGINT}
       </if>
@@ -92,6 +89,12 @@
       <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
       limit ${offset.intValue()}, ${limit}
     </if>
+  </select>
+  <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM lms_question_answer
+    where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_question_answer

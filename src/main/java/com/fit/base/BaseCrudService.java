@@ -1,11 +1,11 @@
 package com.fit.base;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @AUTO Service服务实现基类
@@ -38,6 +38,14 @@ public abstract class BaseCrudService<D extends BaseCrudDao<T>, T extends BaseEn
      */
     public T get(T entity) {
         return dao.get(entity);
+    }
+
+    public T getByObjId(Object obj) {
+        try {
+            return dao.getByObjId(obj);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
