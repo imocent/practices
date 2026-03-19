@@ -257,12 +257,21 @@
     SELECT 
     <include refid="Base_Column_List" />
     FROM sys_resources
-    where id = #{obj}
+    where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_resources
     <include refid="Base_Where_List" />
   </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into sys_resources values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.ctime},#{item.cuser},#{item.pid},
+       #{item.name},#{item.icon},#{item.type},#{item.url},#{item.sort},
+       #{item.notes},#{item.levels},#{item.ismenu},#{item.enabled},#{item.isys},
+       #{item.etime},#{item.euser}
+    </foreach>
+  </insert>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from sys_resources where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

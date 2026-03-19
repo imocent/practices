@@ -205,12 +205,20 @@
     SELECT 
     <include refid="Base_Column_List" />
     FROM sys_dept
-    where id = #{obj}
+    where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_dept
     <include refid="Base_Where_List" />
   </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into sys_dept values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.ctime},#{item.cuser},#{item.pid},
+       #{item.pids},#{item.simpleName},#{item.fullName},#{item.notes},#{item.version},
+       #{item.sort},#{item.etime},#{item.euser}
+    </foreach>
+  </insert>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from sys_dept where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

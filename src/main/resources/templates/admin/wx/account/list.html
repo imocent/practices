@@ -35,9 +35,6 @@
                     <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
                 </button>
             </script>
-            <script type="text/html" id="statusTpl">
-                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status" {{d.enabled?"checked":"" }}>
-            </script>
         </div>
     </div>
 </div>
@@ -53,11 +50,11 @@
             smartReloadModel: true,
             cols: [ [
                 {type: 'checkbox'},
-                {field: 'appid', title: '公众ID', minWidth: 80},
+                {field: 'account', title: '公众ID', minWidth: 80},
+                {field: 'name', title: '公众号名称', minWidth: 80},
+                {field: 'appid', title: 'AppId', minWidth: 80},
                 {field: 'token', title: 'TOKEN', minWidth: 80},
-                {field: 'name', title: '名称', minWidth: 80},
-                {field: 'mold', title: '类型', minWidth: 80, templet: function (res) {return res.mold === "1"? "订阅号":"服务号";}},
-                {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
+                {field: 'notes', title: '备注', minWidth: 80},
                 {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
             ] ]
         });
@@ -85,7 +82,7 @@
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
-                editView("/admin/wx/account/edit?id=" + data.appid, "编辑");
+                editView("/admin/wx/account/edit?id=" + data.account, "编辑");
             }
         });
 

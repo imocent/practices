@@ -111,7 +111,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param msg  内容
      */
     public static AjaxResult error(int code, String msg) {
-        return results(code, msg, 0, null);
+        return results(code, msg, 0, null).put("mode", false);
     }
 
     /**
@@ -134,7 +134,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param msg 内容
      */
     public static AjaxResult success(String msg) {
-        return success(0, msg, 0, null);
+        return success(0, msg, 0, null).put("mode", true);
     }
 
     /**

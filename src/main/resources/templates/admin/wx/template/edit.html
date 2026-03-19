@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('编辑')"></head>
+<body style="background-color:#fff">
+<div class="yadmin-body animated fadeIn">
+    <div class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label for="tplId" class="layui-form-label"><i class="yadmin-red">* </i>模板ID</label>
+            <div class="layui-input-block">
+                <input type="text" id="tplId" placeholder="请输入公众号ID" name="tplId" th:value="${bean?.tplId}" lay-verify="required"
+                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="title" class="layui-form-label"><i class="yadmin-red">* </i>模板标题</label>
+            <div class="layui-input-block">
+                <input type="text" id="title" placeholder="请输入名称" name="title" th:value="${bean?.title}" lay-verify="required"
+                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label for="wxTpl" class="layui-form-label"><i class="yadmin-red">* </i>微信模板</label>
+            <div class="layui-input-block">
+                <textarea id="wxTpl" name="wxTpl" placeholder="请输入微信模板" class="layui-textarea" lay-verify="required"
+                          th:text="${bean?.wxTpl}"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label for="content" class="layui-form-label"><i class="yadmin-red">* </i>模板内容</label>
+            <div class="layui-input-block">
+                <textarea id="content" name="content" placeholder="请输入模板内容" class="layui-textarea" lay-verify="required"
+                          th:text="${bean?.content}"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block layui-align">
+                <button class="layui-btn layui-btn-normal btn-w100" lay-submit lay-filter="submit-form">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['jquery', 'form'], function ($, form) {
+        form.on('submit(submit-form)', function (obj) {
+            $.post('/admin/wx/template/save', obj.field, function (data) {
+                advices(data, parent);
+            }, 'json').fail(function (event) {
+                toError(event);
+            });
+        });
+    });
+</script>
+</body>
+</html>

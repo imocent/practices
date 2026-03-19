@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('编辑')"></head>
+<body style="background-color:#fff">
+<div class="yadmin-body animated fadeIn">
+    <div class="layui-form">
+        <div class="wx-form-list">
+            <div class="content">
+                <div class="main" data-t="1">
+                    <img th:src="@{/images/default.png}"/>
+                    <p>请输入标题</p>
+                </div>
+            </div>
+        </div>
+        <div class="wx-form-lg" id="add_form" style="overflow: hidden;" data-t="1">
+            <div class="layui-form-item">
+                <label class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="tltle" id="add_tltle" lay-verify="required" placeholder="请输入标题" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><i class="yadmin-red">* </i>作者</label>
+                <div class="layui-input-block">
+                    <input type="text" name="author" id="add_auth" lay-verify="required" placeholder="请输入作者" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><i class="yadmin-red">* </i>封面图</label>
+                <div class="layui-input-block">
+                    <input type="hidden" name="picpath" id="add_picpath" value="">
+                    <input type="hidden" name="thumbMediaId" id="add_thumbMediaId" value="">
+                    <div class="layui-upload-drag" id="uploader">
+                        <i class="layui-icon layui-icon-upload"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <input type="checkbox" name="showpic" title="封面图片显示在正文中" lay-skin="primary" id="add_showpic" value="1"/>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">原文链接</label>
+                <div class="layui-input-block">
+                    <input type="text" name="fromurl" id="add_fromurl" placeholder="请输入原文链接" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">留言</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="open_comment" value="1" lay-skin="switch" lay-text="开启|关闭"
+                           checked lay-filter="comment" id="add_open_comment">
+                    <div class="layui-inline" id="add_comment_type" style="margin-bottom:0;">
+                        <input type="radio" name="fans_can_comment" value="0" title="所有人可留言" checked>
+                        <input type="radio" name="fans_can_comment" value="1" title="仅粉丝可留言">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="content" class="layui-form-label"><i class="yadmin-red">* </i>内容</label>
+                <div class="layui-input-block">
+                    <textarea id="content" name="content" class="layui-textarea" th:text="${bean?.content}"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block layui-align">
+                    <button class="layui-btn layui-btn-normal btn-w100" lay-submit lay-filter="submit-form">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['jquery', 'layEditor', "upload", 'form'], function ($, editor, upload, form) {
+        editor.init({
+            elem: '#content',
+            uploadUrl: 'https://upload-z1.qiniup.com',
+            videoUploadUrl: 'https://upload-z1.qiniup.com',
+            videoUploadSize: '102400',
+            style: 'fangge',
+        });
+        //开启关闭留言
+        form.on('switch(comment)', function (data) {
+            if (data.elem.checked) {
+                $("#add_comment_type").show();
+            } else {
+                $("#add_comment_type").hide();
+            }
+        });
+
+        //同步标题
+        $("#add_tltle").keyup(function () {
+            var v = $(this).val();
+            $(".wx-form-list .main p").html(v ? v : "请输入标题")
+        });
+        //提交
+        form.on('submit(submit-form)', function (d) {
+            var formData = d.field;
+            if (formData.thumbMediaId === "") {
+                layer.msg("请上传封面图");
+                return false;
+            }
+            if (formData.description === "") {
+                layer.msg("请输入文章内容");
+                return false;
+            }
+            $.post('/admin/wx/message/save', formData, function (data) {
+                advices(data, parent);
+            }, 'json').fail(function (event) {
+                toError(event);
+            });
+
+            return false;
+        });
+        //上传
+        upload.render({
+            elem: '#uploader',
+            url: '/admin/wx/media/upload',
+            data: {type: 'thumb'},//缩略图
+            size: 64,
+            accept: "images",
+            exts: 'JPG|jpg|PNG|png',
+            before: function () {
+                layer.load(1, {shade: [0.1, '#000']});
+            },
+            done: function (result) {
+                layer.closeAll('loading');
+                if (result.mode) {
+                    $("#uploader").html("<img src='" + result.url + "' style='width: 150px;height: 150px;'/><p>点击重新上传，或将文件拖拽到此处</p>");
+                    $("#add_picpath").val(result.url);
+                    $("#add_thumbMediaId").val(result.imgMediaId);
+                    $(".wx-form-list .main img").attr("src", result.url);
+                } else {
+                    layer.msg("上传接口异常");
+                }
+            },
+            error: function (result) {
+                layer.closeAll('loading');
+                layer.msg(result.msg || "上传接口异常");
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -208,12 +208,20 @@
     SELECT 
     <include refid="Base_Column_List" />
     FROM lms_exam_log
-    where id = #{obj}
+    where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_exam_log
     <include refid="Base_Where_List" />
   </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into lms_exam_log values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.ctime},#{item.userId},#{item.username},
+       #{item.examRoomId},#{item.examRoomName},#{item.score},#{item.timeOn},#{item.timeOff},
+       #{item.totalQuestions},#{item.correctQuestions},#{item.wrongQuestions}
+    </foreach>
+  </insert>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_exam_log where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

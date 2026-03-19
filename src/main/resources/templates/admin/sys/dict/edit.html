@@ -6,20 +6,20 @@
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${dict?.id}" />
         <div class="layui-form-item">
-            <label for="dicTree" class="layui-form-label"><span class="yadmin-red">*</span>上级名称</label>
+            <label for="dicTree" class="layui-form-label"><i class="yadmin-red">* </i>上级名称</label>
             <div class="layui-input-block">
                 <ul id="dicTree" class="dtree" data-id="-1" data-value="选择上级名称"></ul>
                 <input type="hidden" id="pid" name="pid" th:value="${dict?.pid}">
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>字典名称</label>
+            <label for="name" class="layui-form-label"><i class="yadmin-red">* </i>字典名称</label>
             <div class="layui-input-block">
                 <input type="text" id="name" placeholder="请输入名称，例如：状态标识" name="name" th:value="${dict?.name}" lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input" />
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="code" class="layui-form-label"><span class="yadmin-red">*</span>类型编码</label>
+            <label for="code" class="layui-form-label"><i class="yadmin-red">* </i>类型编码</label>
             <div class="layui-input-block">
                 <input type="text" id="code" placeholder="请输入字典类型编码，例如：STATUS" name="code" th:value="${dict?.code}" lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input" />
             </div>

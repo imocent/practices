@@ -146,9 +146,10 @@
                 $('#ID-body').addClass('layui-hide');
                 $('#ID-flow').removeClass('layui-hide');
             } else {
+                totalSeconds = 0;
+                $("#timer").text(new Date(totalSeconds).Format("HH:mm:ss", true));
                 clearInterval(intervalId);
                 intervalId = null;
-                totalSeconds = 0;
                 console.log('结束答题 - 房间ID:', roomId);
                 $('#ID-body').removeClass('layui-hide');
                 $('#ID-flow').addClass('layui-hide');

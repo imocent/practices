@@ -33,6 +33,18 @@ public class WechatXmlUtil {
         return factory.newDocumentBuilder();
     }
 
+    public static String buildTextResponse(String toUser, String fromUser, String content) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<xml>");
+        sb.append("<ToUserName><![CDATA[").append(toUser).append("]]></ToUserName>");
+        sb.append("<FromUserName><![CDATA[").append(fromUser).append("]]></FromUserName>");
+        sb.append("<CreateTime>").append(System.currentTimeMillis() / 1000).append("</CreateTime>");
+        sb.append("<MsgType><![CDATA[text]]></MsgType>");
+        sb.append("<Content><![CDATA[").append(content).append("]]></Content>");
+        sb.append("</xml>");
+        return sb.toString();
+    }
+
     /**
      * 将XML字符串转换为Map对象
      *
@@ -97,7 +109,6 @@ public class WechatXmlUtil {
     private static Object element2MapOrString(Element element) {
         NodeList childNodes = element.getChildNodes();
         List<String> elementNames = getElementNames(childNodes);
-
         // 如果没有子元素，返回文本内容
         if (elementNames.isEmpty()) {
             return getElementText(element);
@@ -138,7 +149,6 @@ public class WechatXmlUtil {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element childElement = (Element) node;
                     String nodeName = childElement.getNodeName();
-
                     if (nameCountMap.get(nodeName) == 1) {
                         // 只有一个同名元素，直接放入Map
                         result.put(nodeName, element2MapOrString(childElement));
@@ -198,21 +208,8 @@ public class WechatXmlUtil {
      * 简单测试方法
      */
     public static void main(String[] args) {
-        StringBuilder xml = new StringBuilder();
-        xml.append("<xml>\n");
-        xml.append("  <ToUserName><![CDATA[toUser]]></ToUserName>\n");
-        xml.append("  <FromUserName><![CDATA[fromUser]]></FromUserName>\n");
-        xml.append("  <CreateTime>123456789</CreateTime>\n");
-        xml.append("  <MsgType><![CDATA[xml]]></MsgType>\n");
-        xml.append("  <Content><![CDATA[hello]]></Content>\n");
-        xml.append("  <MsgId>1234567890123456</MsgId>\n");
-        xml.append("  <TestList>\n");
-        xml.append("    <Item><![CDATA[item1]]></Item>\n");
-        xml.append("    <Item><![CDATA[item2]]></Item>\n");
-        xml.append("  </TestList>\n");
-        xml.append("</xml>");
-
-        Map<String, Object> map = xml2Map(xml.toString());
+        String xml = buildTextResponse("", "", "");
+        Map<String, Object> map = xml2Map(xml);
         System.out.println(map);
     }
 }

@@ -231,12 +231,20 @@
     SELECT 
     <include refid="Base_Column_List" />
     FROM lms_top
-    where id = #{obj}
+    where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_top
     <include refid="Base_Where_List" />
   </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into lms_top values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.ctime},#{item.cuser},#{item.model},
+       #{item.title},#{item.content},#{item.url},#{item.imgId},#{item.mold},
+       #{item.visits},#{item.sort},#{item.enabled},#{item.etime},#{item.euser}
+    </foreach>
+  </insert>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_top where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

@@ -70,8 +70,8 @@ public class WechatAccountController {
     public Object save(WxAccount bean) {
         WxAccount entity = this.service.getByObjId(bean.getAppid());
         if (null == entity) {
-            bean.setLastTokenTime(new Date());
-            bean.setAesKey("");
+            bean.setUrl(String.format("/wxapi/%s/message", bean.getAccount()));
+            bean.setTokenTime(new Date());
             this.service.save(bean);
         } else {
             BeanUtil.copyProperties(bean, entity);

@@ -129,6 +129,16 @@ public abstract class BaseCrudService<D extends BaseCrudDao<T>, T extends BaseEn
         return dao.batchDelete(ids);
     }
 
+    /**
+     * 删除数据
+     *
+     * @param entities
+     */
+    @Transactional
+    public int batchAdd(List<T> entities) {
+        return dao.batchAdd(entities);
+    }
+
     public List<Map<String, Object>> selectBySQL(String sql, Map<String, Object> params) {
         return dao.selectBySQL(sql, params);
     }

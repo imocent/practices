@@ -94,12 +94,18 @@
     SELECT 
     <include refid="Base_Column_List" />
     FROM lms_question_answer
-    where id = #{obj}
+    where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_question_answer
     <include refid="Base_Where_List" />
   </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into lms_question_answer values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.questionId},#{item.content},#{item.verify}
+    </foreach>
+  </insert>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_question_answer where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

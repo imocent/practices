@@ -3,18 +3,22 @@
 <mapper namespace="com.fit.dao.WxMsgTemplateDao">
   <resultMap id="BaseResultMap" type="com.fit.entity.WxMsgTemplate">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="appid" jdbcType="VARCHAR" property="appid" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="input_code" jdbcType="VARCHAR" property="inputCode" />
+    <result column="rule" jdbcType="VARCHAR" property="rule" />
+    <result column="read_count" jdbcType="INTEGER" property="readCount" />
+    <result column="favour_count" jdbcType="INTEGER" property="favourCount" />
+    <result column="enabled" jdbcType="BIT" property="enabled" />
+    <result column="wx_tpl" jdbcType="VARCHAR" property="wxTpl" />
+    <result column="tpl_id" jdbcType="VARCHAR" property="tplId" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="data" jdbcType="VARCHAR" property="data" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="miniprogram" jdbcType="VARCHAR" property="miniprogram" />
-    <result column="enabled" jdbcType="TINYINT" property="enabled" />
-    <result column="utime" jdbcType="TIMESTAMP" property="utime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, appid, `name`, title, content, `data`, url, miniprogram, enabled, utime
+    id, create_time, account, msg_type, input_code, `rule`, read_count, favour_count, 
+    enabled, wx_tpl, tpl_id, title, content
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -32,11 +36,35 @@
       <if test="id != null">
         id,
       </if>
-      <if test="appid != null">
-        appid,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="name != null">
-        `name`,
+      <if test="account != null">
+        account,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      <if test="inputCode != null">
+        input_code,
+      </if>
+      <if test="rule != null">
+        `rule`,
+      </if>
+      <if test="readCount != null">
+        read_count,
+      </if>
+      <if test="favourCount != null">
+        favour_count,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+      <if test="wxTpl != null">
+        wx_tpl,
+      </if>
+      <if test="tplId != null">
+        tpl_id,
       </if>
       <if test="title != null">
         title,
@@ -44,31 +72,40 @@
       <if test="content != null">
         content,
       </if>
-      <if test="data != null">
-        `data`,
-      </if>
-      <if test="url != null">
-        url,
-      </if>
-      <if test="miniprogram != null">
-        miniprogram,
-      </if>
-      <if test="enabled != null">
-        enabled,
-      </if>
-      <if test="utime != null">
-        utime,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="appid != null">
-        #{appid,jdbcType=VARCHAR},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="inputCode != null">
+        #{inputCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rule != null">
+        #{rule,jdbcType=VARCHAR},
+      </if>
+      <if test="readCount != null">
+        #{readCount,jdbcType=INTEGER},
+      </if>
+      <if test="favourCount != null">
+        #{favourCount,jdbcType=INTEGER},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BIT},
+      </if>
+      <if test="wxTpl != null">
+        #{wxTpl,jdbcType=VARCHAR},
+      </if>
+      <if test="tplId != null">
+        #{tplId,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
@@ -76,31 +113,40 @@
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
       </if>
-      <if test="data != null">
-        #{data,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="miniprogram != null">
-        #{miniprogram,jdbcType=VARCHAR},
-      </if>
-      <if test="enabled != null">
-        #{enabled,jdbcType=TINYINT},
-      </if>
-      <if test="utime != null">
-        #{utime,jdbcType=TIMESTAMP},
-      </if>
     </trim>
   </insert>
   <update id="update" parameterType="com.fit.entity.WxMsgTemplate">
     update wx_msg_template
     <set>
-      <if test="appid != null">
-        appid = #{appid,jdbcType=VARCHAR},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="inputCode != null">
+        input_code = #{inputCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rule != null">
+        `rule` = #{rule,jdbcType=VARCHAR},
+      </if>
+      <if test="readCount != null">
+        read_count = #{readCount,jdbcType=INTEGER},
+      </if>
+      <if test="favourCount != null">
+        favour_count = #{favourCount,jdbcType=INTEGER},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=BIT},
+      </if>
+      <if test="wxTpl != null">
+        wx_tpl = #{wxTpl,jdbcType=VARCHAR},
+      </if>
+      <if test="tplId != null">
+        tpl_id = #{tplId,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
@@ -108,55 +154,49 @@
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
       </if>
-      <if test="data != null">
-        `data` = #{data,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        url = #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="miniprogram != null">
-        miniprogram = #{miniprogram,jdbcType=VARCHAR},
-      </if>
-      <if test="enabled != null">
-        enabled = #{enabled,jdbcType=TINYINT},
-      </if>
-      <if test="utime != null">
-        utime = #{utime,jdbcType=TIMESTAMP},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <sql id="Base_Where_List">
     <where>
-      <if test="appid != null and appid != ''">
-         and appid = #{appid,jdbcType=VARCHAR}
+      <if test="ctime != null ">
+         and create_time &gt;= #{ctime }
       </if>
-      <if test="name != null and name != ''">
-         and `name` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+      <if test="etime != null ">
+         and create_time &lt;= #{etime } 
+      </if>
+      <if test="account != null and account != ''">
+         and account = #{account,jdbcType=VARCHAR}
+      </if>
+      <if test="msgType != null and msgType != ''">
+         and msg_type = #{msgType,jdbcType=VARCHAR}
+      </if>
+      <if test="inputCode != null and inputCode != ''">
+         and input_code = #{inputCode,jdbcType=VARCHAR}
+      </if>
+      <if test="rule != null and rule != ''">
+         and `rule` = #{rule,jdbcType=VARCHAR}
+      </if>
+      <if test="readCount != null and readCount != ''">
+         and read_count = #{readCount,jdbcType=INTEGER}
+      </if>
+      <if test="favourCount != null and favourCount != ''">
+         and favour_count = #{favourCount,jdbcType=INTEGER}
+      </if>
+      <if test="enabled != null and enabled != ''">
+         and enabled = #{enabled,jdbcType=BIT}
+      </if>
+      <if test="wxTpl != null and wxTpl != ''">
+         and wx_tpl = #{wxTpl,jdbcType=VARCHAR}
+      </if>
+      <if test="tplId != null and tplId != ''">
+         and tpl_id = #{tplId,jdbcType=VARCHAR}
       </if>
       <if test="title != null and title != ''">
          and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
       </if>
       <if test="content != null and content != ''">
          and content like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
-      </if>
-      <if test="data != null and data != ''">
-         and `data` = #{data,jdbcType=VARCHAR}
-      </if>
-      <if test="url != null and url != ''">
-         and url = #{url,jdbcType=VARCHAR}
-      </if>
-      <if test="miniprogram != null and miniprogram != ''">
-         and miniprogram = #{miniprogram,jdbcType=VARCHAR}
-      </if>
-      <if test="enabled != null and enabled != ''">
-         and enabled = #{enabled,jdbcType=TINYINT}
-      </if>
-      <if test="ctime != null ">
-         and utime &gt;= #{ctime }
-      </if>
-      <if test="etime != null ">
-         and utime &lt;= #{etime } 
       </if>
     </where>
   </sql>
@@ -181,6 +221,14 @@
     SELECT count(1) FROM wx_msg_template
     <include refid="Base_Where_List" />
   </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into wx_msg_template values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.createTime},#{item.account},#{item.msgType},
+       #{item.inputCode},#{item.rule},#{item.readCount},#{item.favourCount},#{item.enabled},
+       #{item.wxTpl},#{item.tplId},#{item.title},#{item.content}
+    </foreach>
+  </insert>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from wx_msg_template where id in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

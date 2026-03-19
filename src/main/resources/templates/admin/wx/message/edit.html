@@ -6,46 +6,27 @@
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${bean?.id}" />
         <div class="layui-form-item">
-            <label for="dicTree" class="layui-form-label"><span class="yadmin-red">*</span>上级名称</label>
+            <label for="code" class="layui-form-label"><i class="yadmin-red">* </i>关键字</label>
             <div class="layui-input-block">
-                <ul id="dicTree" class="dtree" data-id="-1" data-value="选择上级名称"></ul>
-                <input type="hidden" id="pid" name="pid" th:value="${bean?.pid}">
+                <input type="text" id="code" name="inputCode" th:value="${bean?.inputCode}" class="layui-input" />
+                <p class="layui-bg-red" style="line-height:1.4;padding-left:10px;">如果 关键字 为 subscribe ，那么此消息为订阅消息</p>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>字典名称</label>
+            <label for="title" class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
             <div class="layui-input-block">
-                <input type="text" id="name" placeholder="请输入名称，例如：状态标识" name="name" th:value="${bean?.name}" lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input" />
+                <input type="text" id="title" name="title" th:value="${bean?.title}" class="layui-input" />
             </div>
         </div>
-        <div class="layui-form-item">
-            <label for="code" class="layui-form-label"><span class="yadmin-red">*</span>类型编码</label>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label"><i class="yadmin-red">* </i>内容</label>
             <div class="layui-input-block">
-                <input type="text" id="code" placeholder="请输入字典类型编码，例如：STATUS" name="code" th:value="${bean?.code}" lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input" />
-            </div>
-        </div>
-        <div class="layui-form-item" pane="">
-            <label class="layui-form-label">系统字典</label>
-            <div class="layui-input-block">
-                <input type="radio" id="sign" name="sign" value="Y" title="是" />
-                <input type="radio" name="sign" value="N" title="否" checked />
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="notes" class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <input type="text" id="notes" placeholder="请输入备注" name="notes" th:value="${bean?.notes}" autocomplete="off" class="layui-input" />
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="sort" class="layui-form-label">排序</label>
-            <div class="layui-input-block">
-                <input type="text" id="sort" placeholder="请输入序号" name="sort" th:value="${bean?.sort}" autocomplete="off" class="layui-input">
+                <textarea name="content" placeholder="请输入内容" class="layui-textarea" th:text="${bean?.content}"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block layui-align">
-                <button class="layui-btn layui-btn-normal btn-w100" lay-submit="" lay-filter="submit-form">保存</button>
+                <button class="layui-btn layui-btn-normal btn-w100" lay-submit lay-filter="submit-form">保存</button>
             </div>
         </div>
     </div>
@@ -54,7 +35,7 @@
     layui.use(['jquery', 'dtree', 'form', 'layer'], function ($, dtree, form, layer) {
 
     form.on('submit(submit-form)', function (obj) {
-        $.post('/admin/message/save', obj.field, function (data) {
+        $.post('/admin/wx/message/save', obj.field, function (data) {
             advices(data, parent);
         }, 'json').fail(function (event) {
             toError(event);

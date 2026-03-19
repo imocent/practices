@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.WxAccountFansDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.WxAccountFans">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="subscribe_status" jdbcType="INTEGER" property="subscribeStatus" />
+    <result column="subscribe_time" jdbcType="VARCHAR" property="subscribeTime" />
+    <result column="gender" jdbcType="BIT" property="gender" />
+    <result column="language" jdbcType="VARCHAR" property="language" />
+    <result column="country" jdbcType="VARCHAR" property="country" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="head_img_url" jdbcType="VARCHAR" property="headImgUrl" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="wx_id" jdbcType="VARCHAR" property="wxId" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.fit.entity.WxAccountFans">
+    <result column="nickname" jdbcType="VARBINARY" property="nickname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, open_id, subscribe_status, subscribe_time, gender, `language`, country, province, 
+    city, head_img_url, `status`, notes, wx_id, account, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    nickname
+  </sql>
+  <select id="get" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from wx_account_fans
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from wx_account_fans
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.WxAccountFans" useGeneratedKeys="true">
+    insert into wx_account_fans
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="openId != null">
+        open_id,
+      </if>
+      <if test="subscribeStatus != null">
+        subscribe_status,
+      </if>
+      <if test="subscribeTime != null">
+        subscribe_time,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="language != null">
+        `language`,
+      </if>
+      <if test="country != null">
+        country,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="headImgUrl != null">
+        head_img_url,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="wxId != null">
+        wx_id,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="subscribeStatus != null">
+        #{subscribeStatus,jdbcType=INTEGER},
+      </if>
+      <if test="subscribeTime != null">
+        #{subscribeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=BIT},
+      </if>
+      <if test="language != null">
+        #{language,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="headImgUrl != null">
+        #{headImgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="wxId != null">
+        #{wxId,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.WxAccountFans">
+    update wx_account_fans
+    <set>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="subscribeStatus != null">
+        subscribe_status = #{subscribeStatus,jdbcType=INTEGER},
+      </if>
+      <if test="subscribeTime != null">
+        subscribe_time = #{subscribeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=BIT},
+      </if>
+      <if test="language != null">
+        `language` = #{language,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+        country = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="headImgUrl != null">
+        head_img_url = #{headImgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="wxId != null">
+        wx_id = #{wxId,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="openId != null and openId != ''">
+         and open_id = #{openId,jdbcType=VARCHAR}
+      </if>
+      <if test="subscribeStatus != null and subscribeStatus != ''">
+         and subscribe_status = #{subscribeStatus,jdbcType=INTEGER}
+      </if>
+      <if test="subscribeTime != null and subscribeTime != ''">
+         and subscribe_time = #{subscribeTime,jdbcType=VARCHAR}
+      </if>
+      <if test="gender != null and gender != ''">
+         and gender = #{gender,jdbcType=BIT}
+      </if>
+      <if test="language != null and language != ''">
+         and `language` = #{language,jdbcType=VARCHAR}
+      </if>
+      <if test="country != null and country != ''">
+         and country = #{country,jdbcType=VARCHAR}
+      </if>
+      <if test="province != null and province != ''">
+         and province = #{province,jdbcType=VARCHAR}
+      </if>
+      <if test="city != null and city != ''">
+         and city = #{city,jdbcType=VARCHAR}
+      </if>
+      <if test="headImgUrl != null and headImgUrl != ''">
+         and head_img_url = #{headImgUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null and status != ''">
+         and `status` = #{status,jdbcType=TINYINT}
+      </if>
+      <if test="notes != null and notes != ''">
+         and notes = #{notes,jdbcType=VARCHAR}
+      </if>
+      <if test="wxId != null and wxId != ''">
+         and wx_id = #{wxId,jdbcType=VARCHAR}
+      </if>
+      <if test="account != null and account != ''">
+         and account = #{account,jdbcType=VARCHAR}
+      </if>
+      <if test="ctime != null ">
+         and create_time &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and create_time &lt;= #{etime } 
+      </if>
+      <if test="nickname != null and nickname != ''">
+         and nickname = #{nickname,jdbcType=VARBINARY}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_account_fans
+    <include refid="Base_Where_List" />
+    order by id desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_account_fans
+    where id = #{obj}
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM wx_account_fans
+    <include refid="Base_Where_List" />
+  </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into wx_account_fans values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.openId},#{item.subscribeStatus},#{item.subscribeTime},
+       #{item.gender},#{item.language},#{item.country},#{item.province},#{item.city},
+       #{item.headImgUrl},#{item.status},#{item.notes},#{item.wxId},#{item.account},
+       #{item.createTime},#{item.nickname}
+    </foreach>
+  </insert>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from wx_account_fans where id in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table wx_account_fans
+  </update>
+</mapper>

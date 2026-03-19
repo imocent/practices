@@ -34,9 +34,9 @@
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
                     <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
                 </button>
-            </script>
-            <script type="text/html" id="statusTpl">
-                <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="正常|冻结" lay-filter="status" {{d.enabled?"checked":"" }}>
+                <button type="button" class="layui-btn layui-btn-warm layui-btn-xs" lay-event="mass">
+                    <i class="layui-icon layui-icon-release" title="群发">群发</i>
+                </button>
             </script>
         </div>
     </div>
@@ -51,14 +51,16 @@
             page: true,
             toolbar: '#toolbar',
             smartReloadModel: true,
-            cols: [ [
+            cols: [[
                 {type: 'checkbox'},
-                {field: 'appid', title: '公众ID', minWidth: 80},
-                {field: 'name', title: '名称', minWidth: 80},
-                {field: 'mold', title: '类型', minWidth: 80, templet: function (res) {return res.mold === "1"? "订阅号":"服务号";}},
-                {field: 'enabled', title: '状态', align: 'center', templet: "#statusTpl", width: 100},
+                {field: 'account', title: '公众ID', minWidth: 80},
+                {field: 'title', title: '消息标题', minWidth: 80},
+                {field: 'msgType', title: '消息类型', minWidth: 80},
+                {field: 'inputCode', title: '消息方向', minWidth: 80},
+                {field: 'readCount', title: '阅读数', minWidth: 80},
+                {field: 'favourCount', title: '点赞数', minWidth: 80},
                 {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
-            ] ]
+            ]]
         });
 
         // 工具条点击事件
@@ -83,7 +85,27 @@
 
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
-            if (event === 'edit') {
+            if (event === 'mass') {
+                openPage({
+                    content: "/admin/wx/user/mass", title: "群发", yes: function (index) {
+                        if (GLOBAL.choosed.length < 2) {
+                            layer.msg("至少选择2个粉丝");
+                            return false;
+                        }
+                        $.post('/admin/wx/message/massSendTextByOpenIds', {
+                            textId: data.id,
+                            openIds: GLOBAL.choosed.join(",")
+                        }, function (data) {
+                            advices(data, index);
+                        }, 'json').fail(function (event) {
+                            toError(event);
+                        });
+                    },
+                    end: function () {
+                        GLOBAL.choosed = [];
+                    }
+                });
+            } else if (event === 'edit') {
                 editView("/admin/wx/message/edit?id=" + data.id, "编辑");
             }
         });

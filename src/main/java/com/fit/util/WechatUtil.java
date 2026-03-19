@@ -1,18 +1,18 @@
 package com.fit.util;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.*;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * 微信公众平台工具类
@@ -21,13 +21,49 @@ import java.util.Scanner;
 @Slf4j
 public class WechatUtil {
 
-    public final static String API_HOST_URL = "https://api.weixin.qq.com";
-    public final static String WX_ACCESS_TOKEN = "%s/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
-    public final static String WX_GZ = "%s/cgi-bin/user/get?access_token=%s&next_openid=";
-    public final static String WX_TICKET = "%s/cgi-bin/ticket/getticket?access_token=%s&type=%s";
-    public final static String WX_USER_INFO = "%s/cgi-bin/user/info?openid=%s&lang=%s";
-    public final static String WX_TAGS_MEMBERS_TAGGING = "%s/cgi-bin/tags/members/batchtagging?access_token=%s";
-    public final static String WX_TAGS_MEMBERS_UNTAGGING = "%s/cgi-bin/tags/members/batchuntagging?access_token=%s";
+    public static final List<String> MENU_NEED_KEY = Arrays.asList("click", "scancode_push", "scancode_waitmsg", "pic_sysphoto", "pic_photo_or_album", "pic_weixin", "location_select");
+    //素材文件后缀
+    public static Map<String, String> type_fix = new HashMap<>();
+    public static Map<String, String> media_fix = new HashMap<>();
+    //素材文件大小
+    public static Map<String, Long> type_length = new HashMap<>();
+    //统计图表数据
+    public static Map<String, String[]> data_cube = new HashMap<>();
+
+    static {
+        type_fix.put("image", "bmp|png|jpeg|jpg|gif");
+        type_fix.put("voice", "mp3|wma|wav|amr");
+        type_fix.put("video", "mp4");
+        type_fix.put("thumb", "jpg");
+
+        media_fix.put("image", "png|jpeg|jpg|gif");
+        media_fix.put("voice", "mp3|amr");
+        media_fix.put("video", "mp4");
+        media_fix.put("thumb", "jpg");
+
+        type_length.put("image", new Long(2 * 1024 * 1024));
+        type_length.put("voice", new Long(2 * 1024 * 1024));
+        type_length.put("video", new Long(10 * 1024 * 1024));
+        type_length.put("thumb", new Long(64 * 1024));
+    }
+
+    public static final String API_HOST_URL = "https://api.weixin.qq.com";
+    public static final String WX_ACCESS_TOKEN = "%s/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
+    // 新增其他类型永久素材
+    public static final String WX_MEDIA_UPLOAD = "%s/cgi-bin/media/upload?access_token=%s&type=%s";
+    public static final String WX_BATCH_GET_USER_INFO = "%s/cgi-bin/user/info/batchget?access_token=%s";
+    // 获取账号粉丝信息
+    public static final String WX_GET_FANS_INFO = "%s/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN";
+    // 获取账号粉丝列表
+    public static final String WX_GET_FANS_LIST = "%s/cgi-bin/user/get?access_token=%s";
+    public static final String WX_CHANGE_OPENID = "%s/cgi-bin/changeopenid?access_token=%s";
+    public static final String WX_QRCODE_CREATE = "%s/cgi-bin/qrcode/create?access_token=%s";
+    public static final String WX_QRCODE_SHOW = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s";
+    public static final String WX_SEND_TEMPLATE_MSG = "%s/cgi-bin/message/template/send?access_token=%s";
+    public static final String WX_TICKET = "%s/cgi-bin/ticket/getticket?access_token=%s&type=%s";
+    public static final String WX_TAGS_MEMBERS_TAGGING = "%s/cgi-bin/tags/members/batchtagging?access_token=%s";
+    public static final String WX_TAGS_MEMBERS_UNTAGGING = "%s/cgi-bin/tags/members/batchuntagging?access_token=%s";
+    public static final String WX_USER_INFO = "%s/cgi-bin/user/info?access_token=%s&openid=%s&lang=%s";
 
     public static boolean isAnyEmpty(CharSequence... css) {
         if (css != null && Array.getLength(css) != 0) {
@@ -50,8 +86,7 @@ public class WechatUtil {
      */
     public static String getAccessToken(String appid, String appSecret) {
         try {
-            String uri = String.format(WX_ACCESS_TOKEN, API_HOST_URL, appid, appSecret);
-            JSONObject jsonObject = apiCall(uri);
+            JSONObject jsonObject = apiGetCall(String.format(WX_ACCESS_TOKEN, API_HOST_URL, appid, appSecret));
             return jsonObject != null ? jsonObject.getString("access_token") : null;
         } catch (Exception e) {
             log.error("获取access_token失败", e);
@@ -59,30 +94,37 @@ public class WechatUtil {
         }
     }
 
+    public static JSONArray getChangeOpenid(String access_token, String appid, String[] openIds) {
+        String uri = String.format(WX_CHANGE_OPENID, API_HOST_URL, access_token);
+        JSONObject json = new JSONObject();
+        json.put("from_appid", appid);
+        json.put("openid_list", openIds);
+        JSONObject call = apiCall(uri, "POST", json);
+        return call.getIntValue("errcode") == 0 ? call.getJSONArray("openid_list") : null;
+    }
+
     /**
-     * 获取关注列表
-     *
-     * @param appid
-     * @param appSecret
+     * 获取粉丝列表
      */
-    public static void getGz(String appid, String appSecret) {
+    public static JSONObject getFansList(String access_token) {
         try {
-            String access_token = getAccessToken(appid, appSecret);
-            if (access_token == null) {
-                log.error("获取access_token失败");
-                return;
-            }
-            String uri = String.format(WX_GZ, API_HOST_URL, access_token);
-            JSONObject jsonObject = apiCall(uri);
-            if (jsonObject != null) {
-                log.info("获取关注列表成功：{}", jsonObject);
-                System.out.println(jsonObject);
-            } else {
-                log.error("获取关注列表失败");
-            }
+            return apiGetCall(String.format(WX_GET_FANS_LIST, API_HOST_URL, access_token));
         } catch (Exception e) {
             log.error("获取关注列表异常", e);
         }
+        return null;
+    }
+
+    /**
+     * 获取粉丝详情
+     */
+    public static JSONObject getFansInfo(String openId, String access_token) {
+        try {
+            return apiGetCall(String.format(WX_GET_FANS_INFO, API_HOST_URL, access_token, openId));
+        } catch (Exception e) {
+            log.error("获取粉丝详情异常", e);
+        }
+        return null;
     }
 
     public static boolean checkSignature(String signature, String... arr) {
@@ -120,9 +162,8 @@ public class WechatUtil {
      * @return
      */
     public static String getTicket(String access_token, String type) {
-        String uri = String.format(WX_TICKET, API_HOST_URL, access_token, type);
-        JSONObject jsonObject = apiCall(uri);
-        return jsonObject != null ? jsonObject.getString("ticket") : null;
+        JSONObject call = apiGetCall(String.format(WX_TICKET, API_HOST_URL, access_token, type));
+        return call != null ? call.getString("ticket") : null;
     }
 
     /**
@@ -132,12 +173,11 @@ public class WechatUtil {
      * @param lang
      * @return
      */
-    public static JSONObject getUserInfo(String openid, String lang) {
+    public static JSONObject getUserInfo(String access_token, String openid, String lang) {
         if (lang == null) {
             lang = "zh_CN";
         }
-        String uri = String.format(WX_USER_INFO, API_HOST_URL, openid, lang);
-        return apiCall(uri);
+        return apiGetCall(String.format(WX_USER_INFO, API_HOST_URL, access_token, openid, lang));
     }
 
     public static JSONObject tagging(String access_token, Long tagId, String openid) {
@@ -145,7 +185,7 @@ public class WechatUtil {
         json.put("tagid", tagId);
         json.put("openid_list", new String[]{openid});
         String uri = String.format(WX_TAGS_MEMBERS_TAGGING, API_HOST_URL, access_token);
-        return apiCall(uri, "POST", json.toJSONString());
+        return apiCall(uri, "POST", json);
     }
 
     public static JSONObject untagging(String access_token, Long tagId, String openid) {
@@ -153,26 +193,68 @@ public class WechatUtil {
         json.put("tagid", tagId);
         json.put("openid_list", new String[]{openid});
         String uri = String.format(WX_TAGS_MEMBERS_UNTAGGING, API_HOST_URL, access_token);
-        return apiCall(uri, "POST", json.toJSONString());
+        return apiCall(uri, "POST", json);
     }
 
-    public static JSONObject apiCall(String uri) {
+    /**
+     * 草稿箱开关设置
+     *
+     * @return
+     */
+    public static JSONObject getDraftSwitch(String access_token) {
+        return apiPostCall(String.format("%s/cgi-bin/draft/switch?access_token=%s&checkonly=1", API_HOST_URL, access_token));
+    }
+
+    public static JSONObject apiPostCall(String uri) {
+        return apiCall(uri, "POST", null);
+    }
+
+    public static JSONObject apiGetCall(String uri) {
         return apiCall(uri, "GET", null);
+    }
+
+    /**
+     * 素材添加
+     *
+     * @param type   素材类型（image/voice/video/thumb）
+     * @param file   文件
+     * @param params 视频数据
+     * @return
+     */
+    public static JSONObject uploadMedia(String accessToken, String type, File file, JSONObject params) {
+        if (!file.exists()) {
+            throw new RuntimeException("{\"errcode\":-2,\"errmsg\":\"文件不存在\"}");
+        }
+        String fileName = file.getName();
+        //获取后缀名
+        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        long length = file.length();
+        //此处做判断是为了尽可能的减少对微信API的调用次数
+        if (type_fix.get(type).indexOf(suffix) == -1) {
+            throw new RuntimeException("{\"errcode\":40005,\"errmsg\":\"不合法的文件类型\"}");
+        }
+        if (length > type_length.get(type)) {
+            throw new RuntimeException("{\"errcode\":40006,\"errmsg\":\"不合法的文件大小\"}");
+        }
+        params.put("media", file);
+
+        return apiCall(String.format(WX_MEDIA_UPLOAD, API_HOST_URL, accessToken, type), "POST", params);
     }
 
     /**
      * 请求到微信接口
      *
-     * @param uri       请求路径
-     * @param method    请求方式（GET/POST）
-     * @param outputStr
+     * @param uri    请求路径
+     * @param method 请求方式（GET/POST）
+     * @param params 请求参数（Map形式，会自动转换为JSON字符串）
      * @return
      */
-    public static JSONObject apiCall(String uri, String method, String outputStr) {
+    public static JSONObject apiCall(String uri, String method, JSONObject params) {
         HttpsURLConnection httpUrlConn = null;
         InputStream inputStream = null;
         Scanner scanner = null;
         OutputStream outputStream = null;
+        DataOutputStream dataOutputStream = null;
         try {
             URL url = new URL(uri);
             httpUrlConn = (HttpsURLConnection) url.openConnection();
@@ -191,28 +273,83 @@ public class WechatUtil {
             if ("GET".equalsIgnoreCase(method)) {
                 httpUrlConn.connect();
             }
-            // 当有数据需要提交时
-            if (null != outputStr) {
-                outputStream = httpUrlConn.getOutputStream();
-                outputStream.write(outputStr.getBytes("UTF-8"));
-                outputStream.flush();
+            // 当有参数需要提交时（非GET请求且有参数）
+            if (null != params && !params.isEmpty() && !"GET".equalsIgnoreCase(method)) {
+                // 检查是否包含文件上传
+                if (params.containsKey("media")) {
+                    // 处理文件上传（multipart/form-data）
+                    File file = (File) params.get("media");
+                    String boundary = "----------" + System.currentTimeMillis();
+                    httpUrlConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                    // 获取文件类型（从params中获取，如果没有则默认为image）
+                    String type = params.containsKey("type") ? params.getString("type") : "image";
+                    dataOutputStream = new DataOutputStream(httpUrlConn.getOutputStream());
+                    // 写入文件参数
+                    // 1. 写入boundary开始标记
+                    dataOutputStream.writeBytes("--" + boundary + "\r\n");
+                    // 2. 写入Content-Disposition，包含文件名
+                    dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"media\"; filename=\"" + file.getName() + "\"\r\n");
+                    // 3. 写入Content-Type
+                    dataOutputStream.writeBytes("Content-Type: " + getMimeType(type) + "\r\n");
+                    dataOutputStream.writeBytes("\r\n");
+                    // 4. 写入文件内容
+                    Files.copy(file.toPath(), dataOutputStream);
+                    // 5. 写入结束标记
+                    dataOutputStream.writeBytes("\r\n");
+                    dataOutputStream.writeBytes("--" + boundary + "--\r\n");
+                    dataOutputStream.flush();
+                } else {
+                    // 处理普通的JSON请求
+                    httpUrlConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                    // 将Map转换为JSON字符串
+                    String outputStr = JSONObject.toJSONString(params);
+                    outputStream = httpUrlConn.getOutputStream();
+                    outputStream.write(outputStr.getBytes("UTF-8"));
+                    outputStream.flush();
+                }
             }
+            // 读取响应
             inputStream = httpUrlConn.getInputStream();
             scanner = new Scanner(inputStream, "UTF-8");
             scanner.useDelimiter("\\A");
             if (scanner.hasNext()) {
                 String response = scanner.next();
                 if (response != null && !response.trim().isEmpty()) {
-                    return JSONObject.parseObject(response);
+                    JSONObject result = JSONObject.parseObject(response);
+                    // 检查是否有错误码
+                    if (result.containsKey("errcode") && result.getInteger("errcode") != 0) {
+                        log.error("微信接口返回错误：errcode={}, errmsg={}", result.getInteger("errcode"), result.getString("errmsg"));
+                    }
+                    return result;
                 } else {
                     log.error("响应内容为空");
                 }
             } else {
                 log.error("没有读取到响应内容");
             }
+        } catch (FileNotFoundException e) {
+            log.error("文件不存在：", e);
         } catch (Exception e) {
             log.error("请求微信接口错误信息：", e);
+            // 尝试读取错误响应
+            if (httpUrlConn != null) {
+                try {
+                    InputStream errorStream = httpUrlConn.getErrorStream();
+                    if (errorStream != null) {
+                        scanner = new Scanner(errorStream, "UTF-8");
+                        scanner.useDelimiter("\\A");
+                        if (scanner.hasNext()) {
+                            String errorResponse = scanner.next();
+                            log.error("微信接口错误响应：{}", errorResponse);
+                            return JSONObject.parseObject(errorResponse);
+                        }
+                    }
+                } catch (Exception ex) {
+                    log.error("读取错误响应异常：", ex);
+                }
+            }
         } finally {
+            // 关闭资源
             if (scanner != null) {
                 scanner.close();
             }
@@ -230,11 +367,38 @@ public class WechatUtil {
                     log.error("关闭输出流异常", e);
                 }
             }
+            if (dataOutputStream != null) {
+                try {
+                    dataOutputStream.close();
+                } catch (Exception e) {
+                    log.error("关闭数据输出流异常", e);
+                }
+            }
             if (httpUrlConn != null) {
                 httpUrlConn.disconnect();
             }
         }
         return null;
+    }
+
+    /**
+     * 根据文件类型获取MIME类型
+     *
+     * @param type 文件类型（image/voice/video/thumb）
+     * @return MIME类型
+     */
+    private static String getMimeType(String type) {
+        switch (type.toLowerCase()) {
+            case "voice":
+                return "audio/amr";
+            case "video":
+                return "video/mp4";
+            case "image":
+            case "thumb":
+                return "image/jpeg";
+            default:
+                return "application/octet-stream";
+        }
     }
 
     private static SSLSocketFactory getSSLSocketFactory() throws Exception {

@@ -161,7 +161,7 @@
         <table schema="" tableName="%" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
         <!-- 生成指定表信息-->
-        <table tableName="%" schema="kinde" enableCountByExample="false" enableUpdateByExample="false"
+        <table tableName="%" schema="fit" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
         </table>
     </context>

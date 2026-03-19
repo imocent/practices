@@ -82,10 +82,9 @@ public class LayPlugin extends PluginAdapter {
         XmlElement where = new XmlElement("where");
         // 加入 逻辑删除 del_flag标识 根据选择是否添加
         // where.addElement(new TextElement(" DEL_FLAG != 1 "));
-        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
-        String PrimaryKey = primaryKeyColumns.get(0).getJavaProperty();
+        List<IntrospectedColumn> allColumns = introspectedTable.getAllColumns();
         StringBuilder sb = new StringBuilder();
-        for (IntrospectedColumn introspectedColumn : introspectedTable.getAllColumns()) {
+        for (IntrospectedColumn introspectedColumn : allColumns) {
             XmlElement isNotNullElement = new XmlElement("if");
             String javaProperty = introspectedColumn.getJavaProperty();// java字段名
             if (!ignoreTables.contains(javaProperty)) {
@@ -116,6 +115,10 @@ public class LayPlugin extends PluginAdapter {
         // 统一引入参数
         XmlElement include = new XmlElement("include");
         include.addAttribute(new Attribute("refid", "Base_Column_List"));
+        // 获取主键列名
+        String primaryKey = introspectedTable.getPrimaryKeyColumns().get(0).getActualColumnName();
+        // 获取表名
+        String tableNameKey = introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime();
         // 创建根据Map查询数据
         XmlElement e_select = new XmlElement("select");
         e_select.addAttribute(new Attribute("id", "findList"));
@@ -123,12 +126,10 @@ public class LayPlugin extends PluginAdapter {
         e_select.addAttribute(new Attribute("parameterType", "java.util.Map"));
         e_select.addElement(new TextElement("SELECT "));
         e_select.addElement(include);
-        e_select.addElement(new TextElement("FROM " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
+        e_select.addElement(new TextElement("FROM " + tableNameKey));
         XmlElement include2 = new XmlElement("include");
         include2.addAttribute(new Attribute("refid", "Base_Where_List"));
         e_select.addElement(include2);
-        // 获取主键列名
-        String primaryKey = introspectedTable.getPrimaryKeyColumns().get(0).getActualColumnName();
         e_select.addElement(new TextElement(String.format("order by %s desc", primaryKey)));
         XmlElement pageIf = new XmlElement("if");
         pageIf.addAttribute(new Attribute("test", "page != null and limit != null"));
@@ -143,33 +144,56 @@ public class LayPlugin extends PluginAdapter {
         b_select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
         b_select.addElement(new TextElement("SELECT "));
         b_select.addElement(include);
-        b_select.addElement(new TextElement("FROM " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
-        b_select.addElement(new TextElement("where " + PrimaryKey + " = #{obj}"));
+        b_select.addElement(new TextElement("FROM " + tableNameKey));
+        b_select.addElement(new TextElement("where " + primaryKey + " = #{obj}"));
         rootElement.addElement(b_select);
         // 获取查询数量
         XmlElement c_select = new XmlElement("select");
         c_select.addAttribute(new Attribute("id", "findCount"));
         c_select.addAttribute(new Attribute("resultType", "java.lang.Integer"));
-        c_select.addElement(new TextElement("SELECT count(1) FROM " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
+        c_select.addElement(new TextElement("SELECT count(1) FROM " + tableNameKey));
         c_select.addElement(include2);
         rootElement.addElement(c_select);
+        // 创建批量添加
+        XmlElement adds = new XmlElement("insert");
+        adds.addAttribute(new Attribute("id", "batchAdd"));
+        adds.addAttribute(new Attribute("parameterType", "java.util.List"));
+        sb.setLength(0);
+        sb.append("insert into ").append(tableNameKey).append(" values ");
+        adds.addElement(new TextElement(sb.toString()));
+        XmlElement foreachAdd = new XmlElement("foreach");
+        foreachAdd.addAttribute(new Attribute("collection", "list"));
+        foreachAdd.addAttribute(new Attribute("item", "id"));
+        foreachAdd.addAttribute(new Attribute("open", "("));
+        foreachAdd.addAttribute(new Attribute("separator", ","));
+        foreachAdd.addAttribute(new Attribute("close", ")"));
+        StringBuilder sbAdd = new StringBuilder();
+        for (int i = 0; i < allColumns.size(); i++) {
+            if ((i + 1) % 5 == 0) {
+                sbAdd.append("\n       ");
+            }
+            IntrospectedColumn column = allColumns.get(i);
+            sbAdd.append("#{item.").append(column.getJavaProperty()).append("}").append(",");
+        }
+        sbAdd.deleteCharAt(sbAdd.length() - 1);
+        foreachAdd.addElement(new TextElement(sbAdd.toString()));
+        adds.addElement(foreachAdd);
+        rootElement.addElement(adds);
         // 创建批量删除
-        String primaryKeyColumn = introspectedTable.getPrimaryKeyColumns().get(0).getActualColumnName();
         XmlElement removes = new XmlElement("delete");
         removes.addAttribute(new Attribute("id", "batchDelete"));
         removes.addAttribute(new Attribute("parameterType", "java.util.List"));
         sb.setLength(0);
-        sb.append("delete from ").append(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime());
-        sb.append(" where ").append(primaryKeyColumn).append(" in");
+        sb.append("delete from ").append(tableNameKey).append(" where ").append(primaryKey).append(" in");
         removes.addElement(new TextElement(sb.toString()));
-        XmlElement foreachElement = new XmlElement("foreach");
-        foreachElement.addAttribute(new Attribute("collection", "list"));
-        foreachElement.addAttribute(new Attribute("item", "id"));
-        foreachElement.addAttribute(new Attribute("open", "("));
-        foreachElement.addAttribute(new Attribute("separator", ","));
-        foreachElement.addAttribute(new Attribute("close", ")"));
-        foreachElement.addElement(new TextElement("#{id}"));
-        removes.addElement(foreachElement);
+        XmlElement foreachDel = new XmlElement("foreach");
+        foreachDel.addAttribute(new Attribute("collection", "list"));
+        foreachDel.addAttribute(new Attribute("item", "id"));
+        foreachDel.addAttribute(new Attribute("open", "("));
+        foreachDel.addAttribute(new Attribute("separator", ","));
+        foreachDel.addAttribute(new Attribute("close", ")"));
+        foreachDel.addElement(new TextElement("#{id}"));
+        removes.addElement(foreachDel);
         rootElement.addElement(removes);
         XmlElement sql_update = new XmlElement("update");
         sql_update.addAttribute(new Attribute("id", "deleteTable"));

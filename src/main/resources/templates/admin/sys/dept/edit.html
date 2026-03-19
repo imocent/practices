@@ -6,21 +6,21 @@
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${dept?.id}"/>
         <div class="layui-form-item">
-            <label for="depTree" class="layui-form-label"><span class="yadmin-red">*</span>上级名称</label>
+            <label for="depTree" class="layui-form-label"><i class="yadmin-red">* </i>上级名称</label>
             <div class="layui-input-block">
                 <ul id="depTree" class="dtree" data-id="-1" data-value="选择上级名称"></ul>
                 <input type="hidden" id="pid" name="pid" th:value="${dept?.pid}">
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="simpleName" class="layui-form-label"><span class="yadmin-red">*</span>简称</label>
+            <label for="simpleName" class="layui-form-label"><i class="yadmin-red">* </i>简称</label>
             <div class="layui-input-block">
                 <input type="text" id="simpleName" placeholder="请输入部门名称" name="simpleName" th:value="${dept?.simpleName}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="fullName" class="layui-form-label"><span class="yadmin-red">*</span>全称</label>
+            <label for="fullName" class="layui-form-label"><i class="yadmin-red">* </i>全称</label>
             <div class="layui-input-block">
                 <input type="text" id="fullName" placeholder="请输入部门全称" name="fullName" th:value="${dept?.fullName}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>

@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="include :: head('微信媒体列表')"></head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="yadmin-body animated fadeIn">
+            <div class="layui-form yadmin-search-area input">
+                <form class="layui-form-item">
+                    <div class="layui-inline">
+                        <label for="times" class="layui-form-label">上传日期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="times" name="times" class="layui-input" placeholder="选择上传日期"/>
+                        </div>
+                        <button lay-submit lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                            <i class="layui-icon layui-icon-search"></i>
+                        </button>
+                        <button type="reset" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                            <i class="layui-icon layui-icon-refresh"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <script type="text/html" id="toolbar">
+                <button type="button" class="layui-btn layui-bg-orange layui-btn-xs" lay-event="image">
+                    <i class="layui-icon layui-icon-picture"> 图文</i>
+                </button>
+                <button type="button" class="layui-btn layui-bg-purple layui-btn-xs" lay-event="video">
+                    <i class="layui-icon layui-icon-video"> 视频</i>
+                </button>
+                <button type="button" class="layui-btn layui-bg-blue layui-btn-xs" id="upload">
+                    <i class="layui-icon layui-icon-upload-circle"> 文件</i>
+                </button>
+            </script>
+            <table class="layui-hide" id="table-list"></table>
+            <script type="text/html" id="column-toolbar">
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="eye">
+                    <i class="layui-icon layui-icon-eye" title="预览">预览</i>
+                </button>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="down">
+                    <i class="layui-icon layui-icon-download-circle" title="下载">下载</i>
+                </button>
+                <button type="button" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
+                    <i class="layui-icon layui-icon-delete" title="删除">删除</i>
+                </button>
+            </script>
+        </div>
+    </div>
+</div>
+<script th:inline="none">
+    layui.use(['jquery', 'table', 'form', 'layer', "laydate", "upload"], function ($, table, form, layer, laydate, upload) {
+        table.render({
+            elem: '#table-list',
+            url: '/admin/wx/media/list',
+            method: 'post',
+            dataType: 'JSON',
+            page: true,
+            toolbar: '#toolbar',
+            smartReloadModel: true,
+            cols: [[
+                {field: 'mediaType', title: '类型', minWidth: 80},
+                {field: 'createTime', title: '上传时间', minWidth: 80},
+                {field: 'title', title: '标题', minWidth: 80},
+                {field: 'introduction', title: '说明', minWidth: 80},
+                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+            ]]
+        });
+
+        // 工具条点击事件
+        table.on('toolbar', function (obj) {
+            if (obj.event === 'image') {
+                openFull("/admin/wx/media/images", "添加图文");
+            } else if (obj.event === 'video') {
+                openFull("/admin/wx/media/video", "添加视频");
+            }
+        });
+
+        table.on('tool', function (obj) {
+            let data = obj.data, event = obj.event;
+            if (event === 'edit') {
+                editView("/admin/wx/asset/media/edit?id=" + data.account, "编辑");
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么?', function (index) {
+                    let selectData = table.checkStatus('table-list').data;
+                    if (selectData.length === 0) {
+                        selectData.push(data);
+                    }
+                    let idsArray = [];
+                    for (let i = 0; i < selectData.length; i++) {
+                        idsArray.push(selectData[i].id);
+                    }
+                    let ids = idsArray.toString();
+                    deleteReq(ids, '/admin/wx/media/del')
+                    layer.close(index);
+                });
+            }
+        });
+
+        form.on('submit(search)', function (form) {
+            table.reload('table-list', {
+                where: form.field
+            });
+            return false;
+        });
+
+        upload.render({
+            elem: '#upload',
+            url: '/admin/wx/media/upload',
+            size: 2048,
+            before: function () {
+                layer.load(1, {shade: [0.1, '#000']});
+            },
+            done: function (res) {
+                layer.closeAll('loading');
+                if (res.mode) {
+                    layer.msg("上传成功");
+                    table.reload('table-list');
+                } else {
+                    layer.msg("上传失败");
+                }
+            }
+            , error: function () {
+                layer.msg("上传失败");
+            }
+        });
+
+        laydate.render({
+            elem: '#times',
+        });
+    });
+</script>
+</body>
+</html>

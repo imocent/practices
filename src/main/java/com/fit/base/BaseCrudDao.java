@@ -71,6 +71,8 @@ public interface BaseCrudDao<T> {
      */
     int batchDelete(List<Long> ids);
 
+    int batchAdd(List<T> entities);
+
     /**
      * 查询数据列表
      */

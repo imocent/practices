@@ -18,6 +18,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -52,16 +53,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/favicon.ico");
         registry.addResourceHandler("/MP_verify_**.txt").addResourceLocations("classpath:/");
-        String uploadPath = String.format("%s/%s", System.getProperty("user.dir"), uploadDir);
-        String currentDir = System.getProperty("user.dir");
-        if (uploadDir.startsWith("./") || uploadDir.startsWith(".\\")) {
-            uploadPath = String.format("file:%s/%s/", currentDir, uploadDir.substring(2));
-        } else if (uploadDir.startsWith("/") || uploadDir.matches("^[A-Za-z]:.*")) {
-            // 绝对路径（Linux 或 Windows）
-            uploadPath = String.format("file:%s/", uploadDir);
-        } else {// 默认相对路径
-            uploadPath = String.format("file:%s/%s/", currentDir, uploadDir);
-        }
+        File uploadFile = new File(System.getProperty("user.dir"), uploadDir);
+        String uploadPath = "file:" + uploadFile.getAbsolutePath() + "/";
         registry.addResourceHandler(staticAccessPath).addResourceLocations(uploadPath);
     }
 

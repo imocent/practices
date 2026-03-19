@@ -1,10 +1,11 @@
 package com.fit.web.admin.wx;
 
 import com.fit.base.AjaxResult;
-import com.fit.entity.WxAccount;
-import com.fit.entity.WxMsg;
+import com.fit.entity.WxMsgText;
+import com.fit.enums.MsgType;
 import com.fit.service.WxAccountService;
-import com.fit.service.WxMsgService;
+import com.fit.service.WxApiTokenService;
+import com.fit.service.WxMsgTextService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,9 @@ public class WechatMessageController {
     private static String PREFIX = "/admin/wx/message/";
 
     @Autowired
-    private WxMsgService service;
+    private WxApiTokenService tokenService;
+    @Autowired
+    private WxMsgTextService service;
 
     /**
      * 列表页面
@@ -46,7 +50,7 @@ public class WechatMessageController {
     @ResponseBody
     public AjaxResult list(HttpServletRequest request) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
-        List<WxMsg> list = service.findList(map);
+        List<WxMsgText> list = service.findList(map);
         int count = service.findCount(map);
         return AjaxResult.tables(count, list);
     }
@@ -57,7 +61,7 @@ public class WechatMessageController {
     @GetMapping("/edit")
     public String editView(String id, Model model) {
         if (OftenUtil.isNotEmpty(id)) {
-            WxMsg bean = service.getByObjId(id);
+            WxMsgText bean = service.getByObjId(id);
             model.addAttribute("bean", bean);
         }
         return PREFIX + "edit";
@@ -68,9 +72,12 @@ public class WechatMessageController {
      */
     @PostMapping("/save")
     @ResponseBody
-    public Object save(WxMsg bean) {
-        WxMsg entity = this.service.getByObjId(bean.getAppid());
+    public Object save(WxMsgText bean) {
+        WxMsgText entity = this.service.get(bean.getId());
         if (null == entity) {
+            bean.setAccount(tokenService.getCurrentAccount());
+            bean.setCreateTime(new Date());
+            bean.setMsgType(MsgType.Text.name());
             this.service.save(bean);
         } else {
             BeanUtil.copyProperties(bean, entity);

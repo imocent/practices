@@ -85,7 +85,7 @@
             // 初始化栏目
             function layDrop(clazz, datas, url) {
                 dropdown.render({
-                    elem: clazz, trigger: 'hover', data: datas || [], click: function (data, othis, event) {
+                    elem: clazz, trigger: 'hover',align: 'center',clickScope: 'all', data: datas || [], click: function (data, othis, event) {
                         window.location.href = url + data.id;
                     }
                 });

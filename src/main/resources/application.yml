@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 80
   servlet:
     context-path: /
     encoding:
@@ -16,7 +16,7 @@ server:
     path: /error
 
 file:
-  upload-dir: ./uploads
+  upload-dir: /uploads/
   static-access-path: /uploads/**
 
 Fit:
@@ -105,7 +105,7 @@ debug: false
 wechat:
   schedule:
     enabled: true                     # 是否启用定时任务
-    token-check-interval: 1           # token检查间隔（分钟）
+    token-check-interval: 4           # token检查间隔（分钟）
     config-check-interval: 5          # 配置检查间隔（分钟）
     core-pool-size: 2                 # 线程池核心大小
   global:

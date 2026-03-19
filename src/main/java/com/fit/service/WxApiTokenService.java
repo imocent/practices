@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -33,23 +34,17 @@ public class WxApiTokenService {
     // ============= yaml全局默认配置（非static） =============
     @Value("${wechat.schedule.enabled:true}")
     private boolean scheduleEnabled = true;
-
     @Value("${wechat.schedule.token-check-interval:1}")
     private int tokenCheckInterval = 1;
-
     @Value("${wechat.schedule.config-check-interval:5}")
     private int configCheckInterval = 5;
-
     @Value("${wechat.schedule.core-pool-size:2}")
     private int corePoolSize = 2;
-
-    // 注意：这些字段不能是static
+    // 定时任务
     @Value("${wechat.global.default-refresh-interval:5}")
     private int defaultRefreshInterval = 5;
-
     @Value("${wechat.global.default-advance-refresh:300}")
     private int defaultAdvanceRefresh = 300;
-
     @Value("${wechat.global.default-expires-in:7200}")
     private int defaultExpiresIn = 7200;
 
@@ -58,32 +53,26 @@ public class WxApiTokenService {
     private final Map<String, String> tokenCache = new ConcurrentHashMap<>();
     private final Map<String, Long> tokenExpireTimeCache = new ConcurrentHashMap<>();
     private final Map<String, WxAccount> accountCache = new ConcurrentHashMap<>();
-
     // ============= 当前公众号配置（ThreadLocal） =============
     private final AtomicReference<WxAccount> currentWxAccount = new AtomicReference<>();
-
     private ScheduledExecutorService scheduler;
 
     @PostConstruct
     public void init() {
         log.info("初始化WechatTokenService，配置信息：");
-        log.info("  - 定时任务启用: {}", scheduleEnabled);
         log.info("  - token检查间隔: {}分钟", tokenCheckInterval);
         log.info("  - 配置检查间隔: {}分钟", configCheckInterval);
         log.info("  - 全局默认提前刷新时间: {}秒", defaultAdvanceRefresh);
         log.info("  - 全局默认token有效期: {}秒", defaultExpiresIn);
         log.info("  - 全局默认刷新间隔: {}分钟", defaultRefreshInterval);
-
         if (scheduleEnabled) {
             this.scheduler = Executors.newScheduledThreadPool(corePoolSize);
             reloadAccounts();
             autoSelectDefaultAccount();
             startTokenCheckTask();
             startConfigRefreshTask();
-            log.info("WechatTokenService 初始化完成，定时任务已启动");
-        } else {
-            log.info("WechatTokenService 初始化完成，定时任务未启用");
         }
+        log.info("chat-token - 初始化完成，定时任务启用状态: {}", scheduleEnabled);
     }
 
     private void autoSelectDefaultAccount() {
@@ -109,7 +98,7 @@ public class WxApiTokenService {
             }
         }
         currentWxAccount.getAndSet(null);
-        log.info("WechatTokenService 已销毁");
+        log.info("chat-token - 已销毁");
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -123,13 +112,13 @@ public class WxApiTokenService {
      */
     private void preloadAllTokens() {
         int successCount = 0;
-        for (String appid : accountCache.keySet()) {
+        for (String account : accountCache.keySet()) {
             try {
-                getAccessToken(appid);
+                getAccessToken(account);
                 successCount++;
-                log.debug("预加载token成功 for appid: {}", appid);
+                log.debug("预加载token成功 for appid: {}", account);
             } catch (Exception e) {
-                log.error("预加载token失败 for appid: {}", appid, e);
+                log.error("预加载token失败 for appid: {}", account, e);
             }
         }
         log.info("预加载token完成，成功：{}，总数：{}", successCount, accountCache.size());
@@ -140,26 +129,25 @@ public class WxApiTokenService {
      */
     public synchronized void reloadAccounts() {
         try {
-            List<WxAccount> accounts = this.wxAccountService.findList();
             Map<String, WxAccount> newAccountCache = new HashMap<>();
-            for (WxAccount account : accounts) {
-                newAccountCache.put(account.getAppid(), account);
+            List<WxAccount> accounts = this.wxAccountService.findList();
+            for (WxAccount bean : accounts) {
+                newAccountCache.put(bean.getAccount(), bean);
             }
 
-            for (String appid : accountCache.keySet()) {
-                if (!newAccountCache.containsKey(appid)) {
-                    tokenCache.remove(appid);
-                    tokenExpireTimeCache.remove(appid);
-                    log.info("公众号 {} 已被禁用或删除，已清除其token缓存", appid);
+            for (String key : accountCache.keySet()) {
+                if (!newAccountCache.containsKey(key)) {
+                    tokenCache.remove(key);
+                    tokenExpireTimeCache.remove(key);
+                    log.info("公众号 {} 已被禁用或删除，已清除其token缓存", key);
                 }
             }
-
             accountCache.clear();
             accountCache.putAll(newAccountCache);
-
-            log.info("重新加载公众号配置完成，当前启用数量：{}", accountCache.size());
         } catch (Exception e) {
             log.error("加载公众号配置失败", e);
+        } finally {
+            log.info("重新加载公众号配置完成，当前启用数量：{}", accountCache.size());
         }
     }
 
@@ -170,21 +158,18 @@ public class WxApiTokenService {
         scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                log.debug("开始检查access_token是否需要刷新");
                 int refreshCount = 0;
-
-                for (String appid : tokenCache.keySet()) {
-                    if (isTokenExpired(appid)) {
-                        log.info("检测到access_token即将过期，主动刷新 for appid: {}", appid);
-                        refreshTokenSync(appid);
+                log.debug("开始检查access_token是否需要刷新");
+                for (String key : tokenCache.keySet()) {
+                    if (isTokenExpired(key)) {
+                        log.info("检测到access_token即将过期，主动刷新 for appid: {}", key);
+                        refreshTokenSync(key);
                         refreshCount++;
                     }
-                }
 
-                for (String appid : accountCache.keySet()) {
-                    if (!tokenCache.containsKey(appid)) {
-                        log.info("检测到新公众号，预加载token for appid: {}", appid);
-                        refreshTokenSync(appid);
+                    if (!tokenCache.containsKey(key)) {
+                        log.info("检测到新公众号，预加载token for appid: {}", key);
+                        refreshTokenSync(key);
                         refreshCount++;
                     }
                 }
@@ -216,22 +201,20 @@ public class WxApiTokenService {
     /**
      * 获取access_token
      */
-    public String getAccessToken(String appid) {
-        if (appid == null || appid.trim().isEmpty()) {
+    public String getAccessToken(String account) {
+        // 1. 参数校验
+        if (account == null || account.trim().isEmpty()) {
             log.error("appid不能为空");
             return null;
         }
-
-        String token = tokenCache.get(appid);
-        if (token != null && !isTokenExpired(appid)) {
+        // 2. 先从缓存获取
+        String token = tokenCache.get(account);
+        if (token != null && !isTokenExpired(account)) {
             return token;
         }
+        // 3. 加锁刷新
         synchronized (this) {
-            token = tokenCache.get(appid);
-            if (token != null && !isTokenExpired(appid)) {
-                return token;
-            }
-            return refreshTokenSync(appid);
+            return refreshTokenSync(account);
         }
     }
 
@@ -258,41 +241,40 @@ public class WxApiTokenService {
     /**
      * 同步刷新指定appid的token
      */
-    private String refreshTokenSync(String appid) {
+    private String refreshTokenSync(String account) {
         try {
-            WxAccount account = accountCache.get(appid);
-            if (account == null) {
-                account = this.wxAccountService.getByObjId(appid);
-                if (account == null) {
-                    log.error("未找到appid: {} 的公众号配置或该公众号已被禁用", appid);
+            WxAccount wxAccount = accountCache.get(account);
+            if (wxAccount == null) {
+                wxAccount = this.wxAccountService.getByObjId(account);
+                if (wxAccount == null) {
+                    log.error("未找到account: {} 的公众号配置或该公众号已被禁用", account);
                     return null;
                 }
-                accountCache.put(appid, account);
+                accountCache.put(account, wxAccount);
             }
-            String newToken = WechatUtil.getAccessToken(account.getAppid(), account.getAppsecret());
+            String newToken = WechatUtil.getAccessToken(wxAccount.getAppid(), wxAccount.getAppsecret());
             if (newToken != null) {
-                tokenCache.put(appid, newToken);
-                tokenExpireTimeCache.put(appid, getTokenExpireTime(account));
-
+                tokenCache.put(account, newToken);
+                tokenExpireTimeCache.put(account, getTokenExpireTime(wxAccount));
                 try {
-                    account.setLastTokenTime(new Date());
-                    wxAccountService.update(account);
+                    wxAccount.setTokenTime(new Date());
+                    wxAccountService.update(wxAccount);
                 } catch (Exception e) {
                     log.warn("更新token获取时间失败", e);
                 }
-                log.info("成功获取/刷新access_token for appid: {}, 公众号: {}", appid, account.getName());
+                log.info("成功获取/刷新access_token for account: {}, 公众号: {}", account, wxAccount.getName());
                 return newToken;
             } else {
-                log.error("获取access_token失败 for appid: {}", appid);
-                String oldToken = tokenCache.get(appid);
+                log.error("获取access_token失败 for account: {}", account);
+                String oldToken = tokenCache.get(account);
                 if (oldToken != null) {
-                    log.warn("使用缓存的旧token for appid: {}", appid);
+                    log.warn("使用缓存的旧token for account: {}", account);
                     return oldToken;
                 }
             }
         } catch (Exception e) {
-            log.error("刷新access_token异常 for appid: {}", appid, e);
-            String oldToken = tokenCache.get(appid);
+            log.error("刷新access_token异常 for account: {}", account, e);
+            String oldToken = tokenCache.get(account);
             if (oldToken != null) {
                 return oldToken;
             }
@@ -303,8 +285,8 @@ public class WxApiTokenService {
     /**
      * 获取token剩余有效时间（秒）
      */
-    public long getRemainingTime(String appid) {
-        Long expireTime = tokenExpireTimeCache.get(appid);
+    public long getRemainingTime(String account) {
+        Long expireTime = tokenExpireTimeCache.get(account);
         if (expireTime == null) {
             return -1;
         }
@@ -314,20 +296,20 @@ public class WxApiTokenService {
     /**
      * 获取token过期时间字符串
      */
-    public String getExpireTimeStr(String appid) {
-        Long expireTime = tokenExpireTimeCache.get(appid);
+    public String getExpireTimeStr(String account) {
+        Long expireTime = tokenExpireTimeCache.get(account);
         if (expireTime == null) {
             return "未获取";
         }
-        return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date(expireTime));
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(expireTime));
     }
 
     /**
      * 批量获取多个公众号的token
      */
-    public Map<String, String> getAccessTokens(List<String> appids) {
+    public Map<String, String> getAccessTokens(List<String> accounts) {
         Map<String, String> result = new HashMap<>();
-        for (String appid : appids) {
+        for (String appid : accounts) {
             result.put(appid, getAccessToken(appid));
         }
         return result;
@@ -345,22 +327,13 @@ public class WxApiTokenService {
     }
 
     /**
-     * 手动刷新指定appid的token
+     * 清除指定account的token缓存
      */
-    public String manualRefreshToken(String appid) {
-        log.info("手动刷新access_token for appid: {}", appid);
-        tokenCache.remove(appid);
-        tokenExpireTimeCache.remove(appid);
-        return refreshTokenSync(appid);
-    }
-
-    /**
-     * 清除指定appid的token缓存
-     */
-    public void clearToken(String appid) {
-        tokenCache.remove(appid);
-        tokenExpireTimeCache.remove(appid);
-        log.info("已清除access_token缓存 for appid: {}", appid);
+    public String clearToken(String account) {
+        log.info("手动刷新access_token for account: {}", account);
+        tokenCache.remove(account);
+        tokenExpireTimeCache.remove(account);
+        return refreshTokenSync(account);
     }
 
     /**
@@ -378,17 +351,6 @@ public class WxApiTokenService {
     public boolean isTokenValid(String appid) {
         String token = tokenCache.get(appid);
         return token != null && !isTokenExpired(appid);
-    }
-
-    /**
-     * 检查当前选中的公众号的token是否有效
-     */
-    public boolean isCurrentTokenValid() {
-        WxAccount currentAccount = getCurrentWxAccount();
-        if (currentAccount == null) {
-            return false;
-        }
-        return isTokenValid(currentAccount.getAppid());
     }
 
     /**
@@ -415,7 +377,6 @@ public class WxApiTokenService {
         stats.put("defaultAdvanceRefresh", defaultAdvanceRefresh);
         stats.put("defaultExpiresIn", defaultExpiresIn);
         stats.put("defaultRefreshInterval", defaultRefreshInterval);
-
         // 添加当前选中的公众号信息
         WxAccount currentAccount = getCurrentWxAccount();
         stats.put("currentAppid", currentAccount != null ? currentAccount.getAppid() : null);
@@ -448,53 +409,31 @@ public class WxApiTokenService {
         return result;
     }
 
-    /**
-     * 获取公众号信息
-     */
-    public WxAccount getAccountInfo(String appid) {
-        return accountCache.get(appid);
-    }
-
-    /**
-     * 获取所有公众号信息
-     */
-    public List<WxAccount> getAllAccounts() {
-        return new ArrayList<>(accountCache.values());
-    }
-
-    /**
-     * 获取所有启用的公众号appid
-     */
-    public List<String> getAllEnabledAppids() {
-        return new ArrayList<>(accountCache.keySet());
-    }
-
     // ============= 当前公众号配置管理方法 =============
 
     /**
      * 切换当前使用的公众号配置
      *
-     * @param appid 公众号appid
+     * @param account 公众号ID
      */
-    public void switchTo(String appid) {
-        if (appid == null || appid.trim().isEmpty()) {
-            log.error("appid不能为空");
+    public void switchTo(String account) {
+        if (account == null || account.trim().isEmpty()) {
+            log.error("appId不能为空");
             return;
         }
         // 先从缓存获取
-        WxAccount config = accountCache.get(appid);
+        WxAccount config = accountCache.get(account);
         if (config == null) { // 如果缓存不存在，从数据库查询
-            config = wxAccountService.getByObjId(appid);
+            config = wxAccountService.getByObjId(account);
             if (config != null) { // 存入缓存
-                accountCache.put(appid, config);
+                accountCache.put(account, config);
             }
         }
         if (config == null) {
-            log.error("未找到公众号配置: {}", appid);
-            return;
+            log.error("未找到公众号配置: {}", account);
         } else {
             currentWxAccount.set(config);
-            log.info("切换公众号成功: {} - {}", config.getAppid(), config.getName());
+            log.info("切换公众号成功: {} - {}", config.getAccount(), config.getName());
         }
     }
 
@@ -530,6 +469,16 @@ public class WxApiTokenService {
     }
 
     /**
+     * 获取当前选中的公众号appid
+     *
+     * @return 当前选中的公众号appid，如果没有选中则返回null
+     */
+    public String getCurrentAccount() {
+        WxAccount current = currentWxAccount.get();
+        return current != null ? current.getAccount() : null;
+    }
+
+    /**
      * 重新加载当前选中的公众号配置（从数据库刷新）
      */
     public void reloadCurrentAccount() {
@@ -538,17 +487,17 @@ public class WxApiTokenService {
             log.warn("当前未选中任何公众号，无需重新加载");
             return;
         }
-        String appid = current.getAppid();
-        WxAccount freshConfig = wxAccountService.getByObjId(appid);
+        String account = current.getAccount();
+        WxAccount freshConfig = wxAccountService.getByObjId(current.getAccount());
         if (freshConfig != null) {
             // 更新缓存
-            accountCache.put(appid, freshConfig);
+            accountCache.put(account, freshConfig);
             // 更新ThreadLocal
             currentWxAccount.set(freshConfig);
-            log.info("重新加载当前公众号配置成功: {}", appid);
+            log.info("重新加载当前公众号配置成功: {}", account);
         } else {
             currentWxAccount.getAndSet(null);
-            log.error("重新加载当前公众号配置失败，公众号可能已被删除: {}", appid);
+            log.error("重新加载当前公众号配置失败，公众号可能已被删除: {}", account);
         }
     }
 }

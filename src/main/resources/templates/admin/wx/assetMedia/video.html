@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('编辑')"></head>
+<body style="background-color:#fff">
+<div class="yadmin-body animated fadeIn">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
+            <div class="layui-input-block">
+                <input type="text" id="account" placeholder="请输入标题" name="name" lay-verify="required"
+                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="yadmin-red">* </i>上传</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="realname" id="realName" value="">
+                <input type="hidden" name="filename" id="fileName" value="">
+                <input type="hidden" name="suffix" id="suffix" value="">
+                <input type="hidden" name="size" id="fileSize" value="">
+                <input type="hidden" name="uploadUrl" id="add_path" value="">
+                <input type="hidden" name="url" id="add_url" value="">
+                <div class="layui-upload-drag" id="uploader">
+                    <i class="layui-icon"></i>
+                    <p>点击上传，或将文件拖拽到此处</p>
+                    <p class="layui-bg-red" style="line-height:1.4;padding-left:10px;">只支持mp4</p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="notes" class="layui-form-label"><i class="yadmin-red">* </i>描述</label>
+            <div class="layui-input-block">
+                <textarea id="notes" placeholder="请输入内容" name="introduction" maxlength="150" lay-verify="required"
+                          class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block layui-align">
+                <button class="layui-btn layui-btn-normal btn-w100" lay-submit lay-filter="submit-form">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['jquery', 'form', "upload"], function ($, form, upload) {
+        form.on('submit(submit-form)', function (obj) {
+            $.post('/admin/wx/media/save', obj.field, function (data) {
+                advices(data, parent);
+            }, 'json').fail(function (event) {
+                toError(event);
+            });
+        });
+        var uploadInst = upload.render({
+            elem: '#uploader',
+            url: '/admin/wx/media/upload',
+            size: 10240,
+            accept: "video",
+            exts: "mp4|MP4",
+            before: function () {
+                layer.load(1, {shade: [0.1, '#000']});
+            },
+            done: function (result) {
+                if (result.mode) {
+                    layer.closeAll('loading');
+                    $("#uploader").html("<i class='layui-icon layui-icon-play' data-src='" + result.src + "'></i><p>点击播放预览，点击空白处或将文件拖拽到此处重新上传</p>");
+                    $("#realName").val(result.realname);
+                    $("#fileName").val(result.filename);
+                    $("#suffix").val(result.suffix);
+                    $("#fileSize").val(result.size);
+                    $("#add_path").val(result.src);
+                    $("#add_url").val(result.url);
+                } else {
+                    layer.msg(result.msg || "上传接口异常");
+                }
+            },
+            error: function (result) {
+                layer.closeAll('loading');
+                layer.msg(result.msg || "上传接口异常");
+            }
+        });
+
+        // 播放
+        $(document).on('click', '.layui-icon-play', function (event) {
+            event.stopPropagation();
+            $("#player").remove();
+            layer.open({
+                type: 1,
+                anim: '1',
+                title: "视频",
+                area: '900px',
+                scrollbar: false,
+                shadeClose: true,
+                content: '<video width="900" height="600" controls="controls" class="video-js" id="video"><source src="' + $(this).attr("data-src")
+                    + '" type="video/mp4"></video>',
+                btn: 0,
+                success: function () {
+                    var video = document.getElementById('video');
+                    if (video) {
+                        video.play().catch(function (e) {
+                            console.log('自动播放失败:', e);
+                        });
+                    }
+                },
+                end: function () {
+                    // 清理video元素
+                    var video = document.getElementById('video');
+                    if (video) {
+                        video.pause();
+                        video.removeAttribute('src');
+                        video.load();
+                    }
+                }
+            });
+            return false;
+        });
+
+        $(document).on('click', '#uploader', function (event) {
+            // 如果点击的不是播放图标，触发上传
+            if (!$(event.target).hasClass('layui-icon-play') &&
+                !$(event.target).parents('.layui-icon-play').length) {
+                // 重新绑定上传事件
+                uploadInst.config.elem = '#uploader';
+                uploadInst.init();
+            }
+        });
+    });
+</script>
+</body>
+</html>

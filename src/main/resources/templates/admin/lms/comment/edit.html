@@ -6,14 +6,14 @@
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${bean?.id}"/>
         <div class="layui-form-item">
-            <label for="title" class="layui-form-label"><span class="yadmin-red">*</span>名称</label>
+            <label for="title" class="layui-form-label"><i class="yadmin-red">* </i>名称</label>
             <div class="layui-input-block">
                 <input type="text" id="title" placeholder="请输入名称" name="title" th:value="${bean?.title}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="content" class="layui-form-label"><span class="yadmin-red">*</span>内容</label>
+            <label for="content" class="layui-form-label"><i class="yadmin-red">* </i>内容</label>
             <div class="layui-input-block">
                 <textarea id="content" name="content" placeholder="请输入内容" th:text="${bean?.content}"
                           lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-textarea"></textarea>

@@ -4,67 +4,59 @@
 <body style="background-color:#fff">
 <div class="yadmin-body animated fadeIn">
     <div class="layui-form layui-form-pane">
-        <input type="hidden" name="appid" th:value="${bean?.appid}"/>
         <div class="layui-form-item">
-            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>名称</label>
+            <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>公众号ID</label>
+            <div class="layui-input-block">
+                <input type="text" id="account" placeholder="请输入公众号ID" name="name" th:value="${bean?.account}" lay-verify="required"
+                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label"><i class="yadmin-red">* </i>公众号名称</label>
             <div class="layui-input-block">
                 <input type="text" id="name" placeholder="请输入名称" name="name" th:value="${bean?.name}" lay-verify="required"
                        lay-vertype="tips" autocomplete="off" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>TOKEN</label>
+            <label for="appId" class="layui-form-label"><i class="yadmin-red">* </i>AppID</label>
             <div class="layui-input-block">
+                <input type="text" id="appId" placeholder="请输入公众号AppID" name="appid" th:value="${bean?.appid}" lay-verify="required"
+                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="appSecret" class="layui-form-label"><i class="yadmin-red">* </i>AppSecret</label>
+            <div class="layui-input-block">
+                <input type="text" id="appSecret" placeholder="请输入公众号AppSecret" name="appsecret" th:value="${bean?.appsecret}"
+                       lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item" th:if="${bean?.url!=null}">
+            <label for="url" class="layui-form-label"><i class="yadmin-red">* </i>URL</label>
+            <button class="layui-btn btn-copy-url" style="float: right"><i class="icon-fuzhi iconfont"></i>复制</button>
+            <div class="layui-input-block" style="margin-right: 100px;">
+                <input type="text" id="url" placeholder="请输入" name="url" th:value="${bean?.url}" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item" th:if="${bean?.url!=null}">
+            <label for="token" class="layui-form-label"><i class="yadmin-red">* </i>TOKEN</label>
+            <button class="layui-btn btn-copy-token" style="float: right"><i class="icon-fuzhi iconfont"></i>复制</button>
+            <div class="layui-input-block" style="margin-right: 100px;">
                 <input type="text" id="token" placeholder="请输入" name="token" th:value="${bean?.token}" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">类型</label>
-            <div class="layui-input-block">
-                <input type="radio" name="mold" value="1" title="订阅号" checked/>
-                <input type="radio" name="mold" value="2" title="服务号"/>
+            <label for="msgcount" class="layui-form-label"><i class="yadmin-red">* </i>消息条数</label>
+            <div class="layui-input-inline">
+                <input type="text" id="msgcount" name="msgCount" th:value="${bean?.msgCount?:5}" class="layui-input" readonly/>
             </div>
-        </div>
-        <div class="layui-form-item" pane="">
-            <label class="layui-form-label">认证状态</label>
-            <div class="layui-input-block">
-                <input type="radio" id="verified" name="verified" value="Y" title="是"/>
-                <input type="radio" name="verified" value="N" title="否" checked/>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="refreshInterval" class="layui-form-label">刷新检查间隔(分)</label>
-            <div class="layui-input-block">
-                <input type="text" id="refreshInterval" name="refreshInterval" lay-affix="number" placeholder="请输入刷新间隔"
-                       step="1" min="1" max="200" th:value="${bean?.refreshInterval}" class="layui-input"/>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="advanceRefresh" class="layui-form-label">提前刷新时间(秒)</label>
-            <div class="layui-input-block">
-                <input type="text" id="advanceRefresh" name="advanceRefresh" lay-affix="number" placeholder="请输入刷新时间"
-                       step="1" min="1" th:value="${bean?.advanceRefresh}" class="layui-input"/>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="expiresIn" class="layui-form-label">有效期(秒)</label>
-            <div class="layui-input-block">
-                <input type="text" id="expiresIn" name="expiresIn" lay-affix="number" placeholder="请输入有效期"
-                       step="1" min="1" th:value="${bean?.expiresIn}" class="layui-input"/>
-            </div>
+            <span class="tips" style="text-align: center;">(回复图文消息条数)</span>
         </div>
         <div class="layui-form-item">
             <label for="notes" class="layui-form-label">备注</label>
             <div class="layui-input-block">
-                <input type="text" id="notes" placeholder="请输入备注" name="notes" th:value="${bean?.notes}" autocomplete="off"
-                       class="layui-input"/>
-            </div>
-        </div>
-        <div class="layui-form-item" pane="">
-            <label class="layui-form-label">状态</label>
-            <div class="layui-input-block">
-                <input type="radio" name="enabled" value="true" title="正常"/>
-                <input type="radio" name="enabled" value="false" title="冻结" checked/>
+                <input type="text" id="notes" placeholder="请输入备注" name="notes" th:value="${bean?.notes}" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
@@ -76,16 +68,20 @@
 </div>
 <script>
     layui.use(['jquery', 'form'], function ($, form) {
-        $('input:radio[name=enabled][value="[[${bean?.enabled}]]"]').prop("checked", true);
-        $('input:radio[name=mold][value="[[${bean?.mold}]]"]').prop("checked", true);
-        $('input:radio[name=verified][value="[[${bean?.verified}]]"]').prop("checked", true);
-        form.render('radio');
         form.on('submit(submit-form)', function (obj) {
             $.post('/admin/wx/user/save', obj.field, function (data) {
                 advices(data, parent);
             }, 'json').fail(function (event) {
                 toError(event);
             });
+        });
+        $('.btn-copy-url').click(function () {
+            copy_to_clipboard($('#url').val());
+        });
+
+        // 复制TOKEN
+        $('.btn-copy-token').click(function () {
+            copy_to_clipboard($('#token').val());
         });
     });
 </script>

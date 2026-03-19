@@ -6,7 +6,7 @@
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${role?.id}"/>
         <div class="layui-form-item">
-            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>角色名称</label>
+            <label for="name" class="layui-form-label"><i class="yadmin-red">* </i>角色名称</label>
             <div class="layui-input-block">
                 <input type="text" id="name" placeholder="请输入名称" name="roleName" th:value="${role?.roleName}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>

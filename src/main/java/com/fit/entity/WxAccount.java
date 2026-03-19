@@ -7,69 +7,55 @@ import lombok.*;
 @Data
 public class WxAccount extends BaseEntity<WxAccount> {
     /**
-     * 公众ID
+     * 公众号原始ID
      */
-    private String appid;
+    private String account;
 
     /**
-     * 公众密钥
+     * 验证时用的url
      */
-    private String appsecret;
-
-    /**
-     * aesKey
-     */
-    private String aesKey;
-
-    /**
-     * token
-     */
-    private String token;
+    private String url;
 
     /**
      * 公众号名称
      */
     private String name;
 
-    /**
-     * 认证状态
-     */
-    private Byte verified;
+    private String appid;
+
+    private String appsecret;
+
+    private String token;
 
     /**
-     * 公众号类型: 1-订阅号,2-服务号
+     * 自动回复消息条数;默认是5条
      */
-    private Integer mold;
+    private Integer msgCount;
 
     /**
-     * 刷新检查间隔（分钟）
+     * 刷新检查间隔(分)
      */
     private Integer refreshInterval;
 
     /**
-     * 提前刷新时间（秒）
+     * 提前刷新时间(秒)
      */
     private Integer advanceRefresh;
 
     /**
-     * token有效期（秒）
+     * token有效期(秒)
      */
     private Integer expiresIn;
 
     /**
-     * 最后获取token时间
+     * 创建时间
      */
-    private Date lastTokenTime;
+    private Date tokenTime;
 
     /**
-     * 描述
+     * 备注
      */
     private String notes;
-
-    /**
-     * 禁用状态: 0-禁用,1-正常
-     */
-    private Boolean enabled;
 
     @Override
     public String toString() {
@@ -77,19 +63,18 @@ public class WxAccount extends BaseEntity<WxAccount> {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
+        sb.append(", account=").append(account);
+        sb.append(", url=").append(url);
+        sb.append(", name=").append(name);
         sb.append(", appid=").append(appid);
         sb.append(", appsecret=").append(appsecret);
-        sb.append(", aesKey=").append(aesKey);
         sb.append(", token=").append(token);
-        sb.append(", name=").append(name);
-        sb.append(", verified=").append(verified);
-        sb.append(", mold=").append(mold);
+        sb.append(", msgCount=").append(msgCount);
         sb.append(", refreshInterval=").append(refreshInterval);
         sb.append(", advanceRefresh=").append(advanceRefresh);
         sb.append(", expiresIn=").append(expiresIn);
-        sb.append(", lastTokenTime=").append(lastTokenTime);
+        sb.append(", tokenTime=").append(tokenTime);
         sb.append(", notes=").append(notes);
-        sb.append(", enabled=").append(enabled);
         sb.append("]");
         return sb.toString();
     }

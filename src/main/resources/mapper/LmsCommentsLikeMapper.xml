@@ -136,12 +136,19 @@
     SELECT 
     <include refid="Base_Column_List" />
     FROM lms_comments_like
-    where id = #{obj}
+    where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_comments_like
     <include refid="Base_Where_List" />
   </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into lms_comments_like values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.etime},#{item.userId},#{item.commentId},
+       #{item.ip},#{item.signed},#{item.enabled}
+    </foreach>
+  </insert>
   <delete id="batchDelete" parameterType="java.util.List">
     delete from lms_comments_like where ID in
     <foreach close=")" collection="list" item="id" open="(" separator=",">

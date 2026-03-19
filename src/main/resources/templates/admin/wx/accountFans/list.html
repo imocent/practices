@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="include :: head('微信粉丝列表')"></head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="yadmin-body animated fadeIn">
+            <div class="layui-form yadmin-search-area input">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label for="name" class="layui-form-label">名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" id="name" placeholder="名称" class="layui-input"/>
+                        </div>
+                        <button lay-submit lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                            <i class="layui-icon layui-icon-search"></i>
+                        </button>
+                        <button type="reset" lay-filter="search" class="layui-btn layui-btn-sm layui-btn-primary table-action">
+                            <i class="layui-icon layui-icon-refresh"></i>
+                        </button>
+                    </div>
+                    <div class="layui-inline" style="float:right">
+                        <button class="layui-btn layui-btn-sm layui-bg-purple" id="fans_sync">
+                            <i class="layui-icon">&#xe674; 批量同步粉丝</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table class="layui-hide" id="table-list"></table>
+            <script type="text/html" id="column-toolbar">
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
+                    <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
+                </button>
+            </script>
+        </div>
+    </div>
+</div>
+<script th:inline="none">
+    layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
+        table.render({
+            elem: '#table-list',
+            url: '/admin/wx/user/list',
+            method: 'post',
+            dataType: 'JSON',
+            page: true,
+            smartReloadModel: true,
+            cols: [[
+                {type: 'checkbox'},
+                {type: "numbers", title: '序号', minWidth: 80, templet: function (index) {return index + 1;}},
+                {field: 'nickname', title: '昵称', minWidth: 80},
+                {
+                    field: 'gender',
+                    title: '性别',
+                    minWidth: 80,
+                    templet: function (res) {return res.gender === 0 ? "女" : res.gender === 1 ? "男" : "未知";}
+                },
+                {field: 'province', title: '省份', minWidth: 80},
+                {field: 'city', title: '城市', minWidth: 80},
+                {field: 'subscribeTime', title: '订阅时间', minWidth: 80},
+                {
+                    field: 'subscribeStatus',
+                    title: '是否关注',
+                    width: 100,
+                    templet: function (res) {return res.subscribeStatus ? "已关注" : "未关注";}
+                },
+                {field: 'notes', title: '备注', minWidth: 80},
+                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+            ]]
+        });
+
+        table.on('tool', function (obj) {
+            let data = obj.data, event = obj.event;
+            if (event === 'mass') {
+                showDialog({
+                    title: '发送消息', template: 'msglist', height: 600, tableObj: tableObj, htmlData: data, btn: 0
+                })
+            } else if (event === 'sync') {
+                $.post('/admin/wx/user/syncAccountFans', {openId: data.openId}, function (data) {
+                    if (data.code === 0) {
+                        showDialog({
+                            title: '粉丝详细信息', template: 'fansInfo', saveUrl: '', width: 400, height: 500, htmlData: result.data
+                            , btn: ["关闭"], yes: function (index, layero) {
+                                layer.close(index);
+                            }
+                        })
+                    }
+                }, 'json').fail(function (event) {
+                    layer.msg("同步异常");
+                });
+            }
+        });
+
+        // 批量同步粉丝
+        $("#fans_sync").click(function () {
+            layer.confirm('确认同步粉丝？', {icon: 7, title: "提示", btn: ['确认', '取消']}, function () {
+                $.post('/admin/wx/user/syncAccountFansList', function (data) {
+                    advices(data);
+                    if (data.code === 0) {
+                        table.reload('table-list');
+                    }
+                }, 'json').fail(function (event) {
+                    layer.msg("同步异常");
+                });
+            }, function () {
+                layer.closeAll();
+            });
+        });
+
+        form.on('submit(search)', function (form) {
+            table.reload('table-list', {
+                where: form.field
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

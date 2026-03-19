@@ -6,20 +6,20 @@
     <div class="layui-form layui-form-pane">
         <input type="hidden" name="id" th:value="${user?.id}"/>
         <div class="layui-form-item">
-            <label for="deptTree" class="layui-form-label"><span class="yadmin-red">*</span>部门</label>
+            <label for="deptTree" class="layui-form-label"><i class="yadmin-red">* </i>部门</label>
             <div class="layui-input-block">
                 <ul id="deptTree" class="dtree" data-id="0" data-value="请选择"></ul>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="account" class="layui-form-label"><span class="yadmin-red">*</span>账号名称</label>
+            <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>账号名称</label>
             <div class="layui-input-block">
                 <input type="text" id="account" placeholder="请输入账号名" name="username" th:value="${user?.username}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="name" class="layui-form-label"><span class="yadmin-red">*</span>用户名</label>
+            <label for="name" class="layui-form-label"><i class="yadmin-red">* </i>用户名</label>
             <div class="layui-input-block">
                 <input type="text" id="name" placeholder="请输入用户名" name="name" th:value="${user?.name}"
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
@@ -27,13 +27,13 @@
         </div>
         <!-- 编辑时不显示密码框 -->
         <div class="layui-form-item" th:if="${user} ? false : true">
-            <label for="password" class="layui-form-label"><span class="yadmin-red">*</span>用户密码</label>
+            <label for="password" class="layui-form-label"><i class="yadmin-red">* </i>用户密码</label>
             <div class="layui-input-block">
                 <input type="password" id="password" name="password" lay-verify="required" lay-vertype="tips"
                        autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-form-item" pane="">
+        <div class="layui-form-item">
             <label class="layui-form-label">状态</label>
             <div class="layui-input-block">
                 <input type="radio" name="enabled" value="true" title="正常"/>

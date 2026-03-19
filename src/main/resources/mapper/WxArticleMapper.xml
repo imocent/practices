@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.WxArticleDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.WxArticle">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="content_source_url" jdbcType="VARCHAR" property="contentSourceUrl" />
+    <result column="show_cover_pic" jdbcType="INTEGER" property="showCoverPic" />
+    <result column="digest" jdbcType="VARCHAR" property="digest" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="media_id" jdbcType="VARCHAR" property="mediaId" />
+    <result column="news_id" jdbcType="INTEGER" property="newsId" />
+    <result column="news_index" jdbcType="INTEGER" property="newsIndex" />
+    <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+    <result column="thumb_media_id" jdbcType="VARCHAR" property="thumbMediaId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, author, content, content_source_url, show_cover_pic, digest, url, media_id, 
+    news_id, news_index, pic_url, thumb_media_id
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wx_article
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from wx_article
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.WxArticle" useGeneratedKeys="true">
+    insert into wx_article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="author != null">
+        author,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="contentSourceUrl != null">
+        content_source_url,
+      </if>
+      <if test="showCoverPic != null">
+        show_cover_pic,
+      </if>
+      <if test="digest != null">
+        digest,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="mediaId != null">
+        media_id,
+      </if>
+      <if test="newsId != null">
+        news_id,
+      </if>
+      <if test="newsIndex != null">
+        news_index,
+      </if>
+      <if test="picUrl != null">
+        pic_url,
+      </if>
+      <if test="thumbMediaId != null">
+        thumb_media_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contentSourceUrl != null">
+        #{contentSourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="showCoverPic != null">
+        #{showCoverPic,jdbcType=INTEGER},
+      </if>
+      <if test="digest != null">
+        #{digest,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaId != null">
+        #{mediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="newsId != null">
+        #{newsId,jdbcType=INTEGER},
+      </if>
+      <if test="newsIndex != null">
+        #{newsIndex,jdbcType=INTEGER},
+      </if>
+      <if test="picUrl != null">
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbMediaId != null">
+        #{thumbMediaId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.WxArticle">
+    update wx_article
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contentSourceUrl != null">
+        content_source_url = #{contentSourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="showCoverPic != null">
+        show_cover_pic = #{showCoverPic,jdbcType=INTEGER},
+      </if>
+      <if test="digest != null">
+        digest = #{digest,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaId != null">
+        media_id = #{mediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="newsId != null">
+        news_id = #{newsId,jdbcType=INTEGER},
+      </if>
+      <if test="newsIndex != null">
+        news_index = #{newsIndex,jdbcType=INTEGER},
+      </if>
+      <if test="picUrl != null">
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbMediaId != null">
+        thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="title != null and title != ''">
+         and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="author != null and author != ''">
+         and author = #{author,jdbcType=VARCHAR}
+      </if>
+      <if test="content != null and content != ''">
+         and content like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="contentSourceUrl != null and contentSourceUrl != ''">
+         and content_source_url = #{contentSourceUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="showCoverPic != null and showCoverPic != ''">
+         and show_cover_pic = #{showCoverPic,jdbcType=INTEGER}
+      </if>
+      <if test="digest != null and digest != ''">
+         and digest = #{digest,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null and url != ''">
+         and url = #{url,jdbcType=VARCHAR}
+      </if>
+      <if test="mediaId != null and mediaId != ''">
+         and media_id = #{mediaId,jdbcType=VARCHAR}
+      </if>
+      <if test="newsId != null and newsId != ''">
+         and news_id = #{newsId,jdbcType=INTEGER}
+      </if>
+      <if test="newsIndex != null and newsIndex != ''">
+         and news_index = #{newsIndex,jdbcType=INTEGER}
+      </if>
+      <if test="picUrl != null and picUrl != ''">
+         and pic_url = #{picUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="thumbMediaId != null and thumbMediaId != ''">
+         and thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_article
+    <include refid="Base_Where_List" />
+    order by id desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_article
+    where id = #{obj}
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM wx_article
+    <include refid="Base_Where_List" />
+  </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into wx_article values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.title},#{item.author},#{item.content},
+       #{item.contentSourceUrl},#{item.showCoverPic},#{item.digest},#{item.url},#{item.mediaId},
+       #{item.newsId},#{item.newsIndex},#{item.picUrl},#{item.thumbMediaId}
+    </foreach>
+  </insert>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from wx_article where id in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table wx_article
+  </update>
+</mapper>

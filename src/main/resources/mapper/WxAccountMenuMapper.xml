@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.dao.WxAccountMenuDao">
+  <resultMap id="BaseResultMap" type="com.fit.entity.WxAccountMenu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="mtype" jdbcType="VARCHAR" property="mtype" />
+    <result column="event_type" jdbcType="VARCHAR" property="eventType" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="input_code" jdbcType="VARCHAR" property="inputCode" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="msg_id" jdbcType="VARCHAR" property="msgId" />
+    <result column="gid" jdbcType="BIGINT" property="gid" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mtype, event_type, `name`, input_code, url, sort, parent_id, msg_type, msg_id, 
+    gid, account, create_time
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wx_account_menu
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from wx_account_menu
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.WxAccountMenu" useGeneratedKeys="true">
+    insert into wx_account_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mtype != null">
+        mtype,
+      </if>
+      <if test="eventType != null">
+        event_type,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="inputCode != null">
+        input_code,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      <if test="msgId != null">
+        msg_id,
+      </if>
+      <if test="gid != null">
+        gid,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="mtype != null">
+        #{mtype,jdbcType=VARCHAR},
+      </if>
+      <if test="eventType != null">
+        #{eventType,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="inputCode != null">
+        #{inputCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="msgId != null">
+        #{msgId,jdbcType=VARCHAR},
+      </if>
+      <if test="gid != null">
+        #{gid,jdbcType=BIGINT},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.fit.entity.WxAccountMenu">
+    update wx_account_menu
+    <set>
+      <if test="mtype != null">
+        mtype = #{mtype,jdbcType=VARCHAR},
+      </if>
+      <if test="eventType != null">
+        event_type = #{eventType,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="inputCode != null">
+        input_code = #{inputCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="msgId != null">
+        msg_id = #{msgId,jdbcType=VARCHAR},
+      </if>
+      <if test="gid != null">
+        gid = #{gid,jdbcType=BIGINT},
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="Base_Where_List">
+    <where>
+      <if test="mtype != null and mtype != ''">
+         and mtype = #{mtype,jdbcType=VARCHAR}
+      </if>
+      <if test="eventType != null and eventType != ''">
+         and event_type = #{eventType,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+         and `name` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="inputCode != null and inputCode != ''">
+         and input_code = #{inputCode,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null and url != ''">
+         and url = #{url,jdbcType=VARCHAR}
+      </if>
+      <if test="sort != null and sort != ''">
+         and sort = #{sort,jdbcType=INTEGER}
+      </if>
+      <if test="parentId != null and parentId != ''">
+         and parent_id = #{parentId,jdbcType=BIGINT}
+      </if>
+      <if test="msgType != null and msgType != ''">
+         and msg_type = #{msgType,jdbcType=VARCHAR}
+      </if>
+      <if test="msgId != null and msgId != ''">
+         and msg_id = #{msgId,jdbcType=VARCHAR}
+      </if>
+      <if test="gid != null and gid != ''">
+         and gid = #{gid,jdbcType=BIGINT}
+      </if>
+      <if test="account != null and account != ''">
+         and account = #{account,jdbcType=VARCHAR}
+      </if>
+      <if test="ctime != null ">
+         and create_time &gt;= #{ctime }
+      </if>
+      <if test="etime != null ">
+         and create_time &lt;= #{etime } 
+      </if>
+    </where>
+  </sql>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_account_menu
+    <include refid="Base_Where_List" />
+    order by id desc
+    <if test="page != null and limit != null">
+      <bind name='offset' value='(page != null and page > 1) ? ((page - 1) * limit) : 0'/>
+      limit ${offset.intValue()}, ${limit}
+    </if>
+  </select>
+  <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM wx_account_menu
+    where id = #{obj}
+  </select>
+  <select id="findCount" resultType="java.lang.Integer">
+    SELECT count(1) FROM wx_account_menu
+    <include refid="Base_Where_List" />
+  </select>
+  <insert id="batchAdd" parameterType="java.util.List">
+    insert into wx_account_menu values 
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{item.id},#{item.mtype},#{item.eventType},#{item.name},
+       #{item.inputCode},#{item.url},#{item.sort},#{item.parentId},#{item.msgType},
+       #{item.msgId},#{item.gid},#{item.account},#{item.createTime}
+    </foreach>
+  </insert>
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from wx_account_menu where id in
+    <foreach close=")" collection="list" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <update id="deleteTable">
+    truncate table wx_account_menu
+  </update>
+</mapper>

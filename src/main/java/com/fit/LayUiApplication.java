@@ -24,7 +24,9 @@ public class LayUiApplication {
         }
         String path = environment.getProperty("server.servlet.context-path", "").replace("/", "");
         log.info("---------------------------------------------------------");
-        log.info("Access URLs:\n\tLocal: \t\thttp://localhost:{}/{}\n\tExternal:\t{}://{}:{}/{}", port, path, "http", ip, port, path);
+        log.info("Access URLs:");
+        log.info("\tLocal: \t\thttp://localhost:{}/{}", port, path);
+        log.info("\tExternal:\t{}://{}:{}/{}", "http", ip, port, path);
         log.info("---------------------- admin-web ------------------------");
     }
 }
