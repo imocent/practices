@@ -1,7 +1,9 @@
 package com.fit.web.api;
 
+import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.service.WxApiTokenService;
+import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
 import com.fit.util.WechatUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Map;
 
 /**
  * 微信与开发者服务器交互接口
@@ -23,6 +25,16 @@ public class WxApiController extends BaseController {
     @Autowired
     private WxApiTokenService tokenService;
 
+    @PostMapping("/shift")
+    @ResponseBody
+    public Object shift(String id) {
+        if (OftenUtil.isNotEmpty(id)) {
+            this.tokenService.switchTo(id);
+            return AjaxResult.success("切换成功");
+        } else {
+            return AjaxResult.error("切换异常");
+        }
+    }
 
     /**
      * GET请求：进行URL、Tocken 认证；

@@ -45,6 +45,7 @@ public class AjaxResult extends HashMap<String, Object> {
     public static AjaxResult results(int code, String msg, int count, Object obj) {
         AjaxResult json = new AjaxResult();
         json.put("code", code);
+        json.put("mode", code == 0);
         json.put("msg", msg);
         json.put("recordsTotal", count);
         json.put("recordsFiltered", count);
@@ -74,6 +75,7 @@ public class AjaxResult extends HashMap<String, Object> {
         AjaxResult json = new AjaxResult();
         json.put("msg", msg);
         json.put("code", code);
+        json.put("mode", code == 0);
         json.put("data", rows);
         json.put("count", total);
         return json;
@@ -111,7 +113,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param msg  内容
      */
     public static AjaxResult error(int code, String msg) {
-        return results(code, msg, 0, null).put("mode", false);
+        return results(code, msg, 0, null);
     }
 
     /**
@@ -134,7 +136,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param msg 内容
      */
     public static AjaxResult success(String msg) {
-        return success(0, msg, 0, null).put("mode", true);
+        return success(0, msg, 0, null);
     }
 
     /**

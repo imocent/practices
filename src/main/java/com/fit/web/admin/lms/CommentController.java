@@ -78,7 +78,7 @@ public class CommentController extends BaseController {
             if (!bean.getUsername().isEmpty()) {
                 Map<String, Object> param = new HashMap<>();
                 param.put("username", bean.getUsername());
-                List<Map<String, Object>> maps = this.service.selectBySQL("SELECT * FROM `sys_user` WHERE `USERNAME`=#{params.username}", param);
+                List<Map<String, Object>> maps = this.service.queryBySQL("SELECT * FROM `sys_user` WHERE `USERNAME`=#{params.username}", param);
                 if (maps.size() > 0) {
                     bean.setUserId(Long.valueOf(maps.get(0).get("ID").toString()));
                 }

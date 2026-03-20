@@ -11,13 +11,12 @@ import com.fit.util.WechatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @AUTO 控制器
@@ -28,6 +27,11 @@ import java.util.Map;
 @Controller
 @RequestMapping("/admin/wx/menu")
 public class WechatAccountMenuController {
+
+    /**
+     * 菜单类型-需要设置key的菜单类型
+     **/
+    public static final List<String> MENU_NEED_KEY = Arrays.asList("click", "scancode_push", "scancode_waitmsg", "pic_sysphoto", "pic_photo_or_album", "pic_weixin", "location_select");
 
     private static String PREFIX = "/admin/wx/accountMenu/";
 
@@ -97,7 +101,6 @@ public class WechatAccountMenuController {
         JSONObject obj = new JSONObject();
         obj.put("name", menu.getName());
         obj.put("type", menu.getMtype());
-
         if (WechatUtil.MENU_NEED_KEY.contains(menu.getMtype())) {//事件菜单
             if ("fix".equals(menu.getEventType())) {//fix 消息
                 obj.put("key", "_fix_" + menu.getMsgId());//以 _fix_ 开头
@@ -115,5 +118,79 @@ public class WechatAccountMenuController {
             obj.put("url", menu.getUrl());
         }
         return obj;
+    }
+
+    @RequestMapping(value = "/save")
+    @ResponseBody
+    public AjaxResult save(String menus) {
+        JSONArray jsons = JSONArray.parseArray(menus);
+        //每次先行删除公众号所有菜单
+        String currentAccount = tokenService.getCurrentAccount();
+        Map<String, Object> param = new HashMap<>();
+        param.put("account", currentAccount);
+        this.service.deleteBySQL("delete from `wx_account_menu` where `account`=#{params.account}", param);
+        if (!jsons.isEmpty()) {
+            for (int i = 0; i < jsons.size(); i++) {
+                JSONObject json = jsons.getJSONObject(i);
+                if (null != json) {
+                    WxAccountMenu accountMenu = new WxAccountMenu();
+                    accountMenu.setAccount(currentAccount);
+                    accountMenu.setName(json.getString("name"));
+                    accountMenu.setSort(i + 1);
+                    accountMenu.setParentId((long) 0);
+                    if (json.containsKey("type")) {
+                        accountMenu.setMtype(json.getString("type"));
+                        //判断是否设置key
+                        if (MENU_NEED_KEY.contains(json.getString("type"))) {
+                            accountMenu.setEventType("fix");
+                            accountMenu.setMsgType(json.getString("msgType"));
+                            accountMenu.setMsgId(json.getString("msgId"));
+                        }
+                    }
+                    if (json.containsKey("url")) {
+                        accountMenu.setUrl(json.getString("url"));
+                    }
+                    if (json.containsKey("media_id")) {
+                        accountMenu.setMsgId(json.getString("media_id"));
+                    }
+                    accountMenu.setCreateTime(new Date());
+                    //保存
+                    this.service.save(accountMenu);
+                    //判断是否有subbutton
+                    if (json.containsKey("sub_button")) {
+                        JSONArray buttons = json.getJSONArray("sub_button");
+                        if (!buttons.isEmpty()) {
+                            long pid = accountMenu.getId();
+                            for (int j = 0; j < buttons.size(); j++) {
+                                json = buttons.getJSONObject(j);
+                                accountMenu = new WxAccountMenu();
+                                accountMenu.setAccount(currentAccount);
+                                accountMenu.setParentId(pid);
+                                accountMenu.setName(json.getString("name"));
+                                accountMenu.setSort(j + 1);
+                                if (json.containsKey("type")) {
+                                    accountMenu.setMtype(json.getString("type"));
+                                    //判断是否设置key
+                                    if (MENU_NEED_KEY.contains(json.getString("type"))) {
+                                        accountMenu.setEventType("fix");
+                                        accountMenu.setMsgType(json.getString("msgType"));
+                                        accountMenu.setMsgId(json.getString("msgId"));
+                                    }
+                                }
+                                if (json.containsKey("url")) {
+                                    accountMenu.setUrl(json.getString("url"));
+                                }
+                                if (json.containsKey("media_id")) {
+                                    accountMenu.setMsgId(json.getString("media_id"));
+                                }
+                                accountMenu.setCreateTime(new Date());
+                                this.service.save(accountMenu);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return AjaxResult.success();
     }
 }

@@ -34,6 +34,9 @@
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
                     <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
                 </button>
+                <button type="button" class="layui-btn layui-btn-warm layui-btn-xs" lay-event="shift">
+                    <i class="layui-icon layui-icon-transfer" title="切换">切换</i>
+                </button>
             </script>
         </div>
     </div>
@@ -48,7 +51,7 @@
             page: true,
             toolbar: '#toolbar',
             smartReloadModel: true,
-            cols: [ [
+            cols: [[
                 {type: 'checkbox'},
                 {field: 'account', title: '公众ID', minWidth: 80},
                 {field: 'name', title: '公众号名称', minWidth: 80},
@@ -56,7 +59,7 @@
                 {field: 'token', title: 'TOKEN', minWidth: 80},
                 {field: 'notes', title: '备注', minWidth: 80},
                 {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
-            ] ]
+            ]]
         });
 
         // 工具条点击事件
@@ -83,6 +86,8 @@
             let data = obj.data, event = obj.event;
             if (event === 'edit') {
                 editView("/admin/wx/account/edit?id=" + data.account, "编辑");
+            } else if (event === 'shift') {
+                modifyReq("/wxapi/shift", {id: data.account}, false);
             }
         });
 

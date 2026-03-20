@@ -57,6 +57,11 @@ public class WxAccount extends BaseEntity<WxAccount> {
      */
     private String notes;
 
+    /**
+     * 是否使用: 0-否,1-是
+     */
+    private Boolean shift;
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -75,6 +80,7 @@ public class WxAccount extends BaseEntity<WxAccount> {
         sb.append(", expiresIn=").append(expiresIn);
         sb.append(", tokenTime=").append(tokenTime);
         sb.append(", notes=").append(notes);
+        sb.append(", shift=").append(shift);
         sb.append("]");
         return sb.toString();
     }

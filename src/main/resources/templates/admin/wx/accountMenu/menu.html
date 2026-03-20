@@ -3,7 +3,7 @@
 <head th:include="include :: head('微信公众号菜单')"></head>
 <link rel="stylesheet" type="text/css" th:href="@{/css/wxMenu.css}"/>
 <body style="background-color:#fff">
-<div class="yadmin-body animated fadeIn">
+<div class="yadmin-body animated fadeIn" id="menu-container">
     <div class="weixin-menu-setting clear-after" style="min-width: 900px;">
         <div class="mobile-menu-preview">
             <div class="mobile-head-title">公众号</div>
@@ -113,47 +113,100 @@
         </div>
     </div>
     <div class="layui-row">
-        <div class="layui-col-md4" style="color: #FF5722;text-align: center;">
+        <div class="layui-col-md4" style="color: #FF5722;padding-left: 128px;">
             <small>可直接拖动菜单排序</small>
         </div>
     </div>
 </div>
-<script>
-    layui.use(['jquery', 'dtree', 'form', 'layer'], function ($, dtree, form, layer) {
+<script type="text/html" id="lockTpl">
+    <button class="layui-btn layui-btn-sm font-primary" lay-event="choose"><i class="layui-icon">&#xe624;</i>选择</button>
+</script>
+<script th:src="@{/js/Sortable.min.js}"></script>
+<script type="text/javascript">
+    layui.use(['layer', 'table', 'form'], function () {
+        var layer = layui.layer;
+        var $ = layui.$;
+        var table = layui.table;
+        var form = layui.form;
 
-        var menu = null, responseData = null, responselist = {};
+        // 微信菜单管理类
+        var WechatMenuManager = (function () {
+            function WechatMenuManager() {
+                this.menu = null;
+                this.responseData = null;
+                this.responseList = {};
+                this.currentEditItem = null;
+                this.init();
+            }
 
-        getWxMenuData();
-
-        function getWxMenuData() {
-
-            $.post('/admin/wx/menu/list', obj.field, function (result) {
-                if (result.success) {
-                    menu = result.data && result.data.button ? result.data.button : [];
-                    responseData = result.data && result.data.msgs ? result.data.msgs : [];
-                    $.each(responseData, function (_, v) {
-                        responselist[v.id] = {title: v.title, msgType: v.type}
-                    });
-                    wxMenuInit();
-                }
-            }, 'json').fail(function (event) {
-                toError(event);
-            });
-        }
-
-        function wxMenuInit() {
-            String.prototype.subByte = function (start, bytes) {
-                for (var i = start; bytes > 0; i++) {
-                    var code = this.charCodeAt(i);
-                    bytes -= code < 256 ? 1 : 2;
-                }
-                return this.slice(start, i + bytes)
+            WechatMenuManager.prototype.init = function () {
+                console.log("初始化微信菜单管理器");
+                this.getWxMenuData();
             };
-            var init_menu = function (menu) {
+
+            WechatMenuManager.prototype.getWxMenuData = function () {
+                var self = this;
+                console.log("获取微信菜单数据");
+                $.ajax({
+                    url: '/admin/wx/menu/list',
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (result) {
+                        console.log("菜单数据返回:", result);
+                        if (result.mode) {
+                            self.menu = result.data && result.data.button ? result.data.button : [];
+                            self.responseData = result.data && result.data.button ? result.data.button : [];
+                            $.each(self.responseData, function (_, v) {
+                                self.responseList[v.id] = {title: v.title, msgType: v.type};
+                            });
+                            // 数据返回后初始化菜单UI
+                            self.wxMenuInit();
+                        } else {
+                            console.error("获取菜单数据失败:", result);
+                            layer.msg("获取菜单数据失败：" + (result.msg || "未知错误"));
+                            self.wxMenuInit(); // 即使失败也初始化，显示空状态
+                        }
+                    },
+                    error: function (error) {
+                        console.error("请求菜单数据失败:", error);
+                        layer.msg("请求菜单数据失败，请检查网络");
+                        self.wxMenuInit(); // 失败时也初始化，显示空状态
+                    }
+                });
+            };
+
+            WechatMenuManager.prototype.wxMenuInit = function () {
+                console.log("初始化菜单UI");
+                // 扩展字符串方法
+                String.prototype.subByte = function (start, bytes) {
+                    for (var i = start; bytes > 0; i++) {
+                        var code = this.charCodeAt(i);
+                        bytes -= code < 256 ? 1 : 2;
+                    }
+                    return this.slice(start, i + bytes);
+                };
+
+                // 渲染菜单
+                this.renderMenu();
+
+                // 绑定所有事件
+                this.bindEvents();
+            };
+
+            WechatMenuManager.prototype.renderMenu = function () {
+                var menuData = this.menu || [];
+
+                if (menuData.length === 0) {
+                    console.log("没有菜单数据，只显示添加按钮");
+                    return;
+                }
+
                 var str = "";
-                var items = menu;
-                var type = "", action = "", msgType = "";
-                for (i in items) {
+                var items = menuData;
+
+                for (var i in items) {
+                    var type = "", action = "", msgType = "";
+
                     if (items[i]['sub_button'] != undefined) {
                         type = action = "";
                     } else {
@@ -165,11 +218,13 @@
                         if (items[i]['msgType'] != undefined)
                             msgType = items[i]['msgType'];
                     }
+
                     str += '<li id="menu-' + i + '" class="menu-item" data-type="' + type + '" data-msgtype="' + msgType + '" data-action="' + action + '" data-name="' + items[i]['name'] + '"> <a href="javascript:;" class="menu-link"> <i class="icon-menu-dot"></i> <i class="weixin-icon sort-gray"></i> <span class="title">' + items[i]['name'] + '</span> </a>';
+
                     var tem = '';
                     if (items[i]['sub_button'] != undefined) {
                         var sub_menu = items[i]['sub_button'];
-                        for (j in sub_menu) {
+                        for (var j in sub_menu) {
                             type = sub_menu[j]['type'];
                             if (sub_menu[j]['url'] != undefined)
                                 action = "url|" + sub_menu[j]['url'];
@@ -180,12 +235,232 @@
                             tem += '<li id="sub-menu-' + j + '" class="sub-menu-item" data-type="' + type + '" data-msgtype="' + msgType + '" data-action="' + action + '" data-name="' + sub_menu[j]['name'] + '"> <a href="javascript:;"> <i class="weixin-icon sort-gray"></i><span class="sub-title">' + sub_menu[j]['name'] + '</span></a> </li>';
                         }
                     }
-                    str += '<div class="sub-menu-box" style="' + (i != 0 ? 'display:none;' : '') + '"> <ul class="sub-menu-list">' + tem + '<li class=" add-sub-item"><a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a></li> </ul> <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i></div>';
+
+                    str += '<div class="sub-menu-box" style="' + (i != 0 ? 'display:none;' : '') + '"> <ul class="sub-menu-list">' + tem + '<li class="add-sub-item"><a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a></li> </ul> <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i></div>';
                     str += '</li>';
                 }
+
                 $("#add-item").before(str);
+
+                // 初始化拖拽排序
+                this.initSortable();
             };
-            var refresh_type = function () {
+
+            WechatMenuManager.prototype.initSortable = function () {
+                if (typeof Sortable !== 'undefined') {
+                    // 主菜单拖拽
+                    try {
+                        new Sortable($("#menu-list")[0], {
+                            draggable: 'li.menu-item',
+                            onEnd: function () {
+                                console.log("菜单排序已改变");
+                            }
+                        });
+
+                        // 子菜单拖拽
+                        $(".sub-menu-list").each(function () {
+                            new Sortable(this, {
+                                draggable: 'li.sub-menu-item',
+                                onEnd: function () {
+                                    console.log("子菜单排序已改变");
+                                }
+                            });
+                        });
+                    } catch (e) {
+                        console.error("初始化拖拽排序失败:", e);
+                    }
+                } else {
+                    console.warn("Sortable 未加载");
+                }
+            };
+
+            WechatMenuManager.prototype.bindEvents = function () {
+                console.log("绑定事件");
+                var self = this;
+
+                // 添加主菜单
+                $("#menu-container").off('click', '#add-item').on('click', '#add-item', function (e) {
+                    e.preventDefault();
+                    console.log("点击添加主菜单");
+                    self.addMainMenu(this);
+                    return false;
+                });
+
+                // 添加子菜单（使用事件委托）
+                $("#menu-container").off('click', '.add-sub-item').on('click', '.add-sub-item', function (e) {
+                    e.preventDefault();
+                    console.log("点击添加子菜单");
+                    self.addSubMenu(this);
+                    return false;
+                });
+
+                // 菜单项点击
+                $("#menu-container").off('click', '.menu-item, .sub-menu-item').on('click', '.menu-item, .sub-menu-item', function (e) {
+                    e.preventDefault();
+                    self.onMenuItemClick(this);
+                    return false;
+                });
+
+                // 类型切换
+                $("#menu-container").off('change', 'input[name=type]').on('change', 'input[name=type]', function () {
+                    self.refreshType();
+                });
+
+                // 删除菜单
+                $("#menu-container").off('click', '#item_delete').on('click', '#item_delete', function (e) {
+                    e.preventDefault();
+                    self.deleteMenuItem();
+                });
+
+                // 表单变化
+                $("form#form-item").off('change', "input,textarea").on('change', "input,textarea", function () {
+                    self.updateChangeMenu();
+                });
+
+                // 保存菜单
+                $("#menu-container").off('click', "#menuSave").on('click', "#menuSave", function () {
+                    self.saveMenu();
+                });
+
+                // 发布菜单
+                $("#menu-container").off('click', "#menuSyn").on('click', "#menuSyn", function () {
+                    self.syncMenu();
+                });
+
+                // 选择资源
+                $("#menu-container").off('click', "#select-resources").on('click', "#select-resources", function (e) {
+                    e.preventDefault();
+                    self.selectResources();
+                });
+
+                // 初始化显示状态
+                this.refreshType();
+            };
+
+            WechatMenuManager.prototype.addMainMenu = function (target) {
+                var menu_item_total = $(".menu-item").length;
+                if (menu_item_total >= 3) {
+                    layer.msg("最多只能添加3个主菜单");
+                    return;
+                }
+
+                var item = `
+                <li class="menu-item" data-type="click" data-action="key|" data-name="添加菜单" >
+                    <a href="javascript:;" class="menu-link">
+                        <i class="icon-menu-dot"></i> <i class="weixin-icon sort-gray"></i> <span class="title">添加菜单</span>
+                    </a>
+                    <div class="sub-menu-box" style="display:block;">
+                        <ul class="sub-menu-list">
+                            <li class="add-sub-item">
+                                <a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a>
+                            </li>
+                        </ul>
+                        <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i>
+                    </div>
+                </li>`;
+
+                var itemDom = $(item);
+                itemDom.insertBefore(target);
+                itemDom.trigger("click");
+                $(".sub-menu-box", itemDom).show();
+
+                // 为新添加的菜单初始化拖拽
+                if (typeof Sortable !== 'undefined') {
+                    try {
+                        new Sortable($(".sub-menu-list", itemDom)[0], {
+                            draggable: 'li.sub-menu-item'
+                        });
+                    } catch (e) {
+                        console.error("初始化子菜单拖拽失败:", e);
+                    }
+                }
+            };
+
+            WechatMenuManager.prototype.addSubMenu = function (target) {
+                var sub_menu_item_total = $(target).parent().find(".sub-menu-item").length;
+                if (sub_menu_item_total >= 5) {
+                    layer.msg("最多只能添加5个子菜单");
+                    return;
+                }
+
+                var item = `
+                <li class="sub-menu-item" data-type="click" data-action="key|" data-name="添加子菜单">
+                    <a href="javascript:;">
+                        <i class="weixin-icon sort-gray"></i>
+                        <span class="sub-title">添加子菜单</span>
+                    </a>
+                </li>
+            `;
+
+                var itemDom = $(item);
+                itemDom.insertBefore(target);
+                itemDom.trigger("click");
+
+                if (sub_menu_item_total == 4) {
+                    $(target).hide();
+                }
+            };
+
+            WechatMenuManager.prototype.onMenuItemClick = function (item) {
+                // 移除所有高亮
+                $("#menu-list li").removeClass('current');
+                $(item).addClass('current');
+
+                var type = $(item).attr('data-type');
+                var action = $(item).attr('data-action');
+                var title = $(item).attr('data-name');
+                var msgtype = $(item).attr('data-msgtype');
+
+                // 根据点击的是主菜单还是子菜单显示不同的UI
+                if ($(item).hasClass("sub-menu-item")) {
+                    $(".is-item").show();
+                    $(".is-sub-item").show();
+                } else {
+                    // 主菜单
+                    $("#menu-list > li").not(item).find(".sub-menu-box").hide();
+                    $(".sub-menu-box", item).toggle();
+
+                    if ($(".sub-menu-item", item).length == 0) {
+                        $(".is-item").show();
+                        $(".is-sub-item").show();
+                    } else {
+                        $(".is-item").hide();
+                        $(".is-sub-item").hide();
+                    }
+                }
+
+                // 填充表单
+                var actions = action.split('|');
+                $("input[name=type][value='" + type + "']").prop("checked", true);
+                $("input[name='item-title']").val(title);
+                $('#current-item-name').text(title);
+
+                if (actions[0] == 'url') {
+                    $('input[name=key]').val('');
+                    $('input[name=url]').val(actions[1]);
+                } else {
+                    $('input[name=url]').val('');
+                    $('input[name=key]').val(actions[1]);
+                }
+
+                if (actions[0] == 'key' && actions[1]) {
+                    var msg = this.getMsgByIdAndType(actions[1], msgtype);
+                    var keytitle = msg.title ? msg.title : '无标题';
+                    var cont = $(".is-click .create-click:first");
+                    $(".keytitle", cont).remove();
+                    cont.append('<div class="keytitle">资源名:' + keytitle + '</div>');
+                }
+
+                // 显示编辑区域
+                $(".weixin-content-wrap").show();
+                $(".no-weixin-content").hide();
+
+                // 刷新表单渲染
+                form.render();
+                this.refreshType();
+            };
+
+            WechatMenuManager.prototype.refreshType = function () {
                 if ($('input[name=type]:checked').val() == 'view') {
                     $(".is-view").show();
                     $(".is-click").hide();
@@ -194,366 +469,282 @@
                     $(".is-click").show();
                 }
             };
-            //初始化菜单
-            init_menu(menu);
-            //拖动排序
-            new Sortable($("#menu-list")[0], {draggable: 'li.menu-item'});
-            $(".sub-menu-list").each(function () {
-                new Sortable(this, {draggable: 'li.sub-menu-item'});
-            });
-            //添加主菜单
-            $("#menu-container").on('click', '#add-item', function () {
-                var menu_item_total = $(".menu-item").size();
-                if (menu_item_total < 3) {
-                    var item = '<li class="menu-item" data-type="click" data-action="key|" data-name="添加菜单" > <a href="javascript:;" class="menu-link"> <i class="icon-menu-dot"></i> <i class="weixin-icon sort-gray"></i> <span class="title">添加菜单</span> </a> <div class="sub-menu-box" style=""> <ul class="sub-menu-list"><li class=" add-sub-item"><a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a></li> </ul> <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i> </div></li>';
-                    var itemDom = $(item);
-                    itemDom.insertBefore(this);
-                    itemDom.trigger("click");
-                    $(".sub-menu-box", itemDom).show();
-                    new Sortable($(".sub-menu-list", itemDom)[0], {draggable: 'li.sub-menu-item'});
-                }
-            });
-            $("#menu-container").on('change', 'input[name=type]', function () {
-                refresh_type();
-            });
-            $("#menu-container").on('click', '#item_delete', function () {
-                var current = $("#menu-list li.current");
-                var prev = current.prev("li[data-type]");
-                var next = current.next("li[data-type]");
-                var last;
-                if (prev.size() == 0 && next.size() == 0 && $(".sub-menu-box", current).size() == 0) {
-                    last = current.closest(".menu-item");
-                } else if (prev.size() > 0 || next.size() > 0) {
-                    last = prev.size() > 0 ? prev : next;
-                } else {
-                    last = null;
-                    $(".weixin-content-wrap").hide();
-                    $(".no-weixin-content").show();
-                }
-                $("#menu-list li.current").remove();
-                if (last) {
-                    last.trigger('click');
-                } else {
-                    $("input[name='item-title']").val('');
-                }
-                updateChangeMenu();
-            });
 
-            function getMsgByIdAndType(mid, mtype) {
+            WechatMenuManager.prototype.getMsgByIdAndType = function (mid, mtype) {
                 var d = {};
-                $.each(responseData, function (_, v) {
-                    if (v.id == mid && v.type == mtype) {
-                        d = v;
-                        return false;
-                    }
-                });
+                if (this.responseData) {
+                    $.each(this.responseData, function (_, v) {
+                        if (v.id == mid && v.type == mtype) {
+                            d = v;
+                            return false;
+                        }
+                    });
+                }
                 return d;
-            }
+            };
 
-            //更新修改与变动
-            var updateChangeMenu = function () {
+            WechatMenuManager.prototype.updateChangeMenu = function () {
                 var title = $("input[name='item-title']").val();
                 var type = $("input[name='type']:checked").val();
-                var key = "", value;
-                if (type == 'view') {
-                    key = 'url';
-                } else {
-                    key = 'key';
-                }
-                value = $("input[name='" + key + "']").val();
+                var key = type == 'view' ? 'url' : 'key';
+                var value = $("input[name='" + key + "']").val();
                 var msgtype = $("input[name='" + key + "']").attr("data-msgtype");
-                if (key == 'key') {
-                    var msg = getMsgByIdAndType(value, msgtype);
+
+                if (key == 'key' && value) {
+                    var msg = this.getMsgByIdAndType(value, msgtype);
                     var keytitle = msg.title ? msg.title : '无标题';
                     var cont = $(".is-click .create-click:first");
                     $(".keytitle", cont).remove();
                     cont.append('<div class="keytitle">资源名:' + keytitle + '</div>');
                 }
+
                 var currentItem = $("#menu-list li.current");
-                if (currentItem.size() > 0) {
+                if (currentItem.length > 0 && title) {
                     currentItem.attr('data-type', type);
                     currentItem.attr('data-msgtype', msgtype);
                     currentItem.attr('data-action', key + "|" + value);
-                    if (currentItem.siblings().size() == 4) {
-                        $(".add-sub-item").show();
-                    } else if (false) {
 
+                    // 更新显示标题
+                    var titleElement = currentItem.children("a").find(".title, .sub-title");
+                    if (titleElement.length) {
+                        titleElement.text(title.subByte(0, 16));
                     }
-                    currentItem.children("a").find("span").text(title.subByte(0, 16));
-                    $("input[name='item-title']").val(title);
+
                     currentItem.attr('data-name', title);
                     $('#current-item-name').text(title);
                 }
-                // menuUpdate();
             };
-            //更新菜单数据
-            var menuUpdate = function () {
-                //TODO:操作中保存菜单数据（暂时废弃）
-                $.ajax({
-                    url: "",
-                    data: {menu: JSON.stringify(getMenuList())},
-                    success: function (result) {
-                        if (!result.success) {
-                            layer.msg("保存更改异常");
-                        }
-                    }
-                });
-            };
-            //获取菜单数据
-            var getMenuList = function () {
-                var menus = new Array();
-                var sub_button = new Array();
+
+            WechatMenuManager.prototype.getMenuList = function () {
+                var menus = [];
+                var sub_button = [];
                 var menu_i = 0;
                 var sub_menu_i = 0;
-                var item;
+
                 $("#menu-list li").each(function (i) {
-                    item = $(this);
+                    var item = $(this);
                     var name = item.attr('data-name');
                     var type = item.attr('data-type');
                     var action = item.attr('data-action');
                     var msgType = item.attr('data-msgtype');
-                    if (name != null) {
-                        var actions = action.split('|');
+
+                    if (name && name != null) {
+                        var actions = action ? action.split('|') : ['', ''];
                         if (item.hasClass('menu-item')) {
                             sub_menu_i = 0;
-                            if (item.find('.sub-menu-item').size() > 0) {
-                                menus[menu_i] = {"name": name, "sub_button": "sub_button"}
+                            if (item.find('.sub-menu-item').length > 0) {
+                                menus[menu_i] = {"name": name, "sub_button": "sub_button"};
                             } else {
                                 if (actions[0] == 'url')
                                     menus[menu_i] = {"name": name, "type": type, "url": actions[1]};
                                 else
-                                    menus[menu_i] = {
-                                        "name": name,
-                                        "type": type,
-                                        "msgId": actions[1],
-                                        "msgType": msgType
-                                    };
+                                    menus[menu_i] = {"name": name, "type": type, "msgId": actions[1], "msgType": msgType};
                             }
-                            if (menu_i > 0) {
-                                if (menus[menu_i - 1]['sub_button'] == "sub_button")
-                                    menus[menu_i - 1]['sub_button'] = sub_button;
-                                else
-                                    menus[menu_i - 1]['sub_button'];
+                            if (menu_i > 0 && menus[menu_i - 1] && menus[menu_i - 1]['sub_button'] == "sub_button") {
+                                menus[menu_i - 1]['sub_button'] = sub_button;
                             }
-                            sub_button = new Array();
+                            sub_button = [];
                             menu_i++;
-                        } else {
+                        } else if (item.hasClass('sub-menu-item')) {
                             if (actions[0] == 'url')
                                 sub_button[sub_menu_i++] = {"name": name, "type": type, "url": actions[1]};
                             else
-                                sub_button[sub_menu_i++] = {
-                                    "name": name,
-                                    "type": type,
-                                    "msgId": actions[1],
-                                    "msgType": msgType
-                                };
+                                sub_button[sub_menu_i++] = {"name": name, "type": type, "msgId": actions[1], "msgType": msgType};
                         }
                     }
                 });
-                if (sub_button.length > 0) {
-                    var len = menus.length;
-                    menus[len - 1]['sub_button'] = sub_button;
+
+                if (sub_button.length > 0 && menus.length > 0) {
+                    menus[menus.length - 1]['sub_button'] = sub_button;
                 }
+
                 return menus;
             };
-            //添加子菜单
-            $("#menu-container").on('click', ".add-sub-item", function () {
-                var sub_menu_item_total = $(this).parent().find(".sub-menu-item").size();
-                if (sub_menu_item_total < 5) {
-                    var item = '<li class="sub-menu-item" data-type="click" data-action="key|" data-name="添加子菜单"><a href="javascript:;"><span class=" "><i class="weixin-icon sort-gray"></i><span class="sub-title">添加子菜单</span></span></a></li>';
-                    var itemDom = $(item);
-                    itemDom.insertBefore(this);
-                    itemDom.trigger("click");
-                    if (sub_menu_item_total == 4) {
-                        $(this).hide();
-                    }
+
+            WechatMenuManager.prototype.deleteMenuItem = function () {
+                var current = $("#menu-list li.current");
+                if (current.length === 0) {
+                    return;
                 }
-                return false;
-            });
-            //主菜单子菜单点击事件
-            $("#menu-container").on('click', ".menu-item, .sub-menu-item", function () {
-                if ($(this).hasClass("sub-menu-item")) {
-                    $("#menu-list li").removeClass('current');
-                    $(".is-item").show();
-                    $(".is-sub-item").show();
+
+                var prev = current.prev("li[data-type]");
+                var next = current.next("li[data-type]");
+                var last;
+
+                if (prev.length === 0 && next.length === 0 && $(".sub-menu-box", current).length === 0) {
+                    last = current.closest(".menu-item");
+                } else if (prev.length > 0 || next.length > 0) {
+                    last = prev.length > 0 ? prev : next;
                 } else {
-                    $("#menu-list li").removeClass('current');
-                    $("#menu-list > li").not(this).find(".sub-menu-box").hide();
-                    $(".sub-menu-box", this).toggle();
-                    //如果当前还没有子菜单
-                    if ($(".sub-menu-item", this).size() == 0) {
-                        $(".is-item").show();
-                        $(".is-sub-item").show();
-                    } else {
-                        $(".is-item").hide();
-                        $(".is-sub-item").hide();
-                    }
+                    last = null;
+                    $(".weixin-content-wrap").hide();
+                    $(".no-weixin-content").show();
                 }
-                $(this).addClass('current');
-                var type = $(this).attr('data-type');
-                var action = $(this).attr('data-action');
-                var title = $(this).attr('data-name');
-                var msgtype = $(this).attr('data-msgtype');
 
-                var actions = action.split('|');
-                $("input[name=type][value='" + type + "']").prop("checked", true);
-                $("input[name='item-title']").val(title);
-                $('#current-item-name').text(title);
-                if (actions[0] == 'url') {
-                    $('input[name=key]').val('');
+                current.remove();
+
+                if (last && last.length) {
+                    last.trigger('click');
                 } else {
-                    $('input[name=url]').val('');
+                    $("input[name='item-title']").val('');
+                    $(".weixin-content-wrap").hide();
+                    $(".no-weixin-content").show();
                 }
-                $("input[name='" + actions[0] + "']").val(actions[1]);
-                if (actions[0] == 'key') {
-                    var msg = getMsgByIdAndType(actions[1], msgtype);
-                    var keytitle = msg.title ? msg.title : '无标题';
-                    var cont = $(".is-click .create-click:first");
-                    $(".keytitle", cont).remove();
-                    if (keytitle) {
-                        cont.append('<div class="keytitle">资源名:' + keytitle + '</div>');
-                    }
-                } else {
-
-                }
-
-                $(".weixin-content-wrap").show();
-                $(".no-weixin-content").hide();
-
-                refresh_type();
-
-                return false;
-            });
-            $("form#form-item").on('change', "input,textarea", function () {
-                updateChangeMenu();
-            });
-            $("#menu-container").on('click', "#menuSave", function () {
-                var menus = getMenuList();
-                ajax({
-                    url: '/accountmenu/save',
-                    data: {"menus": JSON.stringify(menus)},
-                    success: function (result) {
-                        if (result.success) {
-                            showAlert("菜单保存成功，请点击同步按钮到微信官网！");
-                        } else {
-                            layer.msg("菜单保存失败");
-                        }
-                    }
-                });
-            });
-            $("#menu-container").on('click', "#menuSyn", function () {
-                ajax({
-                    url: '/wxapi/doPublishMenu',
-                    data: {},
-                    success: function (result) {
-                        if (result.success) {
-                            showAlert("菜单同步更新成功，生效时间看微信官网说明，或者重新关注微信号！");
-                        } else {
-                            layer.msg("菜单同步失败");
-                        }
-                    }
-                });
-            });
-            var refreshkey = function (data) {
-                $("input[name=key]").val(data.id).attr("data-msgtype", data.type).trigger("change");
-                layer.closeAll();
             };
 
-            //选择资源点击
-            $("#select-resources").click(function (e) {
-                showDialog({
+            WechatMenuManager.prototype.saveMenu = function () {
+                var menus = this.getMenuList();
+                console.log("保存菜单:", menus);
+
+                if (menus.length === 0) {
+                    layer.msg("请至少添加一个菜单");
+                    return;
+                }
+
+                $.ajax({
+                    url: '/admin/wx/menu/save',
+                    type: 'POST',
+                    data: {"menus": JSON.stringify(menus)},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.mode) {
+                            layer.msg("菜单保存成功，请点击同步按钮到微信官网！", {icon: 1});
+                        } else {
+                            layer.msg("菜单保存失败：" + (result.msg || "未知错误"), {icon: 2});
+                        }
+                    },
+                    error: function (error) {
+                        console.error("保存菜单失败:", error);
+                        layer.msg("菜单保存失败，请检查网络", {icon: 2});
+                    }
+                });
+            };
+
+            WechatMenuManager.prototype.syncMenu = function () {
+                $.ajax({
+                    url: '/wxapi/doPublishMenu',
+                    type: 'POST',
+                    data: {},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.mode) {
+                            layer.msg("菜单同步更新成功，生效时间看微信官网说明，或者重新关注微信号！", {icon: 1});
+                        } else {
+                            layer.msg("菜单同步失败：" + (result.msg || "未知错误"), {icon: 2});
+                        }
+                    },
+                    error: function (error) {
+                        console.error("同步菜单失败:", error);
+                        layer.msg("菜单同步失败，请检查网络", {icon: 2});
+                    }
+                });
+            };
+
+            WechatMenuManager.prototype.selectResources = function () {
+                var self = this;
+
+                // 构建资源选择弹窗
+                var html = '<div style="padding: 20px;">' +
+                    '<div id="msgType_select" style="margin-bottom: 15px;">' +
+                    '<button class="layui-btn layui-btn-primary btn-primary" data-type="text">文本消息</button>' +
+                    '<button class="layui-btn layui-btn-primary" data-type="news">图文消息</button>' +
+                    '</div>' +
+                    '<table id="select_table" class="layui-hide" lay-filter="select_table"></table>' +
+                    '</div>';
+
+                var index = layer.open({
+                    type: 1,
                     title: '选择资源',
-                    template: 'msg',
-                    height: 600,
-                    htmlData: {},
-                    btn: 0,
-                    success: function () {
-                        renderSelectTable();
-                        $("#msgType_select").on("click", ".layui-btn", function () {
-                            var $this = $(this);
-                            var temp = '<table id="select_table" class="layui-hide" lay-filter="select_table"></table>';
-                            $("#send_msg_content").html(template.render(temp, {}));
-                            var type = $this.index() == 0 ? "text" : "news";
-                            $this.addClass("btn-primary").removeClass("layui-btn-primary")
-                                .siblings(".btn-primary").addClass("layui-btn-primary").removeClass("btn-primary");
-                            renderSelectTable(type);
+                    area: ['800px', '500px'],
+                    content: html,
+                    btn: ['取消'],
+                    success: function (layero, index) {
+                        // 初始化表格
+                        self.renderSelectTable('text');
+
+                        // 绑定类型切换事件
+                        $("#msgType_select .layui-btn").on('click', function () {
+                            var type = $(this).data('type');
+                            $(this).addClass("btn-primary").removeClass("layui-btn-primary")
+                                .siblings().removeClass("btn-primary").addClass("layui-btn-primary");
+                            self.renderSelectTable(type);
+                        });
+
+                        // 表格工具条事件
+                        table.on('tool(select_table)', function (obj) {
+                            var data = obj.data;
+                            if (obj.event === 'choose') {
+                                self.refreshKey(data);
+                                layer.close(index);
+                            }
                         });
                     }
                 });
+            };
 
-                return false;
-
-                var temp = '<div class="fsh-pop"><table id="select_table" class="layui-hide" lay-filter="select_table"></table></div>';
-                layer.open({
-                    type: 1,
-                    title: '选择资源',
-                    area: ['700px', '500px'],
-                    content: template.render(temp, {}),
-                    btn: 0,
-                    success: function (layero, index) {
-                        renderSelectTable();
-                    },
-                });
-                return false;
-            });
-
-            //添加资源点
-            //        $(document).on('click', "#add-resources", function () {
-            //            Backend.api.open($(this).attr("href") + "?key=" + key, __('Add'), {
-            //                callback: refreshkey
-            //            });
-            //            return false;
-            //        });
-
-            //选择资源表格内部操作按钮监听
-            layui.table.on('tool(select_table)', function (obj) {
-                var data = obj.data;
-                var layEvent = obj.event;
-
-                if (layEvent === 'choose') {
-                    refreshkey(data);
-                }
-            });
-
-            function renderSelectTable(type) {
+            WechatMenuManager.prototype.renderSelectTable = function (type) {
                 if (!type) {
-                    type = $("#msgType_select .btn-primary").index() == 0 ? "text" : "news";
+                    type = "text";
                 }
-                layui.table.render({
+
+                var data = this.getResponseDataByType(type);
+
+                table.render({
                     id: 'select_table',
                     elem: '#select_table',
-                    data: getresponseDataBytype(type),
-                    align: "center",
-                    cols: [ [
-                        {type: 'numbers'},
-                        {
-                            field: 'type', title: '类型', width: 150, align: 'center', templet: function (d) {
-                                return d.type == "text" ? "文本消息" : "图文消息";
+                    data: data,
+                    cols: [
+                        [
+                            {type: 'numbers', width: 80},
+                            {
+                                field: 'type', title: '类型', width: 120, templet: function (d) {
+                                    return d.type == "text" ? "文本消息" : "图文消息";
+                                }
+                            },
+                            {field: 'title', title: '标题', minWidth: 200},
+                            {field: 'id', title: 'ID', width: 100},
+                            {
+                                field: 'lock', title: '操作', width: 100, templet: function (d) {
+                                    return '<button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="choose">选择</button>';
+                                }
                             }
-                        },
-                        {field: 'title', title: '标题', width: 150, align: 'center',},
-                        {field: 'id', title: 'id', width: 80, align: 'center',},
-                        {
-                            field: 'lock', title: '操作', width: 150, align: 'center', templet: function (d) {
-                                return '<button class="layui-btn layui-btn-sm " class="font-primary" lay-event="choose"><i class="iconfont icon-add"></i>选择</button>';
-
-                            }, unresize: true, align: 'center'
-                        }
-                    ] ],
-                    page: false
-                });
-            }
-
-            function getresponseDataBytype(type) {
-                var data = [];
-                $.each(responseData, function (_, v) {
-                    if (v.type == type) {
-                        data.push(v);
+                        ]
+                    ],
+                    page: false,
+                    text: {
+                        none: '暂无数据'
+                    },
+                    done: function (res, curr, count) {
+                        $('.layui-table-cell').css('text-align', 'center');
                     }
                 });
+            };
+
+            WechatMenuManager.prototype.getResponseDataByType = function (type) {
+                var data = [];
+                if (this.responseData) {
+                    $.each(this.responseData, function (_, v) {
+                        if (v.type == type) {
+                            data.push(v);
+                        }
+                    });
+                }
                 return data;
-            }
-        }
+            };
+
+            WechatMenuManager.prototype.refreshKey = function (data) {
+                $("input[name=key]").val(data.id).attr("data-msgtype", data.type).trigger("change");
+                this.updateChangeMenu();
+            };
+
+            return WechatMenuManager;
+        })();
+
+        // 页面加载完成后初始化菜单管理器
+        $(document).ready(function () {
+            console.log("页面加载完成，初始化微信菜单管理器");
+            window.wechatMenuManager = new WechatMenuManager();
+        });
     });
 </script>
 </body>

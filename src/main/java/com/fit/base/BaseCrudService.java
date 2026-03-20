@@ -139,8 +139,12 @@ public abstract class BaseCrudService<D extends BaseCrudDao<T>, T extends BaseEn
         return dao.batchAdd(entities);
     }
 
-    public List<Map<String, Object>> selectBySQL(String sql, Map<String, Object> params) {
-        return dao.selectBySQL(sql, params);
+    public List<Map<String, Object>> queryBySQL(String sql, Map<String, Object> params) {
+        return dao.queryBySQL(sql, params);
+    }
+
+    public int deleteBySQL(String sql, Map<String, Object> params) {
+        return dao.deleteBySQL(sql, params);
     }
 
     /**

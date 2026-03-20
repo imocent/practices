@@ -113,7 +113,7 @@ public class LmsBusinessController extends BaseController {
         sb.append("SELECT q.*, GROUP_CONCAT(CONCAT_WS('|', a.ID, a.CONTENT, a.VERIFY ) SEPARATOR ';') AS answer_info, '' AS checked");
         sb.append(" FROM lms_question q LEFT JOIN lms_question_answer a ON q.ID = a.QUESTION_ID");
         sb.append(" WHERE q.`EXAM_ROOM_ID` = #{params.rid} GROUP BY q.`ID` limit 10");
-        List<Map<String, Object>> questions = this.questionsService.selectBySQL(sb.toString(), params);
+        List<Map<String, Object>> questions = this.questionsService.queryBySQL(sb.toString(), params);
         if (room.getSubjectSortMode()) {
             Collections.shuffle(questions);
         }

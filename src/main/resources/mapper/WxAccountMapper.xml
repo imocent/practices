@@ -14,10 +14,11 @@
     <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
     <result column="token_time" jdbcType="TIMESTAMP" property="tokenTime" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="shift" jdbcType="BIT" property="shift" />
   </resultMap>
   <sql id="Base_Column_List">
     account, url, `name`, appid, appsecret, token, msg_count, refresh_interval, advance_refresh, 
-    expires_in, token_time, notes
+    expires_in, token_time, notes, shift
   </sql>
   <select id="get" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -68,6 +69,9 @@
       <if test="notes != null">
         notes,
       </if>
+      <if test="shift != null">
+        shift,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="account != null">
@@ -106,6 +110,9 @@
       <if test="notes != null">
         #{notes,jdbcType=VARCHAR},
       </if>
+      <if test="shift != null">
+        #{shift,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
   <update id="update" parameterType="com.fit.entity.WxAccount">
@@ -143,6 +150,9 @@
       </if>
       <if test="notes != null">
         notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="shift != null">
+        shift = #{shift,jdbcType=BIT},
       </if>
     </set>
     where account = #{account,jdbcType=VARCHAR}
@@ -188,6 +198,9 @@
       <if test="notes != null and notes != ''">
          and notes = #{notes,jdbcType=VARCHAR}
       </if>
+      <if test="shift != null and shift != ''">
+         and shift = #{shift,jdbcType=BIT}
+      </if>
     </where>
   </sql>
   <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -216,7 +229,7 @@
     <foreach close=")" collection="list" item="id" open="(" separator=",">
       #{item.account},#{item.url},#{item.name},#{item.appid},
        #{item.appsecret},#{item.token},#{item.msgCount},#{item.refreshInterval},#{item.advanceRefresh},
-       #{item.expiresIn},#{item.tokenTime},#{item.notes}
+       #{item.expiresIn},#{item.tokenTime},#{item.notes},#{item.shift}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

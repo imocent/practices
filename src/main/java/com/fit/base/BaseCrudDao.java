@@ -1,5 +1,6 @@
 package com.fit.base;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -77,7 +78,10 @@ public interface BaseCrudDao<T> {
      * 查询数据列表
      */
     @Select("${sql}")
-    List<Map<String, Object>> selectBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
+    List<Map<String, Object>> queryBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
+
+    @Delete("${sql}")
+    int deleteBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
 
     /**
      * 清空表

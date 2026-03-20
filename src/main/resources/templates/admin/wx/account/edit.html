@@ -7,22 +7,22 @@
         <div class="layui-form-item">
             <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>公众号ID</label>
             <div class="layui-input-block">
-                <input type="text" id="account" placeholder="请输入公众号ID" name="name" th:value="${bean?.account}" lay-verify="required"
-                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+                <input type="text" id="account" placeholder="请输入公众号ID" name="account" th:value="${bean?.account}"
+                       lay-verify="required" lay-vertype="tips" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
             <label for="name" class="layui-form-label"><i class="yadmin-red">* </i>公众号名称</label>
             <div class="layui-input-block">
                 <input type="text" id="name" placeholder="请输入名称" name="name" th:value="${bean?.name}" lay-verify="required"
-                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+                       lay-vertype="tips" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
             <label for="appId" class="layui-form-label"><i class="yadmin-red">* </i>AppID</label>
             <div class="layui-input-block">
                 <input type="text" id="appId" placeholder="请输入公众号AppID" name="appid" th:value="${bean?.appid}" lay-verify="required"
-                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+                       lay-vertype="tips" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
@@ -32,18 +32,19 @@
                        lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input"/>
             </div>
         </div>
-        <div class="layui-form-item" th:if="${bean?.url!=null}">
+        <div class="layui-form-item">
             <label for="url" class="layui-form-label"><i class="yadmin-red">* </i>URL</label>
             <button class="layui-btn btn-copy-url" style="float: right"><i class="icon-fuzhi iconfont"></i>复制</button>
             <div class="layui-input-block" style="margin-right: 100px;">
-                <input type="text" id="url" placeholder="请输入" name="url" th:value="${bean?.url}" class="layui-input"/>
+                <input type="text" id="url" placeholder="请输入" name="url" th:value="${bean?.url}" class="layui-input" readonly/>
             </div>
         </div>
-        <div class="layui-form-item" th:if="${bean?.url!=null}">
+        <div class="layui-form-item">
             <label for="token" class="layui-form-label"><i class="yadmin-red">* </i>TOKEN</label>
             <button class="layui-btn btn-copy-token" style="float: right"><i class="icon-fuzhi iconfont"></i>复制</button>
             <div class="layui-input-block" style="margin-right: 100px;">
-                <input type="text" id="token" placeholder="请输入" name="token" th:value="${bean?.token}" class="layui-input"/>
+                <input type="text" id="token" placeholder="请输入" name="token" th:value="${bean?.token}"
+                       th:readonly="${#strings.isEmpty(bean?.token)}?null:'readonly'" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
@@ -69,19 +70,28 @@
 <script>
     layui.use(['jquery', 'form'], function ($, form) {
         form.on('submit(submit-form)', function (obj) {
-            $.post('/admin/wx/user/save', obj.field, function (data) {
+            $.post('/admin/wx/account/save', obj.field, function (data) {
                 advices(data, parent);
             }, 'json').fail(function (event) {
                 toError(event);
             });
         });
-        $('.btn-copy-url').click(function () {
-            copy_to_clipboard($('#url').val());
-        });
+        $(document).ready(function () {
+            $('#account').on('blur', function () {
+                var account = $(this).val().trim();
+                if (account) {
+                    $('#url').val("/wxapi/{ACCOUNT}/message".replace("{ACCOUNT}", account));
+                }
+            });
 
-        // 复制TOKEN
-        $('.btn-copy-token').click(function () {
-            copy_to_clipboard($('#token').val());
+            $('.btn-copy-url').click(function () {
+                copy_to_clipboard($('#url').val());
+            });
+
+            // 复制TOKEN
+            $('.btn-copy-token').click(function () {
+                copy_to_clipboard($('#token').val());
+            });
         });
     });
 </script>

@@ -128,7 +128,7 @@ public class RoleController extends BaseController {
         try {
             Map<String, Object> param = new HashMap<>();
             param.put("roleId", roleId);
-            this.roleAuthService.selectBySQL("DELETE FROM `sys_role_auth` WHERE ROLE_ID =#{params.roleId}", param);
+            this.roleAuthService.queryBySQL("DELETE FROM `sys_role_auth` WHERE ROLE_ID =#{params.roleId}", param);
             final List<String> list = Arrays.asList(menus.split(","));
             for (String s : list) {
                 SysRoleAuth auth = new SysRoleAuth();
