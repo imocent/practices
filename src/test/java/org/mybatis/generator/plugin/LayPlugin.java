@@ -57,20 +57,20 @@ public class LayPlugin extends PluginAdapter {
      * 处理Base_Where_List中有时间的查询条件
      */
     private void handleDate(StringBuilder sb, IntrospectedColumn introspectedColumn, XmlElement where, XmlElement isNotNullElement) {
+        String columnName = MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
+        String javaProperty = introspectedColumn.getJavaProperty();
         // 大于开始时间
-        isNotNullElement.addAttribute(new Attribute("test", "ctime != null "));
+        isNotNullElement.addAttribute(new Attribute("test", String.format("%s != null ", javaProperty)));
         where.addElement(isNotNullElement);
         sb.setLength(0);
-        sb.append(" and ").append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-        sb.append(" &gt;= #{ctime }");
+        sb.append(" and ").append(columnName).append(String.format(" &gt;= #{%s }", javaProperty));
         isNotNullElement.addElement(new TextElement(sb.toString()));
         // 小于结束时间
         isNotNullElement = new XmlElement("if");
-        isNotNullElement.addAttribute(new Attribute("test", "etime != null "));
+        isNotNullElement.addAttribute(new Attribute("test", String.format("%s != null ", javaProperty)));
         where.addElement(isNotNullElement);
         sb.setLength(0);
-        sb.append(" and ").append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-        sb.append(" &lt;= #{etime } ");
+        sb.append(" and ").append(columnName).append(String.format(" &lt;= #{%s } ", javaProperty));
         isNotNullElement.addElement(new TextElement(sb.toString()));
     }
 

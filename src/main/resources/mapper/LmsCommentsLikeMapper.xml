@@ -98,8 +98,8 @@
   </update>
   <sql id="Base_Where_List">
     <where>
-      <if test="ctime != null ">
-         and ETIME &gt;= #{ctime }
+      <if test="etime != null ">
+         and ETIME &gt;= #{etime }
       </if>
       <if test="etime != null ">
          and ETIME &lt;= #{etime } 

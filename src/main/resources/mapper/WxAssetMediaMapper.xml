@@ -228,17 +228,17 @@
       <if test="account != null and account != ''">
          and account = #{account,jdbcType=VARCHAR}
       </if>
-      <if test="ctime != null ">
-         and create_time &gt;= #{ctime }
+      <if test="createTime != null ">
+         and create_time &gt;= #{createTime }
       </if>
-      <if test="etime != null ">
-         and create_time &lt;= #{etime } 
+      <if test="createTime != null ">
+         and create_time &lt;= #{createTime } 
       </if>
-      <if test="ctime != null ">
-         and update_time &gt;= #{ctime }
+      <if test="updateTime != null ">
+         and update_time &gt;= #{updateTime }
       </if>
-      <if test="etime != null ">
-         and update_time &lt;= #{etime } 
+      <if test="updateTime != null ">
+         and update_time &lt;= #{updateTime } 
       </if>
     </where>
   </sql>

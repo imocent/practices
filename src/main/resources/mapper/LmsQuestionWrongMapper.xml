@@ -100,11 +100,11 @@
       <if test="wrongCount != null and wrongCount != ''">
          and WRONG_COUNT = #{wrongCount,jdbcType=INTEGER}
       </if>
-      <if test="ctime != null ">
-         and LAST_WRONG_TIME &gt;= #{ctime }
+      <if test="lastWrongTime != null ">
+         and LAST_WRONG_TIME &gt;= #{lastWrongTime }
       </if>
-      <if test="etime != null ">
-         and LAST_WRONG_TIME &lt;= #{etime } 
+      <if test="lastWrongTime != null ">
+         and LAST_WRONG_TIME &lt;= #{lastWrongTime } 
       </if>
     </where>
   </sql>

@@ -74,11 +74,11 @@
       <if test="count != null and count != ''">
          and `count` = #{count,jdbcType=INTEGER}
       </if>
-      <if test="ctime != null ">
-         and create_time &gt;= #{ctime }
+      <if test="createTime != null ">
+         and create_time &gt;= #{createTime }
       </if>
-      <if test="etime != null ">
-         and create_time &lt;= #{etime } 
+      <if test="createTime != null ">
+         and create_time &lt;= #{createTime } 
       </if>
     </where>
   </sql>

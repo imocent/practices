@@ -9,7 +9,7 @@
             <h2>管理系统</h2>
             <p>登录</p>
         </div>
-        <form class="lay-user-login-box lay-user-login-body layui-form" th:action="@{/login}" method="post">
+        <form class="lay-user-login-box lay-user-login-body layui-form" th:action="@{/admin/login}" method="post">
             <div class="layui-form-item">
                 <label class="lay-user-login-icon layui-icon layui-icon-username" for="lay-login-username"></label>
                 <input type="text" name="username" id="lay-login-username" lay-verify="required" placeholder="用户名" class="layui-input">
@@ -52,6 +52,7 @@
     });
     layui.use(['jquery', 'form', 'layer'], function ($, form, layer) {
         if (top.location != self.location) top.location = self.location;
+        $.post('/clear-login-error', {});
         document.onkeydown = function (e) { // 回车提交表单
             var theEvent = window.event || e;
             var code = theEvent.keyCode || theEvent.which;

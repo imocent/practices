@@ -475,7 +475,13 @@ public class WxApiTokenService {
      */
     public String getCurrentAccount() {
         WxAccount current = currentWxAccount.get();
-        return current != null ? current.getAccount() : null;
+        try {
+            return current.getAccount();
+        } catch (Exception e) {
+            reloadCurrentAccount();
+            current = currentWxAccount.get();
+            return current.getAccount();
+        }
     }
 
     /**

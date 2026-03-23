@@ -35,13 +35,13 @@
             <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="column-toolbar">
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="eye">
-                    <i class="layui-icon layui-icon-eye" title="预览">预览</i>
+                    <i class="layui-icon layui-icon-eye" title="预览"> 预览</i>
                 </button>
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="down">
-                    <i class="layui-icon layui-icon-download-circle" title="下载">下载</i>
+                    <i class="layui-icon layui-icon-download-circle" title="下载"> 下载</i>
                 </button>
                 <button type="button" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
-                    <i class="layui-icon layui-icon-delete" title="删除">删除</i>
+                    <i class="layui-icon layui-icon-delete" title="删除"> 删除</i>
                 </button>
             </script>
         </div>
@@ -58,11 +58,14 @@
             toolbar: '#toolbar',
             smartReloadModel: true,
             cols: [[
-                {field: 'mediaType', title: '类型', minWidth: 80},
-                {field: 'createTime', title: '上传时间', minWidth: 80},
+                {field: 'filename', title: '存放名称', minWidth: 80},
+                {field: 'realname', title: '原始名称', minWidth: 80},
+                {field: 'account', title: '公众号', width: 150},
+                {field: 'mediaType', title: '类型', width: 80},
+                {field: 'createTime', title: '上传时间', width: 170},
                 {field: 'title', title: '标题', minWidth: 80},
                 {field: 'introduction', title: '说明', minWidth: 80},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+                {fixed: 'right', title: '操作', width: 240, align: 'center', toolbar: '#column-toolbar'}
             ]]
         });
 
@@ -77,8 +80,13 @@
 
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
-            if (event === 'edit') {
-                editView("/admin/wx/asset/media/edit?id=" + data.account, "编辑");
+            if (event === 'eye') {
+                openFull("/admin/wx/media/view?id=" + data.id, "预览");
+            } else if (obj.event === 'down') {
+                layer.confirm('确定要下载吗？', {icon: 3, title: '下载确认'}, function (index) {
+                    downloadFile(data.url, data.filename);
+                    layer.close(index);
+                });
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
@@ -103,26 +111,89 @@
             return false;
         });
 
-        upload.render({
-            elem: '#upload',
-            url: '/admin/wx/media/upload',
-            size: 2048,
-            before: function () {
-                layer.load(1, {shade: [0.1, '#000']});
-            },
-            done: function (res) {
-                layer.closeAll('loading');
-                if (res.mode) {
-                    layer.msg("上传成功");
-                    table.reload('table-list');
+        function downloadFile(url, filename) {
+            // 对于图片、视频、音频，可以尝试直接预览或下载
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    var link = document.createElement('a');
+                    var blobUrl = URL.createObjectURL(this.response);
+                    link.href = blobUrl;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(blobUrl);
+                    layer.msg('下载成功：' + filename, {icon: 1, time: 1500});
                 } else {
-                    layer.msg("上传失败");
+                    layer.msg('下载失败，请重试', {icon: 2});
                 }
+            };
+
+            xhr.onerror = function () {
+                // 如果 XHR 失败，尝试使用 a 标签直接下载
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                layer.msg('正在下载：' + filename, {icon: 1, time: 1500});
+            };
+
+            xhr.send();
+        }
+
+
+        let currentUploadInst = null;
+
+        // 封装初始化函数
+        function initUploadComponent() {
+            // 如果已存在实例，先解绑事件
+            if (currentUploadInst) {
+                $('#upload').off('change'); // 解绑change事件
+                $('#upload').next('.layui-btn').off('click'); // 解绑按钮点击事件
             }
-            , error: function () {
-                layer.msg("上传失败");
-            }
-        });
+
+            // 重新初始化
+            currentUploadInst = upload.render({
+                accept: 'file',
+                elem: '#upload',
+                exts: 'jpg|png|gif|bmp|jpeg|mp4|amr|mp3|m4a|txt',
+                url: '/admin/wx/media/uploadAsset',
+                size: 20480,
+                before: function () {
+                    layer.load(1, {shade: [0.1, '#000']});
+                },
+                done: function (res) {
+                    layer.closeAll('loading');
+                    if (res.mode) {
+                        layer.msg("上传成功");
+                        table.reload('table-list');
+                        setTimeout(function () {
+                            initUploadComponent();
+                        }, 100);
+                    } else {
+                        layer.msg("上传失败: " + res.msg);
+                        setTimeout(function () {
+                            initUploadComponent();
+                        }, 100);
+                    }
+                },
+                error: function () {
+                    layer.closeAll('loading');
+                    layer.msg("上传失败");
+                    setTimeout(function () {
+                        initUploadComponent();
+                    }, 100);
+                }
+            });
+        }
+
+        initUploadComponent();
 
         laydate.render({
             elem: '#times',

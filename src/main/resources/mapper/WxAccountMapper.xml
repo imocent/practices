@@ -14,7 +14,7 @@
     <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
     <result column="token_time" jdbcType="TIMESTAMP" property="tokenTime" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
-    <result column="shift" jdbcType="BIT" property="shift" />
+    <result column="shift" jdbcType="BIGINT" property="shift" />
   </resultMap>
   <sql id="Base_Column_List">
     account, url, `name`, appid, appsecret, token, msg_count, refresh_interval, advance_refresh, 
@@ -111,7 +111,7 @@
         #{notes,jdbcType=VARCHAR},
       </if>
       <if test="shift != null">
-        #{shift,jdbcType=BIT},
+        #{shift,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -152,7 +152,7 @@
         notes = #{notes,jdbcType=VARCHAR},
       </if>
       <if test="shift != null">
-        shift = #{shift,jdbcType=BIT},
+        shift = #{shift,jdbcType=BIGINT},
       </if>
     </set>
     where account = #{account,jdbcType=VARCHAR}
@@ -189,17 +189,17 @@
       <if test="expiresIn != null and expiresIn != ''">
          and expires_in = #{expiresIn,jdbcType=INTEGER}
       </if>
-      <if test="ctime != null ">
-         and token_time &gt;= #{ctime }
+      <if test="tokenTime != null ">
+         and token_time &gt;= #{tokenTime }
       </if>
-      <if test="etime != null ">
-         and token_time &lt;= #{etime } 
+      <if test="tokenTime != null ">
+         and token_time &lt;= #{tokenTime } 
       </if>
       <if test="notes != null and notes != ''">
          and notes = #{notes,jdbcType=VARCHAR}
       </if>
       <if test="shift != null and shift != ''">
-         and shift = #{shift,jdbcType=BIT}
+         and shift = #{shift,jdbcType=BIGINT}
       </if>
     </where>
   </sql>

@@ -152,8 +152,8 @@
       <if test="ctime != null ">
          and CTIME &gt;= #{ctime }
       </if>
-      <if test="etime != null ">
-         and CTIME &lt;= #{etime } 
+      <if test="ctime != null ">
+         and CTIME &lt;= #{ctime } 
       </if>
       <if test="cuser != null and cuser != ''">
          and CUSER = #{cuser,jdbcType=BIGINT}
@@ -179,8 +179,8 @@
       <if test="enabled != null and enabled != ''">
          and ENABLED = #{enabled,jdbcType=BIT}
       </if>
-      <if test="ctime != null ">
-         and ETIME &gt;= #{ctime }
+      <if test="etime != null ">
+         and ETIME &gt;= #{etime }
       </if>
       <if test="etime != null ">
          and ETIME &lt;= #{etime } 

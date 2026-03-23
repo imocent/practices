@@ -141,8 +141,8 @@
       <if test="ctime != null ">
          and CTIME &gt;= #{ctime }
       </if>
-      <if test="etime != null ">
-         and CTIME &lt;= #{etime } 
+      <if test="ctime != null ">
+         and CTIME &lt;= #{ctime } 
       </if>
       <if test="cuser != null and cuser != ''">
          and CUSER = #{cuser,jdbcType=BIGINT}
@@ -165,8 +165,8 @@
       <if test="sort != null and sort != ''">
          and SORT = #{sort,jdbcType=INTEGER}
       </if>
-      <if test="ctime != null ">
-         and ETIME &gt;= #{ctime }
+      <if test="etime != null ">
+         and ETIME &gt;= #{etime }
       </if>
       <if test="etime != null ">
          and ETIME &lt;= #{etime } 

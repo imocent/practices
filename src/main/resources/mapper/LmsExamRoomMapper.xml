@@ -324,8 +324,8 @@
       <if test="ctime != null ">
          and CTIME &gt;= #{ctime }
       </if>
-      <if test="etime != null ">
-         and CTIME &lt;= #{etime } 
+      <if test="ctime != null ">
+         and CTIME &lt;= #{ctime } 
       </if>
       <if test="cuser != null and cuser != ''">
          and CUSER = #{cuser,jdbcType=BIGINT}
@@ -372,17 +372,17 @@
       <if test="timeLen != null and timeLen != ''">
          and TIME_LEN = #{timeLen,jdbcType=INTEGER}
       </if>
-      <if test="ctime != null ">
-         and TIME_ON &gt;= #{ctime }
+      <if test="timeOn != null ">
+         and TIME_ON &gt;= #{timeOn }
       </if>
-      <if test="etime != null ">
-         and TIME_ON &lt;= #{etime } 
+      <if test="timeOn != null ">
+         and TIME_ON &lt;= #{timeOn } 
       </if>
-      <if test="ctime != null ">
-         and TIME_OFF &gt;= #{ctime }
+      <if test="timeOff != null ">
+         and TIME_OFF &gt;= #{timeOff }
       </if>
-      <if test="etime != null ">
-         and TIME_OFF &lt;= #{etime } 
+      <if test="timeOff != null ">
+         and TIME_OFF &lt;= #{timeOff } 
       </if>
       <if test="examineeMode != null and examineeMode != ''">
          and EXAMINEE_MODE = #{examineeMode,jdbcType=BIT}
@@ -408,8 +408,8 @@
       <if test="markTimeMode != null and markTimeMode != ''">
          and MARK_TIME_MODE = #{markTimeMode,jdbcType=INTEGER}
       </if>
-      <if test="ctime != null ">
-         and ETIME &gt;= #{ctime }
+      <if test="etime != null ">
+         and ETIME &gt;= #{etime }
       </if>
       <if test="etime != null ">
          and ETIME &lt;= #{etime } 

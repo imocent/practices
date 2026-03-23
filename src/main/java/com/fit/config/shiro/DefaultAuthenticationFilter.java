@@ -9,6 +9,7 @@ import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.SavedRequest;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -30,6 +31,9 @@ import java.util.Map;
  */
 @Slf4j
 public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
+
+    @Value("${Fit.captcha-open}")
+    private boolean captcha = false;
 
     private static final String AJAX_HEADER = "X-Requested-With"; //AJAX请求头标识
     public static final String CAPTCHA_REQUIRED_KEY = "shiroCaptchaRequired"; //是否需要验证码
@@ -69,30 +73,32 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         String loginName = this.getUsername(request);// 登录用户名
         String loginPwd = this.getPassword(request); // 登录用户密码
         boolean rememberMe = this.isRememberMe(request);// 记住我
-        String captcha = WebUtils.getCleanParam(request, DEFAULT_CAPTCHA_PARAM);
-        log.info("Access Username => {}, IP => {}", loginName, ip);
-        // 错误次数
-        Integer errorCount = (Integer) session.getAttribute(CAPTCHA_ERROR_COUNT_KEY);
-        if (errorCount == null) errorCount = 0;
-        // 提前保存 SavedRequest（因为我们可能会 logout() 清掉原 session）
-        SavedRequest oldSavedRequest = WebUtils.getAndClearSavedRequest(request);
         // 构建 token（包含 RSA / 私钥逻辑）
         DefaultVerifyToken token = getToken(loginName, loginPwd, rememberMe, session);
+        // 验证码校验
+        if (captcha) {
+            // 错误次数
+            Integer errorCount = (Integer) session.getAttribute(CAPTCHA_ERROR_COUNT_KEY);
+            if (errorCount == null) errorCount = 0;
+            String captcha = WebUtils.getCleanParam(request, DEFAULT_CAPTCHA_PARAM);
+            Object code = session.getAttribute("captcha");
+            if (code == null || captcha == null || !code.toString().equalsIgnoreCase(captcha)) {
+                session.setAttribute(CAPTCHA_ERROR_COUNT_KEY, errorCount + 1);
+                return onLoginFailure(token, new AuthenticationException("验证码错误"), request, servletResponse);
+            } else {
+                session.removeAttribute(CAPTCHA_REQUIRED_KEY);
+                session.removeAttribute(CAPTCHA_ERROR_COUNT_KEY);
+            }
+        }
+        log.info("Access Username => {}, IP => {}", loginName, ip);
+        // 提前保存 SavedRequest（因为我们可能会 logout() 清掉原 session）
+        SavedRequest oldSavedRequest = WebUtils.getAndClearSavedRequest(request);
         try {
             if (token == null) {
                 throw new IllegalStateException("CreateToken method returned null");
             }
-            // 验证码校验（仅管理员登录需要）
             if (isAdminRequest(request)) {
                 token.setLoginType(LoginType.ADMIN.toString());
-                Object code = session.getAttribute("code");
-                if (code == null || captcha == null || !code.toString().equalsIgnoreCase(captcha)) {
-                    session.setAttribute(CAPTCHA_ERROR_COUNT_KEY, errorCount + 1);
-                    return onLoginFailure(token, new AuthenticationException("验证码错误"), request, servletResponse);
-                } else {
-                    session.removeAttribute(CAPTCHA_REQUIRED_KEY);
-                    session.removeAttribute(CAPTCHA_ERROR_COUNT_KEY);
-                }
             } else {
                 token.setLoginType(LoginType.CUSTOM.toString());
             }
@@ -111,6 +117,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
                     log.warn("恢复 SavedRequest 失败: {}", ex.getMessage(), ex);
                 }
             }
+            subject.getSession().setAttribute("loginType", token.getLoginType());
             subject.getSession().setAttribute("username", loginName);
             // 调用父类登录成功处理（会触发 issueSuccessRedirect）
             return super.onLoginSuccess(token, subject, request, servletResponse);
@@ -151,7 +158,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         log.debug("=== 登录失败 ===> {}", e.getMessage());
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession session = req.getSession();
-        session.setAttribute("errorMsg", getErrorMessage(e));
+        session.setAttribute("tips", getErrorMessage(e));
         // 如果是AJAX请求，返回JSON响应
         if (isAjaxRequest(req)) {
             handleAjaxResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "登录失败", getErrorMessage(e));
@@ -172,7 +179,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
                     }
                 }
             }
-            WebUtils.issueRedirect(req, response, loginUrl);
+            WebUtils.issueRedirect(req, (HttpServletResponse) response, loginUrl);
         } catch (Exception ex) {
             log.error("重定向失败: {}", ex.getMessage(), ex);
             throw new RuntimeException(ex);
@@ -207,17 +214,27 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         // 2. 其次使用 SavedRequest（从 session 中拿并清除）
         SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(request);
         if (savedRequest != null) {
-            String savedUrl = savedRequest.getRequestUrl();
-            if (isValidRedirectUrl(savedUrl)) {
+            redirectUrl = savedRequest.getRequestUrl();
+            if (isValidRedirectUrl(redirectUrl)) {
                 // 如果保存的请求是后台路径，统一跳转到后台首页
-                if (isAdminPath(savedUrl)) {
-                    savedUrl = WebUtil.ADMIN_URL + WebUtil.ADMIN_MAIN_URL;
+                if (isAdminPath(redirectUrl)) {
+                    redirectUrl = WebUtil.ADMIN_URL + WebUtil.ADMIN_MAIN_URL;
                 }
-                WebUtils.issueRedirect(request, response, savedUrl, null, true);
+                WebUtils.issueRedirect(request, response, redirectUrl, null, true);
                 return;
             }
         }
-        // 3. 根据当前请求判断是否是后台登录，设置默认成功页
+        // 3.从 Session 中获取登录类型（在 executeLogin 中已设置）
+        Subject subject = getSubject(request, response);
+        if (subject.isAuthenticated()) {
+            redirectUrl = getSuccessUrl();
+            if (LoginType.ADMIN.toString().equals(subject.getSession().getAttribute("loginType").toString())) {
+                redirectUrl = WebUtil.ADMIN_URL + WebUtil.ADMIN_MAIN_URL;
+            }
+            WebUtils.issueRedirect(request, response, redirectUrl, null, true);
+            return;
+        }
+        // 4. 根据当前请求判断是否是后台登录，设置默认成功页
         String successUrl = getSuccessUrl();
         if (isAdminPath(successUrl)) {
             successUrl = WebUtil.ADMIN_URL + WebUtil.ADMIN_MAIN_URL;

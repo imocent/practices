@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('预览')"></head>
+<body style="background-color:#f5f5f5">
+<div class="yadmin-body animated fadeIn" style="padding: 20px;">
+    <!-- 图片预览 -->
+    <div th:if="${bean?.mediaType == 'image'}" style="text-align: center;">
+        <div class="layui-card" style="background: #fff; border-radius: 4px;">
+            <div class="layui-card-header" style="border-bottom: 1px solid #f0f0f0; padding: 15px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 16px; font-weight: 500; color: #333;">
+                        <i class="layui-icon layui-icon-picture" style="font-size: 18px; margin-right: 8px; color: #5FB878;"></i>
+                        图片预览
+                    </span>
+                    <span th:text="${bean?.realname}" style="color: #999; font-size: 14px;"></span>
+                </div>
+            </div>
+            <div class="layui-card-body" style="padding: 30px; text-align: center;">
+                <img th:src="${bean?.url}" style="max-width: 100%; max-height: 70vh; box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); border-radius: 4px;"/>
+                <div style="margin-top: 20px; color: #999; font-size: 12px;">
+                    <i class="layui-icon layui-icon-tips"></i> 点击图片可查看原图
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 视频预览 -->
+    <div th:if="${bean?.mediaType == 'video'}" style="text-align: center;">
+        <div class="layui-card" style="background: #000; border-radius: 4px;">
+            <div class="layui-card-header" style="border-bottom: 1px solid #333; padding: 15px 20px; background: #1e1e1e;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 16px; font-weight: 500; color: #fff;">
+                        <i class="layui-icon layui-icon-play" style="font-size: 18px; margin-right: 8px; color: #FF5722;"></i>
+                        视频预览
+                    </span>
+                    <span th:text="${bean?.realname}" style="color: #999; font-size: 14px;"></span>
+                </div>
+            </div>
+            <div class="layui-card-body" style="padding: 0;">
+                <video id="videoPlayer" width="100%" controls="controls" oncontextmenu="return false"
+                       style="max-height: 70vh; width: 100%; background: #000;" controlslist="nodownload">
+                    <source th:src="${bean?.url}" type="video/mp4"/>
+                    您的浏览器不支持 video 标签。
+                </video>
+                <div style="padding: 10px 20px; background: #f8f8f8; color: #666; font-size: 12px; display: flex; justify-content: space-between;">
+                    <span><i class="layui-icon layui-icon-voice"></i> 支持全屏播放</span>
+                    <span><i class="layui-icon layui-icon-note"></i> 右键菜单已禁用</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音频预览 -->
+    <div th:if="${bean?.mediaType == 'voice'}" style="text-align: center;">
+        <div class="layui-card" style="background: #fff; border-radius: 4px;">
+            <div class="layui-card-header" style="border-bottom: 1px solid #f0f0f0; padding: 15px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 16px; font-weight: 500; color: #333;">
+                        <i class="layui-icon layui-icon-voice" style="font-size: 18px; margin-right: 8px; color: #009688;"></i>
+                        音频预览
+                    </span>
+                    <span th:text="${bean?.realname}" style="color: #999; font-size: 14px;"></span>
+                </div>
+            </div>
+            <div class="layui-card-body" style="padding: 40px;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 40px; text-align: center;">
+                    <div style="margin-bottom: 30px;">
+                        <i class="layui-icon layui-icon-voice" style="font-size: 80px; color: #fff;"></i>
+                    </div>
+                    <audio controls style="width: 100%; max-width: 500px; margin: 0 auto; display: block;">
+                        <source th:src="${bean?.url}" type="audio/mpeg"/>
+                        您的浏览器不支持 audio 标签。
+                    </audio>
+                    <div style="margin-top: 20px; color: rgba(255,255,255,0.8); font-size: 12px;">
+                        <i class="layui-icon layui-icon-tips"></i> 支持 MP3、WAV 等常见音频格式
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 其他文件类型预览（PDF、文档等） -->
+    <div th:if="${bean?.mediaType == 'file'}" style="text-align: center;">
+        <div class="layui-card" style="background: #fff; border-radius: 4px;">
+            <div class="layui-card-header" style="border-bottom: 1px solid #f0f0f0; padding: 15px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 16px; font-weight: 500; color: #333;">
+                        <i class="layui-icon layui-icon-file" style="font-size: 18px; margin-right: 8px; color: #FFB800;"></i>
+                        文件预览
+                    </span>
+                    <span th:text="${bean?.realname}" style="color: #999; font-size: 14px;"></span>
+                </div>
+            </div>
+            <div class="layui-card-body" style="padding: 60px 20px; text-align: center;">
+                <i class="layui-icon layui-icon-file" style="font-size: 100px; color: #ccc;"></i>
+                <p style="margin-top: 30px; font-size: 16px; color: #666;">该文件类型暂不支持在线预览</p>
+                <p style="margin-top: 10px; font-size: 14px; color: #999;">请点击下载按钮查看文件内容</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 无数据或加载失败提示 -->
+    <div th:if="${bean == null}" style="text-align: center; padding: 100px 20px;">
+        <div class="layui-card" style="background: #fff; border-radius: 4px;">
+            <div class="layui-card-body" style="padding: 60px 20px;">
+                <i class="layui-icon layui-icon-face-cry" style="font-size: 80px; color: #FF5722;"></i>
+                <p style="margin-top: 20px; font-size: 16px; color: #999;">暂无预览内容</p>
+                <p style="margin-top: 10px; font-size: 14px; color: #ccc;">请检查文件是否有效</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    layui.use(['jquery', 'layer'], function ($, layer) {
+        // 图片点击放大功能
+        $('img').on('click', function () {
+            var imgSrc = $(this).attr('src');
+            if (imgSrc) {
+                layer.open({
+                    type: 1,
+                    title: false,
+                    closeBtn: 1,
+                    shadeClose: true,
+                    area: ['auto', 'auto'],
+                    content: '<div style="text-align: center;"><img src="' + imgSrc + '" style="max-width: 90vw; max-height: 90vh;"></div>'
+                });
+            }
+        });
+
+        // 视频播放器优化
+        var videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer) {
+            // 视频加载完成后的处理
+            videoPlayer.addEventListener('loadedmetadata', function () {
+                console.log('视频加载成功');
+            });
+            // 视频播放错误处理
+            videoPlayer.addEventListener('error', function (e) {
+                layer.msg('视频加载失败，请检查网络或文件格式', {icon: 2});
+            });
+        }
+
+        // 页面加载完成后的优化
+        $(document).ready(function () {
+            // 为所有卡片添加动画效果
+            $('.layui-card').addClass('layui-anim layui-anim-upbit');
+        });
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

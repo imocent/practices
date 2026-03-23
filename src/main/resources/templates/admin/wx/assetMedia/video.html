@@ -62,13 +62,13 @@
             done: function (result) {
                 if (result.mode) {
                     layer.closeAll('loading');
-                    $("#uploader").html("<i class='layui-icon layui-icon-play' data-src='" + result.src + "'></i><p>点击播放预览，点击空白处或将文件拖拽到此处重新上传</p>");
-                    $("#realName").val(result.realname);
-                    $("#fileName").val(result.filename);
-                    $("#suffix").val(result.suffix);
-                    $("#fileSize").val(result.size);
-                    $("#add_path").val(result.src);
-                    $("#add_url").val(result.url);
+                    $("#uploader").html("<i class='layui-icon layui-icon-play' data-src='" + result.data.src + "'></i><p>点击播放预览，点击空白处或将文件拖拽到此处重新上传</p>");
+                    $("#realName").val(result.data.realname);
+                    $("#fileName").val(result.data.filename);
+                    $("#suffix").val(result.data.suffix);
+                    $("#fileSize").val(result.data.size);
+                    $("#add_path").val(result.data.src);
+                    $("#add_url").val(result.data.url);
                 } else {
                     layer.msg(result.msg || "上传接口异常");
                 }

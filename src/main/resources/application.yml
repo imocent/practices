@@ -20,7 +20,7 @@ file:
   static-access-path: /uploads/**
 
 Fit:
-  captcha-open: true #是否开启登录时验证码 (true/false)
+  captcha-open: false #是否开启登录时验证码 (true/false)
 
 spring:
   profiles:

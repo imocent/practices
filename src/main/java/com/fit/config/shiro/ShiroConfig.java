@@ -178,7 +178,6 @@ public class ShiroConfig {
         //定义shiro过滤器
         Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
         filters.put("authc", new DefaultAuthenticationFilter());
-        filters.put("logout", new DefaultLogoutFilter());
         filters.put("user", new DefaultUserFilter());
         shiroFilterFactoryBean.setFilters(filters);
         /* 定义shiro过滤链 Map结构

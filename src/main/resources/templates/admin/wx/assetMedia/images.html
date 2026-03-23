@@ -126,9 +126,9 @@
                 layer.closeAll('loading');
                 if (result.mode) {
                     $("#uploader").html("<img src='" + result.url + "' style='width: 150px;height: 150px;'/><p>点击重新上传，或将文件拖拽到此处</p>");
-                    $("#add_picpath").val(result.url);
-                    $("#add_thumbMediaId").val(result.imgMediaId);
-                    $(".wx-form-list .main img").attr("src", result.url);
+                    $("#add_picpath").val(result.data.url);
+                    $("#add_thumbMediaId").val(result.data.imgMediaId);
+                    $(".wx-form-list .main img").attr("src", result.data.url);
                 } else {
                     layer.msg("上传接口异常");
                 }

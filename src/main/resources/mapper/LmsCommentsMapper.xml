@@ -121,8 +121,8 @@
       <if test="ctime != null ">
          and CTIME &gt;= #{ctime }
       </if>
-      <if test="etime != null ">
-         and CTIME &lt;= #{etime } 
+      <if test="ctime != null ">
+         and CTIME &lt;= #{ctime } 
       </if>
       <if test="userId != null and userId != ''">
          and USER_ID = #{userId,jdbcType=BIGINT}

@@ -60,7 +60,7 @@ public class WxAccount extends BaseEntity<WxAccount> {
     /**
      * 是否使用: 0-否,1-是
      */
-    private Boolean shift;
+    private Long shift;
 
     @Override
     public String toString() {
