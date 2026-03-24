@@ -256,20 +256,24 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_asset_media
-    where id = #{obj}
+    FROM wx_asset_media where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_asset_media
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_asset_media values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.mediaId},#{item.mediaType},#{item.wxUrl},
-       #{item.realname},#{item.filename},#{item.size},#{item.suffix},#{item.url},
-       #{item.title},#{item.description},#{item.category},#{item.flag},#{item.account},
-       #{item.createTime},#{item.updateTime}
+    replace into wx_asset_media (
+      id,media_id,media_type,wx_url,
+      realname,filename,size,suffix,url,
+      title,description,category,flag,account,
+      create_time,update_time
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.mediaId},#{v.mediaType},#{v.wxUrl},
+      #{v.realname},#{v.filename},#{v.size},#{v.suffix},#{v.url},
+      #{v.title},#{v.description},#{v.category},#{v.flag},#{v.account},
+      #{v.createTime},#{v.updateTime}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

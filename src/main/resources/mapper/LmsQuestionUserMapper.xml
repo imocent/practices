@@ -204,19 +204,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM lms_question_user
-    where ID = #{obj}
+    FROM lms_question_user where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_question_user
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into lms_question_user values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.cuser},#{item.examRoomId},
-       #{item.examRoomName},#{item.subjectName},#{item.totalScore},#{item.answerScore},#{item.duration},
-       #{item.enabled},#{item.etime},#{item.euser}
+    replace into lms_question_user (
+      ID,CTIME,CUSER,EXAM_ROOM_ID,
+      EXAM_ROOM_NAME,SUBJECT_NAME,TOTAL_SCORE,ANSWER_SCORE,DURATION,
+      ENABLED,ETIME,EUSER
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.cuser},#{v.examRoomId},
+      #{v.examRoomName},#{v.subjectName},#{v.totalScore},#{v.answerScore},#{v.duration},
+      #{v.enabled},#{v.etime},#{v.euser}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

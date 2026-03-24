@@ -214,19 +214,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_account_menu
-    where id = #{obj}
+    FROM wx_account_menu where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_account_menu
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_account_menu values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.mtype},#{item.eventType},#{item.name},
-       #{item.inputCode},#{item.url},#{item.sort},#{item.parentId},#{item.msgType},
-       #{item.msgId},#{item.gid},#{item.account},#{item.createTime}
+    replace into wx_account_menu (
+      id,mtype,event_type,name,
+      input_code,url,sort,parent_id,msg_type,
+      msg_id,gid,account,create_time
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.mtype},#{v.eventType},#{v.name},
+      #{v.inputCode},#{v.url},#{v.sort},#{v.parentId},#{v.msgType},
+      #{v.msgId},#{v.gid},#{v.account},#{v.createTime}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

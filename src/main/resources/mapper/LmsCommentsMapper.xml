@@ -161,18 +161,20 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM lms_comments
-    where ID = #{obj}
+    FROM lms_comments where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_comments
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into lms_comments values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.userId},#{item.username},
-       #{item.content},#{item.mode},#{item.likeCount},#{item.voteCount},#{item.enabled}
+    replace into lms_comments (
+      ID,CTIME,USER_ID,USERNAME,
+      CONTENT,MODE,LIKE_COUNT,VOTE_COUNT,ENABLED
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.userId},#{v.username},
+      #{v.content},#{v.mode},#{v.likeCount},#{v.voteCount},#{v.enabled}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

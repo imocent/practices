@@ -161,18 +161,20 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM sys_operation_log
-    where ID = #{obj}
+    FROM sys_operation_log where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_operation_log
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into sys_operation_log values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.logType},#{item.logName},
-       #{item.userId},#{item.className},#{item.method},#{item.succeed},#{item.message}
+    replace into sys_operation_log (
+      ID,CTIME,LOG_TYPE,LOG_NAME,
+      USER_ID,CLASS_NAME,METHOD,SUCCEED,MESSAGE
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.logType},#{v.logName},
+      #{v.userId},#{v.className},#{v.method},#{v.succeed},#{v.message}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

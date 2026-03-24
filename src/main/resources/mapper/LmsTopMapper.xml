@@ -230,19 +230,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM lms_top
-    where ID = #{obj}
+    FROM lms_top where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_top
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into lms_top values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.cuser},#{item.model},
-       #{item.title},#{item.content},#{item.url},#{item.imgId},#{item.mold},
-       #{item.visits},#{item.sort},#{item.enabled},#{item.etime},#{item.euser}
+    replace into lms_top (
+      ID,CTIME,CUSER,MODEL,
+      TITLE,CONTENT,URL,IMG_ID,MOLD,
+      VISITS,SORT,ENABLED,ETIME,EUSER
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.cuser},#{v.model},
+      #{v.title},#{v.content},#{v.url},#{v.imgId},#{v.mold},
+      #{v.visits},#{v.sort},#{v.enabled},#{v.etime},#{v.euser}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

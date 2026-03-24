@@ -93,17 +93,18 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM lms_question_answer
-    where ID = #{obj}
+    FROM lms_question_answer where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_question_answer
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into lms_question_answer values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.questionId},#{item.content},#{item.verify}
+    replace into lms_question_answer (
+      ID,QUESTION_ID,CONTENT,VERIFY
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.questionId},#{v.content},#{v.verify}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

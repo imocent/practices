@@ -144,8 +144,7 @@ public class LayPlugin extends PluginAdapter {
         b_select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
         b_select.addElement(new TextElement("SELECT "));
         b_select.addElement(include);
-        b_select.addElement(new TextElement("FROM " + tableNameKey));
-        b_select.addElement(new TextElement("where " + primaryKey + " = #{obj}"));
+        b_select.addElement(new TextElement("FROM " + tableNameKey + " where " + primaryKey + " = #{obj}"));
         rootElement.addElement(b_select);
         // 获取查询数量
         XmlElement c_select = new XmlElement("select");
@@ -159,23 +158,27 @@ public class LayPlugin extends PluginAdapter {
         adds.addAttribute(new Attribute("id", "batchAdd"));
         adds.addAttribute(new Attribute("parameterType", "java.util.List"));
         sb.setLength(0);
-        sb.append("insert into ").append(tableNameKey).append(" values ");
-        adds.addElement(new TextElement(sb.toString()));
+        sb.append("replace into ").append(tableNameKey).append(" (\n      ");
         XmlElement foreachAdd = new XmlElement("foreach");
         foreachAdd.addAttribute(new Attribute("collection", "list"));
-        foreachAdd.addAttribute(new Attribute("item", "id"));
+        foreachAdd.addAttribute(new Attribute("item", "v"));
         foreachAdd.addAttribute(new Attribute("open", "("));
         foreachAdd.addAttribute(new Attribute("separator", ","));
         foreachAdd.addAttribute(new Attribute("close", ")"));
         StringBuilder sbAdd = new StringBuilder();
         for (int i = 0; i < allColumns.size(); i++) {
             if ((i + 1) % 5 == 0) {
-                sbAdd.append("\n       ");
+                sbAdd.append("\n      ");
+                sb.append("\n      ");
             }
             IntrospectedColumn column = allColumns.get(i);
-            sbAdd.append("#{item.").append(column.getJavaProperty()).append("}").append(",");
+            sb.append(column.getActualColumnName()).append(",");
+            sbAdd.append("#{v.").append(column.getJavaProperty()).append("}").append(",");
         }
         sbAdd.deleteCharAt(sbAdd.length() - 1);
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("\n    ) values ");
+        adds.addElement(new TextElement(sb.toString()));
         foreachAdd.addElement(new TextElement(sbAdd.toString()));
         adds.addElement(foreachAdd);
         rootElement.addElement(adds);

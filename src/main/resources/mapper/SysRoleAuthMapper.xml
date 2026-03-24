@@ -80,17 +80,18 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM sys_role_auth
-    where ID = #{obj}
+    FROM sys_role_auth where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_role_auth
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into sys_role_auth values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.roleId},#{item.authId}
+    replace into sys_role_auth (
+      ID,ROLE_ID,AUTH_ID
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.roleId},#{v.authId}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

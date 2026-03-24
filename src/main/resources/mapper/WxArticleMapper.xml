@@ -211,19 +211,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_article
-    where id = #{obj}
+    FROM wx_article where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_article
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_article values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.title},#{item.author},#{item.content},
-       #{item.contentSourceUrl},#{item.showCoverPic},#{item.digest},#{item.url},#{item.mediaId},
-       #{item.newsId},#{item.newsIndex},#{item.picUrl},#{item.thumbMediaId}
+    replace into wx_article (
+      id,title,author,content,
+      content_source_url,show_cover_pic,digest,url,media_id,
+      news_id,news_index,pic_url,thumb_media_id
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.title},#{v.author},#{v.content},
+      #{v.contentSourceUrl},#{v.showCoverPic},#{v.digest},#{v.url},#{v.mediaId},
+      #{v.newsId},#{v.newsIndex},#{v.picUrl},#{v.thumbMediaId}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

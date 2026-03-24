@@ -188,19 +188,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_msg_text
-    where id = #{obj}
+    FROM wx_msg_text where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_msg_text
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_msg_text values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.createTime},#{item.account},#{item.msgType},
-       #{item.inputCode},#{item.rule},#{item.readCount},#{item.favourCount},#{item.enabled},
-       #{item.title},#{item.content}
+    replace into wx_msg_text (
+      id,create_time,account,msg_type,
+      input_code,rule,read_count,favour_count,enabled,
+      title,content
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.createTime},#{v.account},#{v.msgType},
+      #{v.inputCode},#{v.rule},#{v.readCount},#{v.favourCount},#{v.enabled},
+      #{v.title},#{v.content}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

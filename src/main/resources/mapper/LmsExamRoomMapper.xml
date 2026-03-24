@@ -433,22 +433,28 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM lms_exam_room
-    where ID = #{obj}
+    FROM lms_exam_room where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM lms_exam_room
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into lms_exam_room values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.cuser},#{item.uuid},
-       #{item.subjectPid},#{item.subjectId},#{item.subjectName},#{item.imgId},#{item.title},
-       #{item.content},#{item.level},#{item.notes},#{item.enabled},#{item.share},
-       #{item.examMode},#{item.timeMode},#{item.timeLen},#{item.timeOn},#{item.timeOff},
-       #{item.examineeMode},#{item.examineeCount},#{item.subjectSortMode},#{item.subjectOptSortMode},#{item.adjudgeMode},
-       #{item.markMode},#{item.markShowMode},#{item.markTimeMode},#{item.etime},#{item.euser}
+    replace into lms_exam_room (
+      ID,CTIME,CUSER,UUID,
+      SUBJECT_PID,SUBJECT_ID,SUBJECT_NAME,IMG_ID,TITLE,
+      CONTENT,LEVEL,NOTES,ENABLED,SHARE,
+      EXAM_MODE,TIME_MODE,TIME_LEN,TIME_ON,TIME_OFF,
+      EXAMINEE_MODE,EXAMINEE_COUNT,SUBJECT_SORT_MODE,SUBJECT_OPT_SORT_MODE,ADJUDGE_MODE,
+      MARK_MODE,MARK_SHOW_MODE,MARK_TIME_MODE,ETIME,EUSER
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.cuser},#{v.uuid},
+      #{v.subjectPid},#{v.subjectId},#{v.subjectName},#{v.imgId},#{v.title},
+      #{v.content},#{v.level},#{v.notes},#{v.enabled},#{v.share},
+      #{v.examMode},#{v.timeMode},#{v.timeLen},#{v.timeOn},#{v.timeOff},
+      #{v.examineeMode},#{v.examineeCount},#{v.subjectSortMode},#{v.subjectOptSortMode},#{v.adjudgeMode},
+      #{v.markMode},#{v.markShowMode},#{v.markTimeMode},#{v.etime},#{v.euser}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

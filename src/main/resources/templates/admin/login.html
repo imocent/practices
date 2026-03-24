@@ -22,7 +22,8 @@
                 <div class="layui-row">
                     <div class="layui-col-xs7">
                         <label class="lay-user-login-icon layui-icon layui-icon-vercode" for="lay-login-captcha"></label>
-                        <input type="text" name="captcha" id="lay-login-captcha" lay-verify="required" placeholder="验证码" class="layui-input"/>
+                        <input type="text" name="captcha" id="lay-login-captcha" lay-verify="required" placeholder="验证码"
+                               class="layui-input"/>
                     </div>
                     <div class="layui-col-xs5">
                         <img th:src="@{/captcha}" class="lay-user-login-codeimg" id="lay-get-captcha"/>
@@ -51,8 +52,8 @@
         this.src = "/captcha?p=" + Math.random();
     });
     layui.use(['jquery', 'form', 'layer'], function ($, form, layer) {
-        if (top.location != self.location) top.location = self.location;
-        $.post('/clear-login-error', {});
+        if (top.location !== self.location) top.location = self.location;
+
         document.onkeydown = function (e) { // 回车提交表单
             var theEvent = window.event || e;
             var code = theEvent.keyCode || theEvent.which;
@@ -70,6 +71,7 @@
         if (errorMsg) {
             layer.msg(errorMsg, {icon: 5});
         }
+        $.post('/clear-login-error', {});
     });
 </script>
 </body>

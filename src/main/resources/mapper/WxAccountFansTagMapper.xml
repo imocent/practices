@@ -96,17 +96,18 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_account_fans_tag
-    where id = #{obj}
+    FROM wx_account_fans_tag where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_account_fans_tag
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_account_fans_tag values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.name},#{item.count},#{item.createTime}
+    replace into wx_account_fans_tag (
+      id,name,count,create_time
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.name},#{v.count},#{v.createTime}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

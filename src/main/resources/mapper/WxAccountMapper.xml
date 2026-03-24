@@ -14,7 +14,7 @@
     <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
     <result column="token_time" jdbcType="TIMESTAMP" property="tokenTime" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
-    <result column="shift" jdbcType="BIGINT" property="shift" />
+    <result column="shift" jdbcType="BIT" property="shift" />
   </resultMap>
   <sql id="Base_Column_List">
     account, url, `name`, appid, appsecret, token, msg_count, refresh_interval, advance_refresh, 
@@ -111,7 +111,7 @@
         #{notes,jdbcType=VARCHAR},
       </if>
       <if test="shift != null">
-        #{shift,jdbcType=BIGINT},
+        #{shift,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -152,7 +152,7 @@
         notes = #{notes,jdbcType=VARCHAR},
       </if>
       <if test="shift != null">
-        shift = #{shift,jdbcType=BIGINT},
+        shift = #{shift,jdbcType=BIT},
       </if>
     </set>
     where account = #{account,jdbcType=VARCHAR}
@@ -199,7 +199,7 @@
          and notes = #{notes,jdbcType=VARCHAR}
       </if>
       <if test="shift != null and shift != ''">
-         and shift = #{shift,jdbcType=BIGINT}
+         and shift = #{shift,jdbcType=BIT}
       </if>
     </where>
   </sql>
@@ -217,19 +217,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_account
-    where account = #{obj}
+    FROM wx_account where account = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_account
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_account values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.account},#{item.url},#{item.name},#{item.appid},
-       #{item.appsecret},#{item.token},#{item.msgCount},#{item.refreshInterval},#{item.advanceRefresh},
-       #{item.expiresIn},#{item.tokenTime},#{item.notes},#{item.shift}
+    replace into wx_account (
+      account,url,name,appid,
+      appsecret,token,msg_count,refresh_interval,advance_refresh,
+      expires_in,token_time,notes,shift
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.account},#{v.url},#{v.name},#{v.appid},
+      #{v.appsecret},#{v.token},#{v.msgCount},#{v.refreshInterval},#{v.advanceRefresh},
+      #{v.expiresIn},#{v.tokenTime},#{v.notes},#{v.shift}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

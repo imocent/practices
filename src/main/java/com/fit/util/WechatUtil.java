@@ -2,6 +2,8 @@ package com.fit.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fit.entity.WxAccountMenu;
+import com.fit.enums.WechatAPI;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.*;
@@ -27,8 +29,6 @@ public class WechatUtil {
     public static Map<String, String> media_fix = new HashMap<>();
     //素材文件大小
     public static Map<String, Long> type_length = new HashMap<>();
-    //统计图表数据
-    public static Map<String, String[]> data_cube = new HashMap<>();
 
     static {
         type_fix.put("image", "bmp|png|jpeg|jpg|gif");
@@ -46,24 +46,6 @@ public class WechatUtil {
         type_length.put("video", new Long(10 * 1024 * 1024));
         type_length.put("thumb", new Long(64 * 1024));
     }
-
-    public static final String API_HOST_URL = "https://api.weixin.qq.com";
-    public static final String WX_ACCESS_TOKEN = "%s/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
-    // 新增其他类型永久素材
-    public static final String WX_MEDIA_UPLOAD = "%s/cgi-bin/media/upload?access_token=%s&type=%s";
-    public static final String WX_BATCH_GET_USER_INFO = "%s/cgi-bin/user/info/batchget?access_token=%s";
-    // 获取账号粉丝信息
-    public static final String WX_GET_FANS_INFO = "%s/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN";
-    // 获取账号粉丝列表
-    public static final String WX_GET_FANS_LIST = "%s/cgi-bin/user/get?access_token=%s";
-    public static final String WX_CHANGE_OPENID = "%s/cgi-bin/changeopenid?access_token=%s";
-    public static final String WX_QRCODE_CREATE = "%s/cgi-bin/qrcode/create?access_token=%s";
-    public static final String WX_QRCODE_SHOW = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s";
-    public static final String WX_SEND_TEMPLATE_MSG = "%s/cgi-bin/message/template/send?access_token=%s";
-    public static final String WX_TICKET = "%s/cgi-bin/ticket/getticket?access_token=%s&type=%s";
-    public static final String WX_TAGS_MEMBERS_TAGGING = "%s/cgi-bin/tags/members/batchtagging?access_token=%s";
-    public static final String WX_TAGS_MEMBERS_UNTAGGING = "%s/cgi-bin/tags/members/batchuntagging?access_token=%s";
-    public static final String WX_USER_INFO = "%s/cgi-bin/user/info?access_token=%s&openid=%s&lang=%s";
 
     public static boolean isAnyEmpty(CharSequence... css) {
         if (css != null && Array.getLength(css) != 0) {
@@ -86,7 +68,7 @@ public class WechatUtil {
      */
     public static String getAccessToken(String appid, String appSecret) {
         try {
-            JSONObject jsonObject = apiGetCall(String.format(WX_ACCESS_TOKEN, API_HOST_URL, appid, appSecret));
+            JSONObject jsonObject = apiGetCall(WechatAPI.TOKEN.format(appid, appSecret));
             return jsonObject != null ? jsonObject.getString("access_token") : null;
         } catch (Exception e) {
             log.error("获取access_token失败", e);
@@ -95,7 +77,7 @@ public class WechatUtil {
     }
 
     public static JSONArray getChangeOpenid(String access_token, String appid, String[] openIds) {
-        String uri = String.format(WX_CHANGE_OPENID, API_HOST_URL, access_token);
+        String uri = WechatAPI.CHANGE_OPENID.format(access_token);
         JSONObject json = new JSONObject();
         json.put("from_appid", appid);
         json.put("openid_list", openIds);
@@ -108,7 +90,7 @@ public class WechatUtil {
      */
     public static JSONObject getFansList(String access_token) {
         try {
-            return apiGetCall(String.format(WX_GET_FANS_LIST, API_HOST_URL, access_token));
+            return apiGetCall(WechatAPI.FANS_LIST.format(access_token));
         } catch (Exception e) {
             log.error("获取关注列表异常", e);
         }
@@ -120,7 +102,7 @@ public class WechatUtil {
      */
     public static JSONObject getFansInfo(String openId, String access_token) {
         try {
-            return apiGetCall(String.format(WX_GET_FANS_INFO, API_HOST_URL, access_token, openId));
+            return apiGetCall(WechatAPI.FANS_INFO.format(access_token, openId));
         } catch (Exception e) {
             log.error("获取粉丝详情异常", e);
         }
@@ -162,7 +144,7 @@ public class WechatUtil {
      * @return
      */
     public static String getTicket(String access_token, String type) {
-        JSONObject call = apiGetCall(String.format(WX_TICKET, API_HOST_URL, access_token, type));
+        JSONObject call = apiGetCall(WechatAPI.GET_TICKET.format(access_token, type));
         return call != null ? call.getString("ticket") : null;
     }
 
@@ -177,14 +159,14 @@ public class WechatUtil {
         if (lang == null) {
             lang = "zh_CN";
         }
-        return apiGetCall(String.format(WX_USER_INFO, API_HOST_URL, access_token, openid, lang));
+        return apiGetCall(WechatAPI.USER_INFO.format(access_token, openid, lang));
     }
 
     public static JSONObject tagging(String access_token, Long tagId, String openid) {
         JSONObject json = new JSONObject();
         json.put("tagid", tagId);
         json.put("openid_list", new String[]{openid});
-        String uri = String.format(WX_TAGS_MEMBERS_TAGGING, API_HOST_URL, access_token);
+        String uri = WechatAPI.TAGS_MEMBERS_TAGGING.format(access_token);
         return apiCall(uri, "POST", json);
     }
 
@@ -192,7 +174,7 @@ public class WechatUtil {
         JSONObject json = new JSONObject();
         json.put("tagid", tagId);
         json.put("openid_list", new String[]{openid});
-        String uri = String.format(WX_TAGS_MEMBERS_UNTAGGING, API_HOST_URL, access_token);
+        String uri = WechatAPI.TAGS_MEMBERS_UNTAGGING.format(access_token);
         return apiCall(uri, "POST", json);
     }
 
@@ -202,11 +184,15 @@ public class WechatUtil {
      * @return
      */
     public static JSONObject getDraftSwitch(String access_token) {
-        return apiPostCall(String.format("%s/cgi-bin/draft/switch?access_token=%s&checkonly=1", API_HOST_URL, access_token));
+        return apiPostCall(WechatAPI.DRAFT_SWITCH.format(access_token));
     }
 
     public static JSONObject apiPostCall(String uri) {
-        return apiCall(uri, "POST", null);
+        return apiPostCall(uri, null);
+    }
+
+    public static JSONObject apiPostCall(String uri, JSONObject params) {
+        return apiCall(uri, "POST", params);
     }
 
     public static JSONObject apiGetCall(String uri) {
@@ -238,7 +224,7 @@ public class WechatUtil {
         }
         params.put("media", file);
 
-        return apiCall(String.format(WX_MEDIA_UPLOAD, API_HOST_URL, accessToken, type), "POST", params);
+        return apiCall(WechatAPI.MEDIA_UPLOAD.format(accessToken, type), "POST", params);
     }
 
     /**
@@ -379,6 +365,78 @@ public class WechatUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * 获取菜单结构
+     *
+     * @param menus
+     * @return
+     */
+    public static JSONObject getMenuJson(List<WxAccountMenu> menus) {
+        JSONObject root = new JSONObject();
+        if (!menus.isEmpty()) {
+            List<WxAccountMenu> parentAM = new ArrayList<WxAccountMenu>();
+            Map<Long, List<JSONObject>> subAm = new HashMap<Long, List<JSONObject>>();
+            for (WxAccountMenu m : menus) {
+                if (m.getParentId().intValue() == 0) {//一级菜单
+                    parentAM.add(m);
+                } else {//二级菜单
+                    if (subAm.get(m.getParentId()) == null) {
+                        subAm.put(m.getParentId(), new ArrayList<JSONObject>());
+                    }
+                    List<JSONObject> tmpMenus = subAm.get(m.getParentId());
+                    // 直接构建二级菜单对象
+                    tmpMenus.add(buildMenuJSON(m));
+                    subAm.put(m.getParentId(), tmpMenus);
+                }
+            }
+
+            JSONArray arr = new JSONArray();
+            for (WxAccountMenu m : parentAM) {
+                if (subAm.get(m.getId()) != null) {//有子菜单
+                    // 构建带子菜单的一级菜单
+                    JSONObject parentObj = new JSONObject();
+                    parentObj.put("name", m.getName());
+                    parentObj.put("sub_button", subAm.get(m.getId()));
+                    arr.add(parentObj);
+                } else {//没有子菜单
+                    // 直接构建一级菜单
+                    arr.add(buildMenuJSON(m));
+                }
+            }
+            root.put("button", arr);
+        }
+        return root;
+    }
+
+    /**
+     * 构建菜单JSON对象的内部方法
+     *
+     * @param menu 菜单对象
+     * @return 菜单JSON对象
+     */
+    private static JSONObject buildMenuJSON(WxAccountMenu menu) {
+        JSONObject obj = new JSONObject();
+        obj.put("name", menu.getName());
+        obj.put("type", menu.getMtype());
+        if (WechatUtil.MENU_NEED_KEY.contains(menu.getMtype())) {//事件菜单
+            if ("fix".equals(menu.getEventType())) {//fix 消息
+                obj.put("key", "_fix_" + menu.getMsgId());//以 _fix_ 开头
+            } else {
+                if (WechatUtil.isEmpty(menu.getInputCode())) {//如果inputcode 为空，默认设置为 subscribe，以免创建菜单失败
+                    obj.put("key", "subscribe");
+                } else {
+                    obj.put("key", menu.getInputCode());
+                }
+            }
+            //存msgtype id
+            obj.put("msgType", menu.getMsgType());
+            obj.put("msgId", menu.getMsgId());//
+        } else {//链接菜单-view
+            obj.put("url", menu.getUrl());
+        }
+        return obj;
     }
 
     /**

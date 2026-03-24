@@ -54,6 +54,7 @@ public class WechatAccountFansController {
     @ResponseBody
     public AjaxResult list(HttpServletRequest request) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
+        map.put("account", tokenService.getCurrentAccount());
         List<WxAccountFans> list = service.findList(map);
         int count = service.findCount(map);
         return AjaxResult.tables(count, list);

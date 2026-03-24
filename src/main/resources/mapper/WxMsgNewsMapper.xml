@@ -319,21 +319,26 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_msg_news
-    where id = #{obj}
+    FROM wx_msg_news where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_msg_news
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_msg_news values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.createTime},#{item.account},#{item.msgType},
-       #{item.inputCode},#{item.rule},#{item.readCount},#{item.favourCount},#{item.enabled},
-       #{item.multType},#{item.title},#{item.author},#{item.brief},#{item.description},
-       #{item.picPath},#{item.showPic},#{item.url},#{item.fromUrl},#{item.mediaId},
-       #{item.thumbMediaId},#{item.newsIndex}
+    replace into wx_msg_news (
+      id,create_time,account,msg_type,
+      input_code,rule,read_count,favour_count,enabled,
+      mult_type,title,author,brief,description,
+      pic_path,show_pic,url,from_url,media_id,
+      thumb_media_id,news_index
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.createTime},#{v.account},#{v.msgType},
+      #{v.inputCode},#{v.rule},#{v.readCount},#{v.favourCount},#{v.enabled},
+      #{v.multType},#{v.title},#{v.author},#{v.brief},#{v.description},
+      #{v.picPath},#{v.showPic},#{v.url},#{v.fromUrl},#{v.mediaId},
+      #{v.thumbMediaId},#{v.newsIndex}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

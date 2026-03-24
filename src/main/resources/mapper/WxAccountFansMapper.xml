@@ -4,26 +4,30 @@
   <resultMap id="BaseResultMap" type="com.fit.entity.WxAccountFans">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
-    <result column="subscribe_status" jdbcType="INTEGER" property="subscribeStatus" />
+    <result column="subscribe" jdbcType="INTEGER" property="subscribe" />
     <result column="subscribe_time" jdbcType="VARCHAR" property="subscribeTime" />
-    <result column="gender" jdbcType="BIT" property="gender" />
+    <result column="subscribe_scene" jdbcType="VARCHAR" property="subscribeScene" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
     <result column="language" jdbcType="VARCHAR" property="language" />
     <result column="country" jdbcType="VARCHAR" property="country" />
     <result column="province" jdbcType="VARCHAR" property="province" />
     <result column="city" jdbcType="VARCHAR" property="city" />
     <result column="head_img_url" jdbcType="VARCHAR" property="headImgUrl" />
     <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="wx_id" jdbcType="VARCHAR" property="wxId" />
     <result column="account" jdbcType="VARCHAR" property="account" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="qr_scene" jdbcType="INTEGER" property="qrScene" />
+    <result column="qr_scene_str" jdbcType="VARCHAR" property="qrSceneStr" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.fit.entity.WxAccountFans">
     <result column="nickname" jdbcType="VARBINARY" property="nickname" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, subscribe_status, subscribe_time, gender, `language`, country, province, 
-    city, head_img_url, `status`, notes, wx_id, account, create_time
+    id, open_id, subscribe, subscribe_time, subscribe_scene, sex, `language`, country, 
+    province, city, head_img_url, `status`, remark, wx_id, account, create_time, qr_scene, 
+    qr_scene_str
   </sql>
   <sql id="Blob_Column_List">
     nickname
@@ -49,14 +53,17 @@
       <if test="openId != null">
         open_id,
       </if>
-      <if test="subscribeStatus != null">
-        subscribe_status,
+      <if test="subscribe != null">
+        subscribe,
       </if>
       <if test="subscribeTime != null">
         subscribe_time,
       </if>
-      <if test="gender != null">
-        gender,
+      <if test="subscribeScene != null">
+        subscribe_scene,
+      </if>
+      <if test="sex != null">
+        sex,
       </if>
       <if test="language != null">
         `language`,
@@ -76,8 +83,8 @@
       <if test="status != null">
         `status`,
       </if>
-      <if test="notes != null">
-        notes,
+      <if test="remark != null">
+        remark,
       </if>
       <if test="wxId != null">
         wx_id,
@@ -87,6 +94,12 @@
       </if>
       <if test="createTime != null">
         create_time,
+      </if>
+      <if test="qrScene != null">
+        qr_scene,
+      </if>
+      <if test="qrSceneStr != null">
+        qr_scene_str,
       </if>
       <if test="nickname != null">
         nickname,
@@ -99,14 +112,17 @@
       <if test="openId != null">
         #{openId,jdbcType=VARCHAR},
       </if>
-      <if test="subscribeStatus != null">
-        #{subscribeStatus,jdbcType=INTEGER},
+      <if test="subscribe != null">
+        #{subscribe,jdbcType=INTEGER},
       </if>
       <if test="subscribeTime != null">
         #{subscribeTime,jdbcType=VARCHAR},
       </if>
-      <if test="gender != null">
-        #{gender,jdbcType=BIT},
+      <if test="subscribeScene != null">
+        #{subscribeScene,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
       </if>
       <if test="language != null">
         #{language,jdbcType=VARCHAR},
@@ -126,8 +142,8 @@
       <if test="status != null">
         #{status,jdbcType=TINYINT},
       </if>
-      <if test="notes != null">
-        #{notes,jdbcType=VARCHAR},
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="wxId != null">
         #{wxId,jdbcType=VARCHAR},
@@ -137,6 +153,12 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qrScene != null">
+        #{qrScene,jdbcType=INTEGER},
+      </if>
+      <if test="qrSceneStr != null">
+        #{qrSceneStr,jdbcType=VARCHAR},
       </if>
       <if test="nickname != null">
         #{nickname,jdbcType=VARBINARY},
@@ -149,14 +171,17 @@
       <if test="openId != null">
         open_id = #{openId,jdbcType=VARCHAR},
       </if>
-      <if test="subscribeStatus != null">
-        subscribe_status = #{subscribeStatus,jdbcType=INTEGER},
+      <if test="subscribe != null">
+        subscribe = #{subscribe,jdbcType=INTEGER},
       </if>
       <if test="subscribeTime != null">
         subscribe_time = #{subscribeTime,jdbcType=VARCHAR},
       </if>
-      <if test="gender != null">
-        gender = #{gender,jdbcType=BIT},
+      <if test="subscribeScene != null">
+        subscribe_scene = #{subscribeScene,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
       </if>
       <if test="language != null">
         `language` = #{language,jdbcType=VARCHAR},
@@ -176,8 +201,8 @@
       <if test="status != null">
         `status` = #{status,jdbcType=TINYINT},
       </if>
-      <if test="notes != null">
-        notes = #{notes,jdbcType=VARCHAR},
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
       <if test="wxId != null">
         wx_id = #{wxId,jdbcType=VARCHAR},
@@ -187,6 +212,12 @@
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qrScene != null">
+        qr_scene = #{qrScene,jdbcType=INTEGER},
+      </if>
+      <if test="qrSceneStr != null">
+        qr_scene_str = #{qrSceneStr,jdbcType=VARCHAR},
       </if>
       <if test="nickname != null">
         nickname = #{nickname,jdbcType=VARBINARY},
@@ -199,14 +230,17 @@
       <if test="openId != null and openId != ''">
          and open_id = #{openId,jdbcType=VARCHAR}
       </if>
-      <if test="subscribeStatus != null and subscribeStatus != ''">
-         and subscribe_status = #{subscribeStatus,jdbcType=INTEGER}
+      <if test="subscribe != null and subscribe != ''">
+         and subscribe = #{subscribe,jdbcType=INTEGER}
       </if>
       <if test="subscribeTime != null and subscribeTime != ''">
          and subscribe_time = #{subscribeTime,jdbcType=VARCHAR}
       </if>
-      <if test="gender != null and gender != ''">
-         and gender = #{gender,jdbcType=BIT}
+      <if test="subscribeScene != null and subscribeScene != ''">
+         and subscribe_scene = #{subscribeScene,jdbcType=VARCHAR}
+      </if>
+      <if test="sex != null and sex != ''">
+         and sex = #{sex,jdbcType=INTEGER}
       </if>
       <if test="language != null and language != ''">
          and `language` = #{language,jdbcType=VARCHAR}
@@ -226,8 +260,8 @@
       <if test="status != null and status != ''">
          and `status` = #{status,jdbcType=TINYINT}
       </if>
-      <if test="notes != null and notes != ''">
-         and notes = #{notes,jdbcType=VARCHAR}
+      <if test="remark != null and remark != ''">
+         and remark = #{remark,jdbcType=VARCHAR}
       </if>
       <if test="wxId != null and wxId != ''">
          and wx_id = #{wxId,jdbcType=VARCHAR}
@@ -240,6 +274,12 @@
       </if>
       <if test="createTime != null ">
          and create_time &lt;= #{createTime } 
+      </if>
+      <if test="qrScene != null and qrScene != ''">
+         and qr_scene = #{qrScene,jdbcType=INTEGER}
+      </if>
+      <if test="qrSceneStr != null and qrSceneStr != ''">
+         and qr_scene_str = #{qrSceneStr,jdbcType=VARCHAR}
       </if>
       <if test="nickname != null and nickname != ''">
          and nickname = #{nickname,jdbcType=VARBINARY}
@@ -260,20 +300,24 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM wx_account_fans
-    where id = #{obj}
+    FROM wx_account_fans where id = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM wx_account_fans
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into wx_account_fans values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.openId},#{item.subscribeStatus},#{item.subscribeTime},
-       #{item.gender},#{item.language},#{item.country},#{item.province},#{item.city},
-       #{item.headImgUrl},#{item.status},#{item.notes},#{item.wxId},#{item.account},
-       #{item.createTime},#{item.nickname}
+    replace into wx_account_fans (
+      id,open_id,subscribe,subscribe_time,
+      subscribe_scene,sex,language,country,province,
+      city,head_img_url,status,remark,wx_id,
+      account,create_time,qr_scene,qr_scene_str,nickname
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.openId},#{v.subscribe},#{v.subscribeTime},
+      #{v.subscribeScene},#{v.sex},#{v.language},#{v.country},#{v.province},
+      #{v.city},#{v.headImgUrl},#{v.status},#{v.remark},#{v.wxId},
+      #{v.account},#{v.createTime},#{v.qrScene},#{v.qrSceneStr},#{v.nickname}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

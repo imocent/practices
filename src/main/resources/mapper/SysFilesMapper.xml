@@ -161,18 +161,20 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM sys_files
-    where ID = #{obj}
+    FROM sys_files where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_files
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into sys_files values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.cuser},#{item.fileMold},
-       #{item.fileName},#{item.fileSuffix},#{item.fileData},#{item.enabled},#{item.isys}
+    replace into sys_files (
+      ID,CTIME,CUSER,FILE_MOLD,
+      FILE_NAME,FILE_SUFFIX,FILE_DATA,ENABLED,ISYS
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.cuser},#{v.fileMold},
+      #{v.fileName},#{v.fileSuffix},#{v.fileData},#{v.enabled},#{v.isys}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

@@ -190,19 +190,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM sys_dict
-    where ID = #{obj}
+    FROM sys_dict where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_dict
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into sys_dict values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.cuser},#{item.pid},
-       #{item.name},#{item.code},#{item.sign},#{item.notes},#{item.sort},
-       #{item.etime},#{item.euser}
+    replace into sys_dict (
+      ID,CTIME,CUSER,PID,
+      NAME,CODE,SIGN,NOTES,SORT,
+      ETIME,EUSER
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.cuser},#{v.pid},
+      #{v.name},#{v.code},#{v.sign},#{v.notes},#{v.sort},
+      #{v.etime},#{v.euser}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

@@ -3,7 +3,6 @@ package com.fit.web.admin.wx;
 import com.fit.base.AjaxResult;
 import com.fit.entity.WxMsgText;
 import com.fit.enums.MsgType;
-import com.fit.service.WxAccountService;
 import com.fit.service.WxApiTokenService;
 import com.fit.service.WxMsgTextService;
 import com.fit.util.BeanUtil;

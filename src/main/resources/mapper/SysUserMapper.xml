@@ -204,19 +204,22 @@
   <select id="getByObjId" resultMap="BaseResultMap" resultType="java.lang.Object">
     SELECT 
     <include refid="Base_Column_List" />
-    FROM sys_user
-    where ID = #{obj}
+    FROM sys_user where ID = #{obj}
   </select>
   <select id="findCount" resultType="java.lang.Integer">
     SELECT count(1) FROM sys_user
     <include refid="Base_Where_List" />
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
-    insert into sys_user values 
-    <foreach close=")" collection="list" item="id" open="(" separator=",">
-      #{item.id},#{item.ctime},#{item.cuser},#{item.rid},
-       #{item.name},#{item.username},#{item.password},#{item.notes},#{item.enabled},
-       #{item.isys},#{item.etime},#{item.euser}
+    replace into sys_user (
+      ID,CTIME,CUSER,RID,
+      NAME,USERNAME,PASSWORD,NOTES,ENABLED,
+      ISYS,ETIME,EUSER
+    ) values 
+    <foreach close=")" collection="list" item="v" open="(" separator=",">
+      #{v.id},#{v.ctime},#{v.cuser},#{v.rid},
+      #{v.name},#{v.username},#{v.password},#{v.notes},#{v.enabled},
+      #{v.isys},#{v.etime},#{v.euser}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">
