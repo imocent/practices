@@ -385,30 +385,6 @@ public class WxApiTokenService {
         return stats;
     }
 
-    /**
-     * 获取所有缓存的token详细信息（简化版，不包含完整TokenInfo对象）
-     */
-    public List<Map<String, Object>> getAllCachedTokenInfos() {
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (String appid : tokenCache.keySet()) {
-            Map<String, Object> info = new HashMap<>();
-            info.put("appid", appid);
-            info.put("accessToken", tokenCache.get(appid));
-            info.put("remainingTime", getRemainingTime(appid));
-            info.put("expireTimeStr", getExpireTimeStr(appid));
-
-            WxAccount account = accountCache.get(appid);
-            if (account != null) {
-                info.put("accountName", account.getName());
-                info.put("advanceRefresh", account.getAdvanceRefresh() != null ? account.getAdvanceRefresh() : defaultAdvanceRefresh);
-                info.put("expiresIn", account.getExpiresIn() != null ? account.getExpiresIn() : defaultExpiresIn);
-                info.put("refreshInterval", account.getRefreshInterval() != null ? account.getRefreshInterval() : defaultRefreshInterval);
-            }
-            result.add(info);
-        }
-        return result;
-    }
-
     // ============= 当前公众号配置管理方法 =============
 
     /**
@@ -455,7 +431,7 @@ public class WxApiTokenService {
             log.error("当前未选中任何公众号");
             return null;
         }
-        return account.getToken();
+        return getAccessToken(account.getAccount());
     }
 
     /**

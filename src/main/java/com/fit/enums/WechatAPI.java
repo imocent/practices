@@ -49,7 +49,6 @@ public enum WechatAPI {
     GET_USER_SUMMARY(1,"%s/datacube/getusersummary?access_token=%s","获取用户增减数据-7d"),
     GET_USER_TAG(1,"%s/cgi-bin/tags/get?access_token=%s","获取用户标签列表"),
     MASS_DELETE(1,"%s/cgi-bin/message/mass/delete?access_token=%s","删除群发"),
-    MASS_OPENID(1,"%s/cgi-bin/message/mass/send?access_token=%s","根据openid列表进行群发"),
     MASS_PREVIEW(1,"%s/cgi-bin/message/mass/preview?access_token=%s","群发预览"),
     MASS_SEND(1,"%s/cgi-bin/message/mass/send?access_token=%s","群发接口"),
     MASS_SPEED_GET(1,"%s/cgi-bin/message/mass/speed/get?access_token=%s","获取群发速度"),

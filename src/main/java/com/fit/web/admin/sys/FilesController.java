@@ -55,7 +55,7 @@ public class FilesController extends BaseController {
         Map<String, Object> params = WebUtil.getRequestMap(request);
         List<SysFiles> list = service.findList(params);
         int count = service.findCount(params);
-        return AjaxResult.success(count, list);
+        return AjaxResult.tables(count, list);
     }
 
     /**

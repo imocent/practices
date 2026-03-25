@@ -94,7 +94,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * 返回错误消息
      */
     public static AjaxResult error() {
-        return error(-1, "操作失败");
+        return error("操作失败");
     }
 
     /**
@@ -103,7 +103,16 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param msg 内容
      */
     public static AjaxResult error(String msg) {
-        return error(-1, msg);
+        return error(msg, null);
+    }
+
+    /**
+     * 返回错误消息
+     *
+     * @param msg 内容
+     */
+    public static AjaxResult error(String msg, Object data) {
+        return error(-1, msg, data);
     }
 
     /**
@@ -112,8 +121,8 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param code 错误码
      * @param msg  内容
      */
-    public static AjaxResult error(int code, String msg) {
-        return results(code, msg, 0, null);
+    public static AjaxResult error(int code, String msg, Object data) {
+        return results(code, msg, 0, data);
     }
 
     /**
@@ -127,7 +136,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * 返回成功消息
      */
     public static AjaxResult success() {
-        return AjaxResult.success("操作成功");
+        return success("操作成功");
     }
 
     /**
@@ -136,7 +145,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param msg 内容
      */
     public static AjaxResult success(String msg) {
-        return success(0, msg, 0, null);
+        return success(msg, null);
     }
 
     /**
@@ -145,17 +154,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param obj 返回数据
      */
     public static AjaxResult success(Object obj) {
-        return success(0, "请求成功", 0, obj);
-    }
-
-    /**
-     * 返回成功消息
-     *
-     * @param count 分页总数量
-     * @param obj   返回数据
-     */
-    public static AjaxResult success(int count, Object obj) {
-        return success(0, "获取列表成功", count, obj);
+        return success("操作成功", obj);
     }
 
     /**
@@ -165,8 +164,9 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param obj 返回数据
      */
     public static AjaxResult success(String msg, Object obj) {
-        return success(0, msg, 0, obj);
+        return success(0, msg, obj);
     }
+
 
     /**
      * 返回成功消息
@@ -175,7 +175,7 @@ public class AjaxResult extends HashMap<String, Object> {
      * @param msg  内容
      */
     public static AjaxResult success(int code, String msg) {
-        return success(code, msg, 0, null);
+        return success(code, msg, null);
     }
 
     /**

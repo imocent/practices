@@ -1,11 +1,4 @@
 /**
- * 全局变量
- */
-var GLOBAL = {
-    choosed: [] //用于弹出层多选
-};
-
-/**
  * 复制到剪切板
  * @param {string} txt_str - 要复制的文本
  */
@@ -84,6 +77,13 @@ function openView(opType, title, widthParam, heightParam, isFull, in_content) {
 }
 
 /**
+ * 全局变量
+ */
+var GLOBAL = {
+    chooses: [] //用于弹出层多选
+};
+
+/**
  * 打开页面
  * @param {Object} params - 页面参数
  */
@@ -100,7 +100,7 @@ function openPage(params) {
         params.btn = ['确认', '取消'];
     }
     //0-信息框(默认),1-页面层,2-iframe层,3-加载层,4-tips层
-    layer.open({
+    return layer.open({
         type: 2,
         title: params.title,
         content: params.content,

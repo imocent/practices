@@ -13,11 +13,10 @@
 </div>
 <script th:inline="none">
     layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
-        var GLOBAL = {choosed: []};
         var tableObj = table.render({
             id: 'fans_chose',
             elem: '#fans_chose',
-            url: '/admin/wx/user/accountFans',
+            url: '/admin/wx/fans/accountFans',
             align: "center",
             cols: [[
                 {type: 'checkbox'},
@@ -25,12 +24,12 @@
                 {field: 'nickname', title: '昵称', align: 'center'},
                 {
                     field: 'headImgUrl', title: '头像', align: 'center', templet: function (d) {
-                        return "<img class='fans-portrait' style='width:50px;height:50px;' src=" + d.headImgUrl + " />"
+                        return "<img class='layui-nav-img' src=" + d.headImgUrl + " />"
                     }
                 },
                 {
-                    field: 'gender', title: '性别', width: 80, align: 'center', templet: function (d) {
-                        return d.gender == 1 ? '男' : '女';
+                    field: 'sex', title: '性别', width: 80, align: 'center', templet: function (d) {
+                        return d.sex === 2 ? "女" : d.sex === 1 ? "男" : "未知";
                     }
                 },
                 {
@@ -40,31 +39,32 @@
                 }
             ]],
             success: function (result) {
-                for (var i = 0; i < GLOBAL.choosed.length; i++) {
-                    indexOfArray(GLOBAL.choosed, result.data[i].openId) > -1 && (result.data[i].checked = true);
+                for (var i = 0; i < GLOBAL.chooses.length; i++) {
+                    indexOfArray(GLOBAL.chooses, result.data[i].openId) > -1 && (result.data[i].checked = true);
                 }
                 return result;
             }
         });
 
+        var GLOBAL = parent.GLOBAL;
         // 选择事件
         table.on('checkbox(fans_chose)', function (obj) {
             if (obj.type === "all") { //全选
                 var data = table.cache["fans_chose"] || [];
                 if (obj.checked) {
                     for (var i = 0; i < data.length; i++) {
-                        GLOBAL.choosed = pushArray(GLOBAL.choosed, data[i].openId);
+                        GLOBAL.chooses = pushArray(GLOBAL.chooses, data[i].openId);
                     }
                 } else {
                     for (var i = 0; i < data.length; i++) {
-                        GLOBAL.choosed = removeFromArray(GLOBAL.choosed, data[i].openId);
+                        GLOBAL.chooses = removeFromArray(GLOBAL.chooses, data[i].openId);
                     }
                 }
             } else { //单选
                 if (obj.checked) {
-                    GLOBAL.choosed.push(obj.data.openId);
+                    GLOBAL.chooses.push(obj.data.openId);
                 } else {
-                    GLOBAL.choosed = removeFromArray(GLOBAL.choosed, obj.data.openId);
+                    GLOBAL.chooses = removeFromArray(GLOBAL.chooses, obj.data.openId);
                 }
             }
         });

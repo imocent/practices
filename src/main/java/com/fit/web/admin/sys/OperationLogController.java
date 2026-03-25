@@ -46,7 +46,7 @@ public class OperationLogController {
         Map<String, Object> params = WebUtil.getRequestMap(request);
         List<SysOperationLog> list = logService.findList(params);
         int count = logService.findCount(params);
-        return AjaxResult.success(count, list);
+        return AjaxResult.tables(count, list);
     }
 
     @RequestMapping(value = "/detail", method = RequestMethod.POST)

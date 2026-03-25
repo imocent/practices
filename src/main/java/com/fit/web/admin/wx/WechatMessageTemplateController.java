@@ -2,6 +2,7 @@ package com.fit.web.admin.wx;
 
 import com.fit.base.AjaxResult;
 import com.fit.entity.WxMsgTemplate;
+import com.fit.service.WxApiTokenService;
 import com.fit.service.WxMsgTemplateService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,8 @@ public class WechatMessageTemplateController {
 
     @Autowired
     private WxMsgTemplateService service;
+    @Autowired
+    private WxApiTokenService tokenService;
 
     /**
      * 列表页面
@@ -44,6 +48,7 @@ public class WechatMessageTemplateController {
     @ResponseBody
     public AjaxResult list(HttpServletRequest request) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
+        map.put("account", tokenService.getCurrentAccount());
         List<WxMsgTemplate> list = service.findList(map);
         int count = service.findCount(map);
         return AjaxResult.tables(count, list);
@@ -69,6 +74,8 @@ public class WechatMessageTemplateController {
     public Object save(WxMsgTemplate bean) {
         WxMsgTemplate entity = this.service.get(bean.getId());
         if (null == entity) {
+            bean.setCreateTime(new Date());
+            bean.setAccount(tokenService.getCurrentAccount());
             this.service.save(bean);
         } else {
             BeanUtil.copyProperties(bean, entity);

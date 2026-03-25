@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 @Controller
-@RequestMapping("/admin/wx/user")
+@RequestMapping("/admin/wx/fans")
 public class WechatAccountFansController {
 
     private static String PREFIX = "/admin/wx/accountFans/";
@@ -120,6 +120,9 @@ public class WechatAccountFansController {
                 for (Object openId : openidArr) {
                     JSONObject fansInfo = WechatUtil.getFansInfo(openId.toString(), accessToken);
                     WxAccountFans fans = fansInfo.toJavaObject(WxAccountFans.class);
+                    if (fans.getHeadImgUrl().isEmpty()) {
+                        fans.setHeadImgUrl("/images/avatar.png");
+                    }
                     // 设置公众号
                     fans.setAccount(wxAccount.getAccount());
                     fansList.add(fans);

@@ -39,7 +39,7 @@
     layui.use(['jquery', 'table', 'form', 'layer'], function ($, table, form, layer) {
         table.render({
             elem: '#table-list',
-            url: '/admin/wx/user/list',
+            url: '/admin/wx/fans/list',
             method: 'post',
             dataType: 'JSON',
             page: true,
@@ -77,7 +77,7 @@
                     title: '发送消息', template: 'msglist', height: 600, tableObj: tableObj, htmlData: data, btn: 0
                 })
             } else if (event === 'sync') {
-                $.post('/admin/wx/user/syncAccountFans', {openId: data.openId}, function (data) {
+                $.post('/admin/wx/fans/syncAccountFans', {openId: data.openId}, function (data) {
                     if (data.code === 0) {
                         showDialog({
                             title: '粉丝详细信息', template: 'fansInfo', saveUrl: '', width: 400, height: 500, htmlData: result.data
@@ -95,7 +95,7 @@
         // 批量同步粉丝
         $("#fans_sync").click(function () {
             layer.confirm('确认同步粉丝？', {icon: 7, title: "提示", btn: ['确认', '取消']}, function () {
-                $.post('/admin/wx/user/syncAccountFansList', function (data) {
+                $.post('/admin/wx/fans/syncAccountFansList', function (data) {
                     advices(data);
                     if (data.code === 0) {
                         table.reload('table-list');

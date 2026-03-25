@@ -21,12 +21,11 @@
             <div class="layui-form-item" th:if="${captchaOnOff}">
                 <div class="layui-row">
                     <div class="layui-col-xs7">
-                        <label class="lay-user-login-icon layui-icon layui-icon-vercode" for="lay-login-captcha"></label>
-                        <input type="text" name="captcha" id="lay-login-captcha" lay-verify="required" placeholder="验证码"
-                               class="layui-input"/>
+                        <label class="lay-user-login-icon layui-icon layui-icon-vercode" for="lay-captcha"></label>
+                        <input type="text" name="captcha" id="lay-captcha" lay-verify="required" placeholder="验证码" class="layui-input"/>
                     </div>
                     <div class="layui-col-xs5">
-                        <img th:src="@{/captcha}" class="lay-user-login-codeimg" id="lay-get-captcha"/>
+                        <img th:src="@{/captcha}" class="lay-user-login-code-img" id="lay-get-captcha"/>
                     </div>
                 </div>
             </div>
@@ -48,30 +47,36 @@
     </div>
 </div>
 <script>
-    document.querySelector("#lay-get-captcha").addEventListener("click", function () {
-        this.src = "/captcha?p=" + Math.random();
-    });
     layui.use(['jquery', 'form', 'layer'], function ($, form, layer) {
-        if (top.location !== self.location) top.location = self.location;
-
-        document.onkeydown = function (e) { // 回车提交表单
-            var theEvent = window.event || e;
-            var code = theEvent.keyCode || theEvent.which;
-            if (code == 13) {
-                $("#LAY-submit").trigger("click");
-            }
-        }
+        form.render();
         //提交
         form.on('submit(lay_login_submit)', function (data) {
             form.verify({
                 pass: [/^[\S]{5,12}$/, '密码必须5到12位，且不能出现空格']
             });
         });
-        var errorMsg = $("#tips").val();
-        if (errorMsg) {
-            layer.msg(errorMsg, {icon: 5});
-        }
-        $.post('/clear-login-error', {});
+        $(function () {
+            if (top.location !== self.location) {
+                top.location = self.location;
+            }
+            document.onkeydown = function (e) { // 回车提交表单
+                var theEvent = window.event || e;
+                var code = theEvent.keyCode || theEvent.which;
+                if (code === 13) {
+                    $("#LAY-submit").trigger("click");
+                }
+            }
+
+            var errorMsg = $("#tips").val();
+            if (errorMsg) {
+                layer.msg(errorMsg, {icon: 5});
+            }
+            $.post('/clear-login-error', {});
+
+            $("#lay-get-captcha").on("click", function () {
+                $(this).attr("src", "/captcha?p=" + Math.random());
+            });
+        })
     });
 </script>
 </body>

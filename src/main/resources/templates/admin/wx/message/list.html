@@ -59,7 +59,7 @@
                 {field: 'inputCode', title: '消息方向', minWidth: 80},
                 {field: 'readCount', title: '阅读数', minWidth: 80},
                 {field: 'favourCount', title: '点赞数', minWidth: 80},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+                {fixed: 'right', title: '操作', width: 160, align: 'center', toolbar: '#column-toolbar'}
             ]]
         });
 
@@ -86,23 +86,20 @@
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'mass') {
-                openPage({
-                    content: "/admin/wx/user/mass", title: "群发", yes: function (index) {
-                        if (GLOBAL.choosed.length < 2) {
-                            layer.msg("至少选择2个粉丝");
+                var pageIndex = openPage({
+                    content: '/admin/wx/fans/mass', title: "群发", yes: function (index) {
+                        if (GLOBAL.chooses.length === 0) {
+                            layer.msg("至少选择1个粉丝");
                             return false;
                         }
-                        $.post('/admin/wx/message/massSendTextByOpenIds', {
-                            textId: data.id,
-                            openIds: GLOBAL.choosed.join(",")
-                        }, function (data) {
-                            advices(data, index);
+                        $.post('/wxapi/sendTextMessage', {id: data.id, openIds: GLOBAL.chooses.join(",")}, function (result) {
+                            advices(result, pageIndex);
                         }, 'json').fail(function (event) {
                             toError(event);
                         });
                     },
                     end: function () {
-                        GLOBAL.choosed = [];
+                        GLOBAL.chooses = [];
                     }
                 });
             } else if (event === 'edit') {

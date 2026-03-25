@@ -228,6 +228,21 @@ public class WechatUtil {
     }
 
     /**
+     * @param accessToken 接口调用凭证
+     * @param toUser      用户OpenID列表（2-10000个）
+     * @param type        消息类型：text, mpnews, images, voice, mpvideo, wxcard
+     * @param params      消息参数，根据msgtype不同传入不同参数
+     * @return
+     */
+    public static JSONObject bulkMessaging(String accessToken, String[] toUser, String type, JSONObject params) {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("touser", toUser);
+        requestBody.put("msgtype", type);
+        requestBody.put(type, params);
+        return apiPostCall(WechatAPI.MASS_SEND.format(accessToken), requestBody);
+    }
+
+    /**
      * 请求到微信接口
      *
      * @param uri    请求路径
@@ -457,6 +472,16 @@ public class WechatUtil {
             default:
                 return "application/octet-stream";
         }
+    }
+
+    /**
+     * 判断是否微信返回错误
+     */
+    public static boolean isWxError(JSONObject param) {
+        if (null == param || param.getIntValue("errcode") != 0) {
+            return true;
+        }
+        return false;
     }
 
     private static SSLSocketFactory getSSLSocketFactory() throws Exception {
