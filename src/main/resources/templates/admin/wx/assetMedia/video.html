@@ -20,7 +20,8 @@
                 <input type="hidden" name="size" id="fileSize" value="">
                 <input type="hidden" name="uploadUrl" id="add_path" value="">
                 <input type="hidden" name="url" id="add_url" value="">
-                <div class="layui-upload-drag" id="uploader">
+                <input type="hidden" name="mediaId" id="mediaId" value="">
+                <div class="layui-upload-drag" id="upload">
                     <i class="layui-icon"></i>
                     <p>点击上传，或将文件拖拽到此处</p>
                     <p class="layui-bg-red" style="line-height:1.4;padding-left:10px;">只支持mp4</p>
@@ -50,34 +51,56 @@
                 toError(event);
             });
         });
-        var uploadInst = upload.render({
-            elem: '#uploader',
-            url: '/admin/wx/media/upload',
-            size: 10240,
-            accept: "video",
-            exts: "mp4|MP4",
-            before: function () {
-                layer.load(1, {shade: [0.1, '#000']});
-            },
-            done: function (result) {
-                if (result.mode) {
-                    layer.closeAll('loading');
-                    $("#uploader").html("<i class='layui-icon layui-icon-play' data-src='" + result.data.src + "'></i><p>点击播放预览，点击空白处或将文件拖拽到此处重新上传</p>");
-                    $("#realName").val(result.data.realname);
-                    $("#fileName").val(result.data.filename);
-                    $("#suffix").val(result.data.suffix);
-                    $("#fileSize").val(result.data.size);
-                    $("#add_path").val(result.data.src);
-                    $("#add_url").val(result.data.url);
-                } else {
-                    layer.msg(result.msg || "上传接口异常");
-                }
-            },
-            error: function (result) {
-                layer.closeAll('loading');
-                layer.msg(result.msg || "上传接口异常");
+
+        let currentUploadInst = null;
+
+        function initUploadComponent() {
+            // 如果已存在实例，先解绑事件
+            if (currentUploadInst) {
+                $('#upload').off('change'); // 解绑change事件
+                $('#upload').next('.layui-btn').off('click'); // 解绑按钮点击事件
             }
-        });
+
+            // 重新初始化
+            currentUploadInst = upload.render({
+                elem: '#upload',
+                data: {type: 'video'},
+                url: '/admin/wx/media/upload',
+                size: 10240,
+                accept: "video",
+                exts: "mp4|MP4",
+                before: function () {
+                    layer.load(1, {shade: [0.1, '#000']});
+                },
+                done: function (result) {
+                    if (result.mode) {
+                        $("#uploader").html("<i class='layui-icon layui-icon-play' data-src='" + result.data.src + "'></i><p>点击播放预览，点击空白处或将文件拖拽到此处重新上传</p>");
+                        $("#realName").val(result.data.realname);
+                        $("#fileName").val(result.data.filename);
+                        $("#suffix").val(result.data.suffix);
+                        $("#fileSize").val(result.data.size);
+                        $("#add_path").val(result.data.src);
+                        $("#add_url").val(result.data.url);
+                        $("#mediaId").val(result.data.mediaId);
+                    } else {
+                        layer.msg(result.msg || "上传接口异常");
+                    }
+                    layer.closeAll('loading');
+                    setTimeout(function () {
+                        initUploadComponent();
+                    }, 100);
+                },
+                error: function (result) {
+                    layer.msg(result.msg || "上传接口异常");
+                    layer.closeAll('loading');
+                    setTimeout(function () {
+                        initUploadComponent();
+                    }, 100);
+                }
+            });
+        }
+
+        initUploadComponent();
 
         // 播放
         $(document).on('click', '.layui-icon-play', function (event) {

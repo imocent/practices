@@ -1,6 +1,6 @@
 package com.fit.config.shiro;
 
-import com.fit.base.AjaxResult;
+import com.fit.util.SecureUtils;
 import com.fit.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 支持动态 loginUrl 的自定义表单认证拦截器
@@ -133,12 +132,12 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
     public static DefaultVerifyToken getToken(String username, String reqPwd, boolean rememberMe, HttpSession session) {
         DefaultVerifyToken token;
         try {
-            RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+            String privateKey = session.getAttribute("privateKey").toString();
             if (privateKey == null) {
                 log.error("RSA私钥不存在，请检查密钥生成逻辑");
                 throw new AuthenticationException("系统错误，请刷新页面重试");
             }
-            // 这里假设你在 DefaultVerifyToken 内部会处理解密，如果没有，需要自行解密
+            String decryptPwd = SecureUtils.rsaDecrypt(reqPwd, privateKey);
             token = new DefaultVerifyToken(username, reqPwd, rememberMe);
             // 一次性使用
             session.removeAttribute("privateKey");

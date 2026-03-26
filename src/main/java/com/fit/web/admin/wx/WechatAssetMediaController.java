@@ -6,12 +6,10 @@ import com.fit.base.BaseController;
 import com.fit.entity.WxAccount;
 import com.fit.entity.WxAssetMedia;
 import com.fit.enums.MsgType;
+import com.fit.enums.WechatAPI;
 import com.fit.service.WxApiTokenService;
 import com.fit.service.WxAssetMediaService;
-import com.fit.util.BeanUtil;
-import com.fit.util.DateUtils;
-import com.fit.util.OftenUtil;
-import com.fit.util.WebUtil;
+import com.fit.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -142,7 +140,6 @@ public class WechatAssetMediaController extends BaseController {
                 entity.setRealname(saveFile.getString("realname"));
                 entity.setSize(saveFile.getLong("size"));
                 entity.setSuffix(saveFile.getString("suffix"));
-                entity.setUrl(saveFile.getString("path"));
                 this.service.save(entity);
                 return AjaxResult.success();
             } else {
@@ -151,12 +148,12 @@ public class WechatAssetMediaController extends BaseController {
         } catch (NullPointerException e) {
             return AjaxResult.error("获取公众号信息失败");
         } catch (IOException e) {
-            return AjaxResult.error("上传失败");
+            return AjaxResult.error("保存文件失败");
         }
     }
 
     /**
-     * 添加图片和视频
+     * 添加永久素材(图片和视频)
      *
      * @param file
      * @return
@@ -164,14 +161,39 @@ public class WechatAssetMediaController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/upload")
-    public Object uploadFile(HttpServletRequest request, MultipartFile file) throws Exception {
+    public Object uploadFile(HttpServletRequest request, MultipartFile file, String type, String news) throws Exception {
         if (null == file) {
             return AjaxResult.error("没有文件上传");
         }
         JSONObject saveFile = toSaveFile(file);
-        String url = request.getRequestURL().toString().replace(request.getRequestURI(), "");
-        saveFile.put("url", url + saveFile.getString("path"));
-        return AjaxResult.success(saveFile);
+        JSONObject fileObj = new JSONObject();
+        fileObj.put("media", saveFile.getString("path"));
+        fileObj.put("type", type);
+        fileObj.put("filename", saveFile.getString("filename"));
+        String token = tokenService.getCurrentToken();
+        JSONObject call;
+        if (news == null) {
+            call = WechatUtil.apiPostCall(WechatAPI.ADD_MATERIAL.format(token, type), fileObj);
+            if (call != null && call.containsKey("media_id")) {
+                fileObj.clear();
+                fileObj.put("filename", saveFile.getString("filename"));
+                fileObj.put("realname", saveFile.getString("realname"));
+                fileObj.put("size", saveFile.getLong("size"));
+                fileObj.put("suffix", saveFile.getString("suffix"));
+                fileObj.put("src", saveFile.getString("path"));
+                fileObj.put("url", call.getString("url"));
+                fileObj.put("mediaId", call.getString("media_id"));
+                return AjaxResult.success(fileObj);
+            }
+        } else {
+            call = WechatUtil.apiPostCall(WechatAPI.UPLOAD_MATERIAL_IMG.format(token), fileObj);
+            if (call != null && call.containsKey("url")) {
+                fileObj.clear();
+                fileObj.put("url", call.getString("url"));
+                return AjaxResult.success(fileObj);
+            }
+        }
+        return AjaxResult.error("上传微信永久素材失败");
     }
 
     private JSONObject toSaveFile(MultipartFile file) throws IOException {
@@ -198,7 +220,7 @@ public class WechatAssetMediaController extends BaseController {
             json.put("filename", fullFileName);
             json.put("realname", realName);  // 可选：返回原始文件名
             json.put("path", filePath + fullFileName);  // 相对路径，用于前端展示
-            json.put("suffix", extension); // 绝对路径，用于后端操作
+            json.put("suffix", extension);
             json.put("size", file.getSize());
         }
 

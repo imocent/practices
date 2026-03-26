@@ -21,6 +21,7 @@ file:
 
 Fit:
   captcha-open: false #是否开启登录时验证码 (true/false)
+  cipher-open: false
 
 spring:
   profiles:

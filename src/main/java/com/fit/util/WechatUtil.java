@@ -12,6 +12,7 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -274,36 +275,39 @@ public class WechatUtil {
             if ("GET".equalsIgnoreCase(method)) {
                 httpUrlConn.connect();
             }
+            // 将Map转换为JSON字符串
+            String outputStr = JSONObject.toJSONString(params);
             // 当有参数需要提交时（非GET请求且有参数）
             if (null != params && !params.isEmpty() && !"GET".equalsIgnoreCase(method)) {
                 // 检查是否包含文件上传
                 if (params.containsKey("media")) {
                     // 处理文件上传（multipart/form-data）
-                    File file = (File) params.get("media");
                     String boundary = "----------" + System.currentTimeMillis();
                     httpUrlConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-                    // 获取文件类型（从params中获取，如果没有则默认为image）
-                    String type = params.containsKey("type") ? params.getString("type") : "image";
                     dataOutputStream = new DataOutputStream(httpUrlConn.getOutputStream());
-                    // 写入文件参数
-                    // 1. 写入boundary开始标记
-                    dataOutputStream.writeBytes("--" + boundary + "\r\n");
-                    // 2. 写入Content-Disposition，包含文件名
-                    dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"media\"; filename=\"" + file.getName() + "\"\r\n");
-                    // 3. 写入Content-Type
-                    dataOutputStream.writeBytes("Content-Type: " + getMimeType(type) + "\r\n");
+                    // 1. 写入 media 字段
+                    dataOutputStream.writeBytes(boundary + "\r\n");
+                    dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"media\"; filename=\"" + params.getString("filename") + "\"\r\n");
+                    dataOutputStream.writeBytes("Content-Type: " + getMimeType(params.getString("type")) + "\r\n");
                     dataOutputStream.writeBytes("\r\n");
-                    // 4. 写入文件内容
-                    Files.copy(file.toPath(), dataOutputStream);
-                    // 5. 写入结束标记
+                    // 写入文件内容（关键修复点）
+                    dataOutputStream.write(Files.readAllBytes(Paths.get(System.getProperty("user.dir"), params.getString("media"))));
                     dataOutputStream.writeBytes("\r\n");
-                    dataOutputStream.writeBytes("--" + boundary + "--\r\n");
+                    // 2. 如果有 description 参数（视频素材必需）
+                    if (params.containsKey("description")) {
+                        dataOutputStream.writeBytes(boundary + "\r\n");
+                        dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"description\"\r\n");
+                        dataOutputStream.writeBytes("Content-Type: application/json\r\n");
+                        dataOutputStream.writeBytes("\r\n");
+                        dataOutputStream.writeBytes(params.getString("description"));
+                        dataOutputStream.writeBytes("\r\n");
+                    }
+                    // 3. 结束标记（关键修复点）
+                    dataOutputStream.writeBytes(boundary + "--\r\n");
                     dataOutputStream.flush();
                 } else {
                     // 处理普通的JSON请求
                     httpUrlConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                    // 将Map转换为JSON字符串
-                    String outputStr = JSONObject.toJSONString(params);
                     outputStream = httpUrlConn.getOutputStream();
                     outputStream.write(outputStr.getBytes("UTF-8"));
                     outputStream.flush();

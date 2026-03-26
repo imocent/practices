@@ -28,8 +28,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label"><i class="yadmin-red">* </i>封面图</label>
                 <div class="layui-input-block">
-                    <input type="hidden" name="picpath" id="add_picpath" value="">
-                    <input type="hidden" name="thumbMediaId" id="add_thumbMediaId" value="">
+                    <input type="hidden" name="url" id="add_picpath" value="">
+                    <input type="hidden" name="mediaId" id="mediaId" value="">
                     <div class="layui-upload-drag" id="uploader">
                         <i class="layui-icon layui-icon-upload"></i>
                         <p>点击上传，或将文件拖拽到此处</p>
@@ -95,7 +95,7 @@
         //提交
         form.on('submit(submit-form)', function (d) {
             var formData = d.field;
-            if (formData.thumbMediaId === "") {
+            if (formData.mediaId === "") {
                 layer.msg("请上传封面图");
                 return false;
             }
@@ -115,7 +115,7 @@
         upload.render({
             elem: '#uploader',
             url: '/admin/wx/media/upload',
-            data: {type: 'thumb'},//缩略图
+            data: {type: 'thumb',news: 'mgs'},//缩略图
             size: 64,
             accept: "images",
             exts: 'JPG|jpg|PNG|png',
@@ -127,7 +127,7 @@
                 if (result.mode) {
                     $("#uploader").html("<img src='" + result.url + "' style='width: 150px;height: 150px;'/><p>点击重新上传，或将文件拖拽到此处</p>");
                     $("#add_picpath").val(result.data.url);
-                    $("#add_thumbMediaId").val(result.data.imgMediaId);
+                    $("#mediaId").val(result.data.mediaId);
                     $(".wx-form-list .main img").attr("src", result.data.url);
                 } else {
                     layer.msg("上传接口异常");
