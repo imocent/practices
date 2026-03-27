@@ -6,7 +6,7 @@
     <div class="layui-card-body">
         <div class="yadmin-body animated fadeIn">
             <div class="layui-form yadmin-search-area input">
-                <form class="layui-form-item">
+                <div class="layui-form-item">
                     <div class="layui-inline">
                         <label for="times" class="layui-form-label">上传日期</label>
                         <div class="layui-input-inline">
@@ -19,7 +19,12 @@
                             <i class="layui-icon layui-icon-refresh"></i>
                         </button>
                     </div>
-                </form>
+                    <div class="layui-inline" style="float:right">
+                        <button class="layui-btn layui-btn-sm layui-bg-purple" id="batch_sync">
+                            <i class="layui-icon">&#xe674; 同步素材</i>
+                        </button>
+                    </div>
+                </div>
             </div>
             <script type="text/html" id="toolbar">
                 <button type="button" class="layui-btn layui-bg-orange layui-btn-xs" lay-event="image">
@@ -58,7 +63,7 @@
             toolbar: '#toolbar',
             smartReloadModel: true,
             cols: [[
-                {field: 'filename', title: '存放名称', minWidth: 80},
+                {field: 'fileName', title: '存放名称', minWidth: 80},
                 {field: 'realname', title: '原始名称', minWidth: 80},
                 {field: 'account', title: '公众号', width: 150},
                 {field: 'mediaType', title: '类型', width: 80},
@@ -109,6 +114,21 @@
                 where: form.field
             });
             return false;
+        });
+
+        $("#batch_sync").click(function () {
+            layer.confirm('确认同步素材?', {icon: 7, title: "提示", btn: ['确认', '取消']}, function () {
+                $.post('/admin/wx/media/syncMaterial', function (data) {
+                    advices(data);
+                    if (data.code === 0) {
+                        table.reload('table-list');
+                    }
+                }, 'json').fail(function (event) {
+                    layer.msg("同步异常");
+                });
+            }, function () {
+                layer.closeAll();
+            });
         });
 
         function downloadFile(url, filename) {

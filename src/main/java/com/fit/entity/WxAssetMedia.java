@@ -19,7 +19,7 @@ public class WxAssetMedia extends BaseEntity<WxAssetMedia> {
     /**
      * 微信服务器返回的URL
      */
-    private String wxUrl;
+    private String url;
 
     /**
      * 图片/文件原名称 (对应原 realname)
@@ -29,22 +29,22 @@ public class WxAssetMedia extends BaseEntity<WxAssetMedia> {
     /**
      * 文件存储名称
      */
-    private String filename;
-
-    /**
-     * 文件大小byte
-     */
-    private Long size;
-
-    /**
-     * 文件后缀/类型
-     */
-    private String suffix;
+    private String fileName;
 
     /**
      * 本地存储路径 
      */
-    private String url;
+    private String filePath;
+
+    /**
+     * 文件大小byte
+     */
+    private Long fileSize;
+
+    /**
+     * 文件后缀/类型
+     */
+    private String fileSuffix;
 
     /**
      * 素材标题
@@ -54,7 +54,7 @@ public class WxAssetMedia extends BaseEntity<WxAssetMedia> {
     /**
      * 简介说明
      */
-    private String description;
+    private String introduction;
 
     /**
      * 分类/标签
@@ -90,14 +90,14 @@ public class WxAssetMedia extends BaseEntity<WxAssetMedia> {
         sb.append(", id=").append(id);
         sb.append(", mediaId=").append(mediaId);
         sb.append(", mediaType=").append(mediaType);
-        sb.append(", wxUrl=").append(wxUrl);
-        sb.append(", realname=").append(realname);
-        sb.append(", filename=").append(filename);
-        sb.append(", size=").append(size);
-        sb.append(", suffix=").append(suffix);
         sb.append(", url=").append(url);
+        sb.append(", realname=").append(realname);
+        sb.append(", fileName=").append(fileName);
+        sb.append(", filePath=").append(filePath);
+        sb.append(", fileSize=").append(fileSize);
+        sb.append(", fileSuffix=").append(fileSuffix);
         sb.append(", title=").append(title);
-        sb.append(", description=").append(description);
+        sb.append(", introduction=").append(introduction);
         sb.append(", category=").append(category);
         sb.append(", flag=").append(flag);
         sb.append(", account=").append(account);

@@ -5,14 +5,14 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="media_id" jdbcType="VARCHAR" property="mediaId" />
     <result column="media_type" jdbcType="VARCHAR" property="mediaType" />
-    <result column="wx_url" jdbcType="VARCHAR" property="wxUrl" />
-    <result column="realname" jdbcType="VARCHAR" property="realname" />
-    <result column="filename" jdbcType="VARCHAR" property="filename" />
-    <result column="size" jdbcType="BIGINT" property="size" />
-    <result column="suffix" jdbcType="VARCHAR" property="suffix" />
     <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_size" jdbcType="BIGINT" property="fileSize" />
+    <result column="file_suffix" jdbcType="VARCHAR" property="fileSuffix" />
     <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
     <result column="category" jdbcType="VARCHAR" property="category" />
     <result column="flag" jdbcType="BIT" property="flag" />
     <result column="account" jdbcType="VARCHAR" property="account" />
@@ -20,8 +20,8 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, media_id, media_type, wx_url, realname, filename, `size`, suffix, url, title, 
-    description, category, flag, account, create_time, update_time
+    id, media_id, media_type, url, realname, file_name, file_path, file_size, file_suffix, 
+    title, introduction, category, flag, account, create_time, update_time
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -45,29 +45,29 @@
       <if test="mediaType != null">
         media_type,
       </if>
-      <if test="wxUrl != null">
-        wx_url,
+      <if test="url != null">
+        url,
       </if>
       <if test="realname != null">
         realname,
       </if>
-      <if test="filename != null">
-        filename,
+      <if test="fileName != null">
+        file_name,
       </if>
-      <if test="size != null">
-        `size`,
+      <if test="filePath != null">
+        file_path,
       </if>
-      <if test="suffix != null">
-        suffix,
+      <if test="fileSize != null">
+        file_size,
       </if>
-      <if test="url != null">
-        url,
+      <if test="fileSuffix != null">
+        file_suffix,
       </if>
       <if test="title != null">
         title,
       </if>
-      <if test="description != null">
-        description,
+      <if test="introduction != null">
+        introduction,
       </if>
       <if test="category != null">
         category,
@@ -95,29 +95,29 @@
       <if test="mediaType != null">
         #{mediaType,jdbcType=VARCHAR},
       </if>
-      <if test="wxUrl != null">
-        #{wxUrl,jdbcType=VARCHAR},
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
       </if>
       <if test="realname != null">
         #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="filename != null">
-        #{filename,jdbcType=VARCHAR},
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
       </if>
-      <if test="size != null">
-        #{size,jdbcType=BIGINT},
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
       </if>
-      <if test="suffix != null">
-        #{suffix,jdbcType=VARCHAR},
+      <if test="fileSize != null">
+        #{fileSize,jdbcType=BIGINT},
       </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
+      <if test="fileSuffix != null">
+        #{fileSuffix,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
+      <if test="introduction != null">
+        #{introduction,jdbcType=VARCHAR},
       </if>
       <if test="category != null">
         #{category,jdbcType=VARCHAR},
@@ -145,29 +145,29 @@
       <if test="mediaType != null">
         media_type = #{mediaType,jdbcType=VARCHAR},
       </if>
-      <if test="wxUrl != null">
-        wx_url = #{wxUrl,jdbcType=VARCHAR},
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
       </if>
       <if test="realname != null">
         realname = #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="filename != null">
-        filename = #{filename,jdbcType=VARCHAR},
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
       </if>
-      <if test="size != null">
-        `size` = #{size,jdbcType=BIGINT},
+      <if test="filePath != null">
+        file_path = #{filePath,jdbcType=VARCHAR},
       </if>
-      <if test="suffix != null">
-        suffix = #{suffix,jdbcType=VARCHAR},
+      <if test="fileSize != null">
+        file_size = #{fileSize,jdbcType=BIGINT},
       </if>
-      <if test="url != null">
-        url = #{url,jdbcType=VARCHAR},
+      <if test="fileSuffix != null">
+        file_suffix = #{fileSuffix,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
+      <if test="introduction != null">
+        introduction = #{introduction,jdbcType=VARCHAR},
       </if>
       <if test="category != null">
         category = #{category,jdbcType=VARCHAR},
@@ -195,29 +195,29 @@
       <if test="mediaType != null and mediaType != ''">
          and media_type = #{mediaType,jdbcType=VARCHAR}
       </if>
-      <if test="wxUrl != null and wxUrl != ''">
-         and wx_url = #{wxUrl,jdbcType=VARCHAR}
+      <if test="url != null and url != ''">
+         and url = #{url,jdbcType=VARCHAR}
       </if>
       <if test="realname != null and realname != ''">
          and realname = #{realname,jdbcType=VARCHAR}
       </if>
-      <if test="filename != null and filename != ''">
-         and filename = #{filename,jdbcType=VARCHAR}
+      <if test="fileName != null and fileName != ''">
+         and file_name = #{fileName,jdbcType=VARCHAR}
       </if>
-      <if test="size != null and size != ''">
-         and `size` = #{size,jdbcType=BIGINT}
+      <if test="filePath != null and filePath != ''">
+         and file_path = #{filePath,jdbcType=VARCHAR}
       </if>
-      <if test="suffix != null and suffix != ''">
-         and suffix = #{suffix,jdbcType=VARCHAR}
+      <if test="fileSize != null and fileSize != ''">
+         and file_size = #{fileSize,jdbcType=BIGINT}
       </if>
-      <if test="url != null and url != ''">
-         and url = #{url,jdbcType=VARCHAR}
+      <if test="fileSuffix != null and fileSuffix != ''">
+         and file_suffix = #{fileSuffix,jdbcType=VARCHAR}
       </if>
       <if test="title != null and title != ''">
          and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
       </if>
-      <if test="description != null and description != ''">
-         and description = #{description,jdbcType=VARCHAR}
+      <if test="introduction != null and introduction != ''">
+         and introduction = #{introduction,jdbcType=VARCHAR}
       </if>
       <if test="category != null and category != ''">
          and category = #{category,jdbcType=VARCHAR}
@@ -264,15 +264,15 @@
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
     replace into wx_asset_media (
-      id,media_id,media_type,wx_url,
-      realname,filename,size,suffix,url,
-      title,description,category,flag,account,
+      id,media_id,media_type,url,
+      realname,file_name,file_path,file_size,file_suffix,
+      title,introduction,category,flag,account,
       create_time,update_time
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
-      #{v.id},#{v.mediaId},#{v.mediaType},#{v.wxUrl},
-      #{v.realname},#{v.filename},#{v.size},#{v.suffix},#{v.url},
-      #{v.title},#{v.description},#{v.category},#{v.flag},#{v.account},
+      #{v.id},#{v.mediaId},#{v.mediaType},#{v.url},
+      #{v.realname},#{v.fileName},#{v.filePath},#{v.fileSize},#{v.fileSuffix},
+      #{v.title},#{v.introduction},#{v.category},#{v.flag},#{v.account},
       #{v.createTime},#{v.updateTime}
     </foreach>
   </insert>

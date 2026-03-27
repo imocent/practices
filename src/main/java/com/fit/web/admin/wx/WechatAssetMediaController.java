@@ -7,6 +7,7 @@ import com.fit.entity.WxAccount;
 import com.fit.entity.WxAssetMedia;
 import com.fit.enums.MsgType;
 import com.fit.enums.WechatAPI;
+import com.fit.service.WxAffairService;
 import com.fit.service.WxApiTokenService;
 import com.fit.service.WxAssetMediaService;
 import com.fit.util.*;
@@ -32,6 +33,8 @@ public class WechatAssetMediaController extends BaseController {
 
     @Autowired
     private WxApiTokenService tokenService;
+    @Autowired
+    private WxAffairService affairService;
     @Autowired
     private WxAssetMediaService service;
 
@@ -63,7 +66,7 @@ public class WechatAssetMediaController extends BaseController {
     public Object save(WxAssetMedia bean) {
         WxAssetMedia entity = this.service.getByObjId(bean.getId());
         if (null == entity) {
-            bean.setMediaType(MsgType.getTypeByName(bean.getFilename()));
+            bean.setMediaType(MsgType.getTypeByName(bean.getFileName()));
             bean.setAccount(tokenService.getCurrentAccount());
             bean.setCreateTime(new Date());
             this.service.save(bean);
@@ -96,12 +99,21 @@ public class WechatAssetMediaController extends BaseController {
     @ResponseBody
     public Object del(@RequestParam("ids") List<Long> ids) {
         if (OftenUtil.isNotEmpty(ids)) {
+            affairService.syncDelMaterials(ids);
             this.service.batchDelete(ids);
             return AjaxResult.success();
         } else {
             return AjaxResult.error("参数异常");
         }
     }
+
+    @PostMapping("/syncMaterial")
+    @ResponseBody
+    public Object syncMaterial() {
+        affairService.syncAllMaterials();
+        return AjaxResult.success();
+    }
+
 
     @GetMapping("/images")
     public String images() {
@@ -135,11 +147,11 @@ public class WechatAssetMediaController extends BaseController {
                 JSONObject saveFile = toSaveFile(file);
                 entity.setAccount(tokenService.getCurrentAccount());
                 entity.setCreateTime(new Date());
-                entity.setFilename(saveFile.getString("filename"));
-                entity.setMediaType(MsgType.getTypeByName(entity.getFilename()));
+                entity.setFileName(saveFile.getString("filename"));
+                entity.setMediaType(MsgType.getTypeByName(entity.getFileName()));
                 entity.setRealname(saveFile.getString("realname"));
-                entity.setSize(saveFile.getLong("size"));
-                entity.setSuffix(saveFile.getString("suffix"));
+                entity.setFileSize(saveFile.getLong("size"));
+                entity.setFileSuffix(saveFile.getString("suffix"));
                 this.service.save(entity);
                 return AjaxResult.success();
             } else {
@@ -161,19 +173,32 @@ public class WechatAssetMediaController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/upload")
-    public Object uploadFile(HttpServletRequest request, MultipartFile file, String type, String news) throws Exception {
+    public Object uploadFile(HttpServletRequest request, MultipartFile file) throws Exception {
         if (null == file) {
             return AjaxResult.error("没有文件上传");
         }
+        Map<String, Object> map = WebUtil.getRequestMap(request);
+        String type = map.get("type").toString();
         JSONObject saveFile = toSaveFile(file);
         JSONObject fileObj = new JSONObject();
+        fileObj.put("filename", saveFile.getString("filename"));
         fileObj.put("media", saveFile.getString("path"));
         fileObj.put("type", type);
-        fileObj.put("filename", saveFile.getString("filename"));
+        if (type.equals("video")) {
+            fileObj.put("description", String.format("{'title':'%s', 'introduction':'%s'}", map.get("title"), map.get("introduction")));
+        }
         String token = tokenService.getCurrentToken();
         JSONObject call;
-        if (news == null) {
-            call = WechatUtil.apiPostCall(WechatAPI.ADD_MATERIAL.format(token, type), fileObj);
+        if (map.containsKey("news")) {
+            call = WechatUtil.apiPostCall(WechatAPI.UPLOAD_MATERIAL_IMG.format(token), fileObj);
+            if (call != null && call.containsKey("url")) {
+                fileObj.clear();
+                fileObj.put("url", call.getString("url"));
+                fileObj.put("src", saveFile.getString("path"));
+                return AjaxResult.success(fileObj);
+            }
+        } else {
+            call = WechatUtil.apiPostCall(WechatAPI.MATERIAL_ADD.format(token, type), fileObj);
             if (call != null && call.containsKey("media_id")) {
                 fileObj.clear();
                 fileObj.put("filename", saveFile.getString("filename"));
@@ -181,15 +206,8 @@ public class WechatAssetMediaController extends BaseController {
                 fileObj.put("size", saveFile.getLong("size"));
                 fileObj.put("suffix", saveFile.getString("suffix"));
                 fileObj.put("src", saveFile.getString("path"));
-                fileObj.put("url", call.getString("url"));
+                fileObj.put("url", call.containsKey("url") ? call.getString("url") : saveFile.getString("path"));
                 fileObj.put("mediaId", call.getString("media_id"));
-                return AjaxResult.success(fileObj);
-            }
-        } else {
-            call = WechatUtil.apiPostCall(WechatAPI.UPLOAD_MATERIAL_IMG.format(token), fileObj);
-            if (call != null && call.containsKey("url")) {
-                fileObj.clear();
-                fileObj.put("url", call.getString("url"));
                 return AjaxResult.success(fileObj);
             }
         }

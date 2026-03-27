@@ -132,7 +132,7 @@ public class WechatUtil {
                 return hexString.toString().equals(signature);
             }
         } catch (Exception e) {
-            log.error("Checking signature failed, and the reason is :" + e.getMessage());
+            log.error("Checking signature failed, and the reason is :{}", e.getMessage());
             return false;
         }
     }
@@ -256,7 +256,7 @@ public class WechatUtil {
         InputStream inputStream = null;
         Scanner scanner = null;
         OutputStream outputStream = null;
-        DataOutputStream dataOutputStream = null;
+        DataOutputStream dops = null;
         try {
             URL url = new URL(uri);
             httpUrlConn = (HttpsURLConnection) url.openConnection();
@@ -281,30 +281,23 @@ public class WechatUtil {
             if (null != params && !params.isEmpty() && !"GET".equalsIgnoreCase(method)) {
                 // 检查是否包含文件上传
                 if (params.containsKey("media")) {
+                    String filename = params.getString("filename");
                     // 处理文件上传（multipart/form-data）
-                    String boundary = "----------" + System.currentTimeMillis();
+                    String boundary = System.currentTimeMillis() + "----WebKitFormBoundary";
                     httpUrlConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-                    dataOutputStream = new DataOutputStream(httpUrlConn.getOutputStream());
-                    // 1. 写入 media 字段
-                    dataOutputStream.writeBytes(boundary + "\r\n");
-                    dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"media\"; filename=\"" + params.getString("filename") + "\"\r\n");
-                    dataOutputStream.writeBytes("Content-Type: " + getMimeType(params.getString("type")) + "\r\n");
-                    dataOutputStream.writeBytes("\r\n");
-                    // 写入文件内容（关键修复点）
-                    dataOutputStream.write(Files.readAllBytes(Paths.get(System.getProperty("user.dir"), params.getString("media"))));
-                    dataOutputStream.writeBytes("\r\n");
-                    // 2. 如果有 description 参数（视频素材必需）
+                    dops = new DataOutputStream(httpUrlConn.getOutputStream());
+                    dops.writeBytes("--" + boundary + "\r\n");
+                    dops.writeBytes("Content-Disposition: form-data; name=\"media\"; filename=\"" + filename + "\"\r\n");
+                    dops.writeBytes("Content-Type: application/octet-stream\r\n\r\n");
+                    dops.write(Files.readAllBytes(Paths.get(System.getProperty("user.dir"), params.getString("media"))));
+                    dops.writeBytes("\r\n");
                     if (params.containsKey("description")) {
-                        dataOutputStream.writeBytes(boundary + "\r\n");
-                        dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"description\"\r\n");
-                        dataOutputStream.writeBytes("Content-Type: application/json\r\n");
-                        dataOutputStream.writeBytes("\r\n");
-                        dataOutputStream.writeBytes(params.getString("description"));
-                        dataOutputStream.writeBytes("\r\n");
+                        dops.writeBytes("--" + boundary + "\r\n");
+                        dops.writeBytes("Content-Disposition: form-data; name=\"description\"\r\n\r\n");
+                        dops.writeBytes(params.getString("description") + "\r\n");
                     }
-                    // 3. 结束标记（关键修复点）
-                    dataOutputStream.writeBytes(boundary + "--\r\n");
-                    dataOutputStream.flush();
+                    dops.writeBytes("--" + boundary + "--\r\n");
+                    dops.flush();
                 } else {
                     // 处理普通的JSON请求
                     httpUrlConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -372,9 +365,9 @@ public class WechatUtil {
                     log.error("关闭输出流异常", e);
                 }
             }
-            if (dataOutputStream != null) {
+            if (dops != null) {
                 try {
-                    dataOutputStream.close();
+                    dops.close();
                 } catch (Exception e) {
                     log.error("关闭数据输出流异常", e);
                 }

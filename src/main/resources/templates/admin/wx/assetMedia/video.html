@@ -3,36 +3,36 @@
 <head th:include="include :: head('编辑')"></head>
 <body style="background-color:#fff">
 <div class="yadmin-body animated fadeIn">
-    <div class="layui-form">
+    <form class="layui-form" id="videoForm">
+        <input type="hidden" id="media_type" name="media_type" value="video"/>
         <div class="layui-form-item">
-            <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
+            <label for="title" class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
             <div class="layui-input-block">
-                <input type="text" id="account" placeholder="请输入标题" name="name" lay-verify="required"
-                       lay-vertype="tips" autocomplete="off" class="layui-input"/>
+                <input type="text" id="title" placeholder="请输入标题" name="title" class="layui-input"
+                       lay-verify="required" lay-vertype="tips"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="introduction" class="layui-form-label"><i class="yadmin-red">* </i>描述</label>
+            <div class="layui-input-block">
+                <textarea id="introduction" placeholder="请输入内容" name="introduction" class="layui-textarea"
+                          lay-verify="required" lay-vertype="tips" maxlength="150"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label"><i class="yadmin-red">* </i>上传</label>
             <div class="layui-input-block">
-                <input type="hidden" name="realname" id="realName" value="">
-                <input type="hidden" name="filename" id="fileName" value="">
-                <input type="hidden" name="suffix" id="suffix" value="">
-                <input type="hidden" name="size" id="fileSize" value="">
-                <input type="hidden" name="uploadUrl" id="add_path" value="">
-                <input type="hidden" name="url" id="add_url" value="">
-                <input type="hidden" name="mediaId" id="mediaId" value="">
-                <div class="layui-upload-drag" id="upload">
-                    <i class="layui-icon"></i>
-                    <p>点击上传，或将文件拖拽到此处</p>
+                <input type="hidden" name="realname" id="realName"/>
+                <input type="hidden" name="filename" id="fileName"/>
+                <input type="hidden" name="suffix" id="suffix"/>
+                <input type="hidden" name="size" id="fileSize"/>
+                <input type="hidden" name="url" id="add_url"/>
+                <input type="hidden" name="mediaId" id="mediaId"/>
+                <div class="layui-upload-drag" id="uploader">
+                    <i class="layui-icon" id="upIcon">&#xe67c;</i>
+                    <p id="upText">点击上传，或将文件拖拽到此处</p>
                     <p class="layui-bg-red" style="line-height:1.4;padding-left:10px;">只支持mp4</p>
                 </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="notes" class="layui-form-label"><i class="yadmin-red">* </i>描述</label>
-            <div class="layui-input-block">
-                <textarea id="notes" placeholder="请输入内容" name="introduction" maxlength="150" lay-verify="required"
-                          class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
@@ -40,7 +40,7 @@
                 <button class="layui-btn layui-btn-normal btn-w100" lay-submit lay-filter="submit-form">保存</button>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 <script>
     layui.use(['jquery', 'form', "upload"], function ($, form, upload) {
@@ -51,56 +51,55 @@
                 toError(event);
             });
         });
-
-        let currentUploadInst = null;
-
-        function initUploadComponent() {
-            // 如果已存在实例，先解绑事件
-            if (currentUploadInst) {
-                $('#upload').off('change'); // 解绑change事件
-                $('#upload').next('.layui-btn').off('click'); // 解绑按钮点击事件
-            }
-
-            // 重新初始化
-            currentUploadInst = upload.render({
-                elem: '#upload',
-                data: {type: 'video'},
-                url: '/admin/wx/media/upload',
-                size: 10240,
-                accept: "video",
-                exts: "mp4|MP4",
-                before: function () {
-                    layer.load(1, {shade: [0.1, '#000']});
+        var uploadInst = upload.render({
+            elem: '#uploader',
+            data: {
+                type: 'video',
+                title: function () {
+                    return $('#title').val();
                 },
-                done: function (result) {
-                    if (result.mode) {
-                        $("#uploader").html("<i class='layui-icon layui-icon-play' data-src='" + result.data.src + "'></i><p>点击播放预览，点击空白处或将文件拖拽到此处重新上传</p>");
-                        $("#realName").val(result.data.realname);
-                        $("#fileName").val(result.data.filename);
-                        $("#suffix").val(result.data.suffix);
-                        $("#fileSize").val(result.data.size);
-                        $("#add_path").val(result.data.src);
-                        $("#add_url").val(result.data.url);
-                        $("#mediaId").val(result.data.mediaId);
-                    } else {
-                        layer.msg(result.msg || "上传接口异常");
-                    }
-                    layer.closeAll('loading');
-                    setTimeout(function () {
-                        initUploadComponent();
-                    }, 100);
-                },
-                error: function (result) {
-                    layer.msg(result.msg || "上传接口异常");
-                    layer.closeAll('loading');
-                    setTimeout(function () {
-                        initUploadComponent();
-                    }, 100);
+                introduction: function () {
+                    return $('#introduction').val();
                 }
-            });
-        }
+            },
+            url: '/admin/wx/media/upload',
+            size: 10240,
+            accept: "video",
+            exts: "mp4|MP4",
+            before: function () {
+                if (!form.validate("#videoForm")) {
+                    return false;
+                }
+                layer.load(1, {shade: [0.1, '#000']});
+            },
+            done: function (result) {
+                layer.closeAll('loading');
+                if (result.mode) {
+                    $("#upIcon").attr("data-src", result.data.src).html("&#xe652;");
+                    $("#upText").html("点击播放预览，点击空白处或将文件拖拽到此处重新上传");
+                    $("#realName").val(result.data.realname);
+                    $("#fileName").val(result.data.filename);
+                    $("#suffix").val(result.data.suffix);
+                    $("#fileSize").val(result.data.size);
+                    $("#add_url").val(result.data.url);
+                    $("#mediaId").val(result.data.mediaId);
+                } else {
+                    layer.msg(result.msg || "上传接口异常", {icon: 5});
+                }
+            },
+            error: function (result) {
+                layer.closeAll('loading');
+                layer.msg(result.msg || "上传接口异常", {icon: 5});
+            }
+        });
 
-        initUploadComponent();
+        $(document).on('click', '#uploader', function (event) {
+            // 如果点击的不是播放图标，触发上传
+            if (!$(event.target).hasClass('layui-icon-play') && !$(event.target).parents('.layui-icon-play').length) {
+                // 重新绑定上传事件
+                uploadInst.render();
+            }
+        });
 
         // 播放
         $(document).on('click', '.layui-icon-play', function (event) {
@@ -135,16 +134,6 @@
                 }
             });
             return false;
-        });
-
-        $(document).on('click', '#uploader', function (event) {
-            // 如果点击的不是播放图标，触发上传
-            if (!$(event.target).hasClass('layui-icon-play') &&
-                !$(event.target).parents('.layui-icon-play').length) {
-                // 重新绑定上传事件
-                uploadInst.config.elem = '#uploader';
-                uploadInst.init();
-            }
         });
     });
 </script>

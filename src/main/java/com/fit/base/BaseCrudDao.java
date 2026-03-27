@@ -83,6 +83,9 @@ public interface BaseCrudDao<T> {
     @Delete("${sql}")
     int deleteBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
 
+    @Select("SELECT * FROM ${tableName} WHERE ${key} = #{value}")
+    T queryByKey(@Param("tableName") String tableName, @Param("key") String key, @Param("value") Object value);
+
     /**
      * 清空表
      */

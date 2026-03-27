@@ -1,5 +1,6 @@
 package com.fit.base;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,6 +142,10 @@ public abstract class BaseCrudService<D extends BaseCrudDao<T>, T extends BaseEn
 
     public List<Map<String, Object>> queryBySQL(String sql, Map<String, Object> params) {
         return dao.queryBySQL(sql, params);
+    }
+
+    public T queryByKey(String tableName, String key, Object value) {
+        return dao.queryByKey(tableName, key, value);
     }
 
     public int deleteBySQL(String sql, Map<String, Object> params) {
