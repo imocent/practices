@@ -11,23 +11,23 @@
     <result column="read_count" jdbcType="INTEGER" property="readCount" />
     <result column="favour_count" jdbcType="INTEGER" property="favourCount" />
     <result column="enabled" jdbcType="BIT" property="enabled" />
-    <result column="mult_type" jdbcType="VARCHAR" property="multType" />
+    <result column="mode" jdbcType="INTEGER" property="mode" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="author" jdbcType="VARCHAR" property="author" />
-    <result column="brief" jdbcType="VARCHAR" property="brief" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="pic_path" jdbcType="VARCHAR" property="picPath" />
-    <result column="show_pic" jdbcType="INTEGER" property="showPic" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="from_url" jdbcType="VARCHAR" property="fromUrl" />
-    <result column="media_id" jdbcType="VARCHAR" property="mediaId" />
+    <result column="digest" jdbcType="VARCHAR" property="digest" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="content_source_url" jdbcType="VARCHAR" property="contentSourceUrl" />
     <result column="thumb_media_id" jdbcType="VARCHAR" property="thumbMediaId" />
+    <result column="show_cover_pic" jdbcType="INTEGER" property="showCoverPic" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="thumb_url" jdbcType="VARCHAR" property="thumbUrl" />
+    <result column="media_id" jdbcType="VARCHAR" property="mediaId" />
     <result column="news_index" jdbcType="INTEGER" property="newsIndex" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, account, msg_type, input_code, `rule`, read_count, favour_count, 
-    enabled, mult_type, title, author, brief, description, pic_path, show_pic, url, from_url, 
-    media_id, thumb_media_id, news_index
+    enabled, `mode`, title, author, digest, content, content_source_url, thumb_media_id, 
+    show_cover_pic, url, thumb_url, media_id, news_index
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -69,8 +69,8 @@
       <if test="enabled != null">
         enabled,
       </if>
-      <if test="multType != null">
-        mult_type,
+      <if test="mode != null">
+        `mode`,
       </if>
       <if test="title != null">
         title,
@@ -78,29 +78,29 @@
       <if test="author != null">
         author,
       </if>
-      <if test="brief != null">
-        brief,
+      <if test="digest != null">
+        digest,
       </if>
-      <if test="description != null">
-        description,
+      <if test="content != null">
+        content,
       </if>
-      <if test="picPath != null">
-        pic_path,
+      <if test="contentSourceUrl != null">
+        content_source_url,
       </if>
-      <if test="showPic != null">
-        show_pic,
+      <if test="thumbMediaId != null">
+        thumb_media_id,
+      </if>
+      <if test="showCoverPic != null">
+        show_cover_pic,
       </if>
       <if test="url != null">
         url,
       </if>
-      <if test="fromUrl != null">
-        from_url,
+      <if test="thumbUrl != null">
+        thumb_url,
       </if>
       <if test="mediaId != null">
         media_id,
-      </if>
-      <if test="thumbMediaId != null">
-        thumb_media_id,
       </if>
       <if test="newsIndex != null">
         news_index,
@@ -134,8 +134,8 @@
       <if test="enabled != null">
         #{enabled,jdbcType=BIT},
       </if>
-      <if test="multType != null">
-        #{multType,jdbcType=VARCHAR},
+      <if test="mode != null">
+        #{mode,jdbcType=INTEGER},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
@@ -143,29 +143,29 @@
       <if test="author != null">
         #{author,jdbcType=VARCHAR},
       </if>
-      <if test="brief != null">
-        #{brief,jdbcType=VARCHAR},
+      <if test="digest != null">
+        #{digest,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
       </if>
-      <if test="picPath != null">
-        #{picPath,jdbcType=VARCHAR},
+      <if test="contentSourceUrl != null">
+        #{contentSourceUrl,jdbcType=VARCHAR},
       </if>
-      <if test="showPic != null">
-        #{showPic,jdbcType=INTEGER},
+      <if test="thumbMediaId != null">
+        #{thumbMediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="showCoverPic != null">
+        #{showCoverPic,jdbcType=INTEGER},
       </if>
       <if test="url != null">
         #{url,jdbcType=VARCHAR},
       </if>
-      <if test="fromUrl != null">
-        #{fromUrl,jdbcType=VARCHAR},
+      <if test="thumbUrl != null">
+        #{thumbUrl,jdbcType=VARCHAR},
       </if>
       <if test="mediaId != null">
         #{mediaId,jdbcType=VARCHAR},
-      </if>
-      <if test="thumbMediaId != null">
-        #{thumbMediaId,jdbcType=VARCHAR},
       </if>
       <if test="newsIndex != null">
         #{newsIndex,jdbcType=INTEGER},
@@ -199,8 +199,8 @@
       <if test="enabled != null">
         enabled = #{enabled,jdbcType=BIT},
       </if>
-      <if test="multType != null">
-        mult_type = #{multType,jdbcType=VARCHAR},
+      <if test="mode != null">
+        `mode` = #{mode,jdbcType=INTEGER},
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
@@ -208,29 +208,29 @@
       <if test="author != null">
         author = #{author,jdbcType=VARCHAR},
       </if>
-      <if test="brief != null">
-        brief = #{brief,jdbcType=VARCHAR},
+      <if test="digest != null">
+        digest = #{digest,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
       </if>
-      <if test="picPath != null">
-        pic_path = #{picPath,jdbcType=VARCHAR},
+      <if test="contentSourceUrl != null">
+        content_source_url = #{contentSourceUrl,jdbcType=VARCHAR},
       </if>
-      <if test="showPic != null">
-        show_pic = #{showPic,jdbcType=INTEGER},
+      <if test="thumbMediaId != null">
+        thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="showCoverPic != null">
+        show_cover_pic = #{showCoverPic,jdbcType=INTEGER},
       </if>
       <if test="url != null">
         url = #{url,jdbcType=VARCHAR},
       </if>
-      <if test="fromUrl != null">
-        from_url = #{fromUrl,jdbcType=VARCHAR},
+      <if test="thumbUrl != null">
+        thumb_url = #{thumbUrl,jdbcType=VARCHAR},
       </if>
       <if test="mediaId != null">
         media_id = #{mediaId,jdbcType=VARCHAR},
-      </if>
-      <if test="thumbMediaId != null">
-        thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR},
       </if>
       <if test="newsIndex != null">
         news_index = #{newsIndex,jdbcType=INTEGER},
@@ -267,8 +267,8 @@
       <if test="enabled != null and enabled != ''">
          and enabled = #{enabled,jdbcType=BIT}
       </if>
-      <if test="multType != null and multType != ''">
-         and mult_type = #{multType,jdbcType=VARCHAR}
+      <if test="mode != null and mode != ''">
+         and `mode` = #{mode,jdbcType=INTEGER}
       </if>
       <if test="title != null and title != ''">
          and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
@@ -276,29 +276,29 @@
       <if test="author != null and author != ''">
          and author = #{author,jdbcType=VARCHAR}
       </if>
-      <if test="brief != null and brief != ''">
-         and brief = #{brief,jdbcType=VARCHAR}
+      <if test="digest != null and digest != ''">
+         and digest = #{digest,jdbcType=VARCHAR}
       </if>
-      <if test="description != null and description != ''">
-         and description = #{description,jdbcType=VARCHAR}
+      <if test="content != null and content != ''">
+         and content like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
       </if>
-      <if test="picPath != null and picPath != ''">
-         and pic_path = #{picPath,jdbcType=VARCHAR}
+      <if test="contentSourceUrl != null and contentSourceUrl != ''">
+         and content_source_url = #{contentSourceUrl,jdbcType=VARCHAR}
       </if>
-      <if test="showPic != null and showPic != ''">
-         and show_pic = #{showPic,jdbcType=INTEGER}
+      <if test="thumbMediaId != null and thumbMediaId != ''">
+         and thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR}
+      </if>
+      <if test="showCoverPic != null and showCoverPic != ''">
+         and show_cover_pic = #{showCoverPic,jdbcType=INTEGER}
       </if>
       <if test="url != null and url != ''">
          and url = #{url,jdbcType=VARCHAR}
       </if>
-      <if test="fromUrl != null and fromUrl != ''">
-         and from_url = #{fromUrl,jdbcType=VARCHAR}
+      <if test="thumbUrl != null and thumbUrl != ''">
+         and thumb_url = #{thumbUrl,jdbcType=VARCHAR}
       </if>
       <if test="mediaId != null and mediaId != ''">
          and media_id = #{mediaId,jdbcType=VARCHAR}
-      </if>
-      <if test="thumbMediaId != null and thumbMediaId != ''">
-         and thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR}
       </if>
       <if test="newsIndex != null and newsIndex != ''">
          and news_index = #{newsIndex,jdbcType=INTEGER}
@@ -329,16 +329,16 @@
     replace into wx_msg_news (
       id,create_time,account,msg_type,
       input_code,rule,read_count,favour_count,enabled,
-      mult_type,title,author,brief,description,
-      pic_path,show_pic,url,from_url,media_id,
-      thumb_media_id,news_index
+      mode,title,author,digest,content,
+      content_source_url,thumb_media_id,show_cover_pic,url,thumb_url,
+      media_id,news_index
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
       #{v.id},#{v.createTime},#{v.account},#{v.msgType},
       #{v.inputCode},#{v.rule},#{v.readCount},#{v.favourCount},#{v.enabled},
-      #{v.multType},#{v.title},#{v.author},#{v.brief},#{v.description},
-      #{v.picPath},#{v.showPic},#{v.url},#{v.fromUrl},#{v.mediaId},
-      #{v.thumbMediaId},#{v.newsIndex}
+      #{v.mode},#{v.title},#{v.author},#{v.digest},#{v.content},
+      #{v.contentSourceUrl},#{v.thumbMediaId},#{v.showCoverPic},#{v.url},#{v.thumbUrl},
+      #{v.mediaId},#{v.newsIndex}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

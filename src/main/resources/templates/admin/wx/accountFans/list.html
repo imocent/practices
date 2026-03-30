@@ -28,8 +28,11 @@
             </div>
             <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="column-toolbar">
-                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
-                    <i class="layui-icon layui-icon-edit" title="编辑">编辑</i>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="mass">
+                    <i class="layui-icon" title="发送消息">&#xe609; 发送消息</i>
+                </button>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="sync">
+                    <i class="layui-icon" title="同步粉丝消息">&#xe669; 同步粉丝消息</i>
                 </button>
             </script>
         </div>
@@ -66,16 +69,29 @@
                     templet: function (res) {return res.subscribe===1 ? "已关注" : "未关注";}
                 },
                 {field: 'notes', title: '备注', minWidth: 80},
-                {fixed: 'right', title: '操作', align: 'center', toolbar: '#column-toolbar'}
+                {fixed: 'right', title: '操作', width: 240, align: 'center', toolbar: '#column-toolbar'}
             ]]
         });
 
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'mass') {
-                showDialog({
-                    title: '发送消息', template: 'msglist', height: 600, tableObj: tableObj, htmlData: data, btn: 0
-                })
+                var pageIndex = openPage({
+                    content: '/admin/wx/fans/mass', title: "发送", yes: function (index) {
+                        if (GLOBAL.chooses.length === 0) {
+                            layer.msg("至少选择1个粉丝");
+                            return false;
+                        }
+                        $.post('/wxapi/sendTemplateMessage', {id: data.id, openIds: GLOBAL.chooses.join(",")}, function (result) {
+                            advices(result, pageIndex);
+                        }, 'json').fail(function (event) {
+                            toError(event);
+                        });
+                    },
+                    end: function () {
+                        GLOBAL.chooses = [];
+                    }
+                });
             } else if (event === 'sync') {
                 $.post('/admin/wx/fans/syncAccountFans', {openId: data.openId}, function (data) {
                     if (data.code === 0) {

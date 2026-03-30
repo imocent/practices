@@ -4,7 +4,7 @@
 <body style="background-color:#fff">
 <div class="yadmin-body animated fadeIn">
     <form class="layui-form" id="videoForm">
-        <input type="hidden" id="media_type" name="media_type" value="video"/>
+        <input type="hidden" id="mediaType" name="mediaType" value="video"/>
         <div class="layui-form-item">
             <label for="title" class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
             <div class="layui-input-block">
@@ -23,13 +23,14 @@
             <label class="layui-form-label"><i class="yadmin-red">* </i>上传</label>
             <div class="layui-input-block">
                 <input type="hidden" name="realname" id="realName"/>
-                <input type="hidden" name="filename" id="fileName"/>
-                <input type="hidden" name="suffix" id="suffix"/>
-                <input type="hidden" name="size" id="fileSize"/>
+                <input type="hidden" name="fileName" id="fileName"/>
+                <input type="hidden" name="fileSuffix" id="fileSuffix"/>
+                <input type="hidden" name="fileSize" id="fileSize"/>
                 <input type="hidden" name="url" id="add_url"/>
                 <input type="hidden" name="mediaId" id="mediaId"/>
-                <div class="layui-upload-drag" id="uploader">
-                    <i class="layui-icon" id="upIcon">&#xe67c;</i>
+                <div class="layui-upload-drag" style="position: relative;">
+                    <div style="position: absolute;inset: 0;z-index: 1;" id="uploader"></div>
+                    <i class="layui-icon layui-icon-upload" id="upIcon"></i>
                     <p id="upText">点击上传，或将文件拖拽到此处</p>
                     <p class="layui-bg-red" style="line-height:1.4;padding-left:10px;">只支持mp4</p>
                 </div>
@@ -45,6 +46,11 @@
 <script>
     layui.use(['jquery', 'form', "upload"], function ($, form, upload) {
         form.on('submit(submit-form)', function (obj) {
+            console.log(obj.field.fileName)
+            if (obj.field.fileName === '') {
+                layer.tips("请先上传视频文件", "#uploader", {tips: [1, '#000'], time: 1000});
+                return false;
+            }
             $.post('/admin/wx/media/save', obj.field, function (data) {
                 advices(data, parent);
             }, 'json').fail(function (event) {
@@ -55,32 +61,27 @@
             elem: '#uploader',
             data: {
                 type: 'video',
-                title: function () {
-                    return $('#title').val();
-                },
-                introduction: function () {
-                    return $('#introduction').val();
-                }
+                title: function () { return $('#title').val(); },
+                introduction: function () { return $('#introduction').val(); }
             },
             url: '/admin/wx/media/upload',
             size: 10240,
             accept: "video",
             exts: "mp4|MP4",
-            before: function () {
-                if (!form.validate("#videoForm")) {
-                    return false;
-                }
+            before: function (obj) {
+                if (!form.validate("#videoForm")) { return false; }
                 layer.load(1, {shade: [0.1, '#000']});
             },
             done: function (result) {
                 layer.closeAll('loading');
                 if (result.mode) {
-                    $("#upIcon").attr("data-src", result.data.src).html("&#xe652;");
-                    $("#upText").html("点击播放预览，点击空白处或将文件拖拽到此处重新上传");
+                    $("#upIcon").removeClass("layui-icon-upload").addClass("layui-icon-play").attr("data-src", result.data.src)
+                        .css({position: "relative", zIndex: 2, cursor: "pointer"});
+                    $("#upText").html("点击播放预览，双击空白处或将文件拖拽到此处重新上传");
                     $("#realName").val(result.data.realname);
-                    $("#fileName").val(result.data.filename);
-                    $("#suffix").val(result.data.suffix);
-                    $("#fileSize").val(result.data.size);
+                    $("#fileName").val(result.data.fileName);
+                    $("#fileSuffix").val(result.data.fileSuffix);
+                    $("#fileSize").val(result.data.fileSize);
                     $("#add_url").val(result.data.url);
                     $("#mediaId").val(result.data.mediaId);
                 } else {
@@ -93,25 +94,22 @@
             }
         });
 
-        $(document).on('click', '#uploader', function (event) {
-            // 如果点击的不是播放图标，触发上传
-            if (!$(event.target).hasClass('layui-icon-play') && !$(event.target).parents('.layui-icon-play').length) {
-                // 重新绑定上传事件
-                uploadInst.render();
+        $('.layui-upload-drag').on('click', function (e) {
+            // 如果点的是播放按钮 → 不处理
+            if ($(e.target).hasClass('layui-icon-play')) {
+                $("#uploader").css("pointer-events", "none");
+                return;
             }
+            // 其他区域 → 恢复上传能力
+            $("#uploader").css("pointer-events", "auto");
         });
 
         // 播放
         $(document).on('click', '.layui-icon-play', function (event) {
+            event.preventDefault();
             event.stopPropagation();
-            $("#player").remove();
             layer.open({
-                type: 1,
-                anim: '1',
-                title: "视频",
-                area: '900px',
-                scrollbar: false,
-                shadeClose: true,
+                type: 1, anim: '1', title: "视频", area: '900px', scrollbar: false, shadeClose: true,
                 content: '<video width="900" height="600" controls="controls" class="video-js" id="video"><source src="' + $(this).attr("data-src")
                     + '" type="video/mp4"></video>',
                 btn: 0,
@@ -124,7 +122,6 @@
                     }
                 },
                 end: function () {
-                    // 清理video元素
                     var video = document.getElementById('video');
                     if (video) {
                         video.pause();

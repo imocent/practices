@@ -5,14 +5,14 @@ import com.fit.base.AjaxResult;
 import com.fit.base.BaseController;
 import com.fit.entity.WxAccount;
 import com.fit.entity.WxAccountMenu;
+import com.fit.entity.WxMsgNews;
 import com.fit.entity.WxMsgTemplate;
-import com.fit.entity.WxMsgText;
 import com.fit.enums.MsgType;
 import com.fit.enums.WechatAPI;
 import com.fit.service.WxAccountMenuService;
 import com.fit.service.WxApiTokenService;
+import com.fit.service.WxMsgNewsService;
 import com.fit.service.WxMsgTemplateService;
-import com.fit.service.WxMsgTextService;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
 import com.fit.util.WechatUtil;
@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +37,7 @@ public class WxApiController extends BaseController {
     @Autowired
     private WxAccountMenuService menuService;
     @Autowired
-    private WxMsgTextService textService;
+    private WxMsgNewsService newsService;
     @Autowired
     private WxMsgTemplateService templateService;
 
@@ -95,9 +93,9 @@ public class WxApiController extends BaseController {
     @RequestMapping(value = "/sendTextMessage", method = RequestMethod.POST)
     public AjaxResult sendTextMessage(String openIds, Long id) {
         String token = tokenService.getCurrentToken();
-        WxMsgText msgText = this.textService.get(id);
+        WxMsgNews news = this.newsService.get(id);
         JSONObject text = new JSONObject();
-        text.put("content", msgText.getContent());
+        text.put("content", news.getContent());
         JSONObject call = WechatUtil.bulkMessaging(token, openIds.split(","), MsgType.Text.name(), text);
         if (WechatUtil.isWxError(call)) {
             return AjaxResult.error("群发失败", call);

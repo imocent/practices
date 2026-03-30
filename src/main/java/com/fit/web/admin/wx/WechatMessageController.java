@@ -1,10 +1,10 @@
 package com.fit.web.admin.wx;
 
 import com.fit.base.AjaxResult;
-import com.fit.entity.WxMsgText;
+import com.fit.entity.WxMsgNews;
 import com.fit.enums.MsgType;
 import com.fit.service.WxApiTokenService;
-import com.fit.service.WxMsgTextService;
+import com.fit.service.WxMsgNewsService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
@@ -32,7 +32,7 @@ public class WechatMessageController {
     @Autowired
     private WxApiTokenService tokenService;
     @Autowired
-    private WxMsgTextService service;
+    private WxMsgNewsService service;
 
     /**
      * 列表页面
@@ -50,7 +50,7 @@ public class WechatMessageController {
     public AjaxResult list(HttpServletRequest request) {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         map.put("account", tokenService.getCurrentAccount());
-        List<WxMsgText> list = service.findList(map);
+        List<WxMsgNews> list = service.findList(map);
         int count = service.findCount(map);
         return AjaxResult.tables(count, list);
     }
@@ -61,7 +61,7 @@ public class WechatMessageController {
     @GetMapping("/edit")
     public String editView(String id, Model model) {
         if (OftenUtil.isNotEmpty(id)) {
-            WxMsgText bean = service.getByObjId(id);
+            WxMsgNews bean = service.getByObjId(id);
             model.addAttribute("bean", bean);
         }
         return PREFIX + "edit";
@@ -72,8 +72,8 @@ public class WechatMessageController {
      */
     @PostMapping("/save")
     @ResponseBody
-    public Object save(WxMsgText bean) {
-        WxMsgText entity = this.service.get(bean.getId());
+    public Object save(WxMsgNews bean) {
+        WxMsgNews entity = this.service.queryByKey("wx_msg_news", "input_code", bean.getInputCode());
         if (null == entity) {
             bean.setAccount(tokenService.getCurrentAccount());
             bean.setCreateTime(new Date());

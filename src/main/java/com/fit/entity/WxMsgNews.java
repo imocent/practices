@@ -22,7 +22,7 @@ public class WxMsgNews extends BaseEntity<WxMsgNews> {
     private String msgType;
 
     /**
-     * 关注者发送的消息
+     * 关键字: 关注者发送的消息
      */
     private String inputCode;
 
@@ -47,12 +47,12 @@ public class WxMsgNews extends BaseEntity<WxMsgNews> {
     private Boolean enabled;
 
     /**
-     * 图文类型: 单图文,多图片
+     * 图文类型: 0-回复消息,1-单图文,2-多图片
      */
-    private String multType;
+    private Integer mode;
 
     /**
-     * 标题
+     * 消息标题
      */
     private String title;
 
@@ -62,24 +62,29 @@ public class WxMsgNews extends BaseEntity<WxMsgNews> {
     private String author;
 
     /**
-     * 简介
+     * 图文消息的摘要，仅单图文有，多图文为空
      */
-    private String brief;
+    private String digest;
 
     /**
-     * 描述
+     * 消息内容
      */
-    private String description;
+    private String content;
 
     /**
-     * 封面图片
+     * 外部链接
      */
-    private String picPath;
+    private String contentSourceUrl;
 
     /**
-     * 是否显示图片
+     * 封面图片id
      */
-    private Integer showPic;
+    private String thumbMediaId;
+
+    /**
+     * 是否显示封面: 0-不显示，1-显示
+     */
+    private Integer showCoverPic;
 
     /**
      * 图文消息原文链接
@@ -87,19 +92,14 @@ public class WxMsgNews extends BaseEntity<WxMsgNews> {
     private String url;
 
     /**
-     * 外部链接
+     * 封面图片
      */
-    private String fromUrl;
+    private String thumbUrl;
 
     /**
      * 上传后返回的媒体素材id
      */
     private String mediaId;
-
-    /**
-     * 封面图片id
-     */
-    private String thumbMediaId;
 
     /**
      * 多图文中的第几条
@@ -121,17 +121,17 @@ public class WxMsgNews extends BaseEntity<WxMsgNews> {
         sb.append(", readCount=").append(readCount);
         sb.append(", favourCount=").append(favourCount);
         sb.append(", enabled=").append(enabled);
-        sb.append(", multType=").append(multType);
+        sb.append(", mode=").append(mode);
         sb.append(", title=").append(title);
         sb.append(", author=").append(author);
-        sb.append(", brief=").append(brief);
-        sb.append(", description=").append(description);
-        sb.append(", picPath=").append(picPath);
-        sb.append(", showPic=").append(showPic);
-        sb.append(", url=").append(url);
-        sb.append(", fromUrl=").append(fromUrl);
-        sb.append(", mediaId=").append(mediaId);
+        sb.append(", digest=").append(digest);
+        sb.append(", content=").append(content);
+        sb.append(", contentSourceUrl=").append(contentSourceUrl);
         sb.append(", thumbMediaId=").append(thumbMediaId);
+        sb.append(", showCoverPic=").append(showCoverPic);
+        sb.append(", url=").append(url);
+        sb.append(", thumbUrl=").append(thumbUrl);
+        sb.append(", mediaId=").append(mediaId);
         sb.append(", newsIndex=").append(newsIndex);
         sb.append("]");
         return sb.toString();

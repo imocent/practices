@@ -2,6 +2,7 @@ package com.fit.base;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -83,6 +84,7 @@ public interface BaseCrudDao<T> {
     @Delete("${sql}")
     int deleteBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
 
+    @ResultMap("BaseResultMap")
     @Select("SELECT * FROM ${tableName} WHERE ${key} = #{value}")
     T queryByKey(@Param("tableName") String tableName, @Param("key") String key, @Param("value") Object value);
 

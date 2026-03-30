@@ -54,7 +54,9 @@ public enum WechatAPI {
     MASS_TAG(1, "%s/cgi-bin/message/mass/sendall?access_token=%s", "根据标签进行群发"),
     MATERIAL_ADD(2, "%s/cgi-bin/material/add_material?access_token=%s&type=%s", "新增其他类型永久素材"),
     MATERIAL_DEL(1, "%s/cgi-bin/material/del_material?access_token=%s", "删除永久素材"),
+    MATERIAL_GET(1, "%s/cgi-bin/material/get_material?access_token=%s", "获取永久素材"),
     MATERIAL_LIST(1, "%s/cgi-bin/material/batchget_material?access_token=%s", "获取批量素材"),
+    MATERIAL_UPLOAD_IMG(1, "%s/cgi-bin/media/uploadimg?access_token=%s", "上传永久图片素材"),
     MEDIA_UPLOAD(2, "%s/cgi-bin/media/upload?access_token=%s&type=%s", ""),
     MENU_ADD_CONDITIONAL(1, "%s/cgi-bin/menu/addconditional?access_token=%s", "创建个性化菜单"),
     MENU_CREATE(1, "%s/cgi-bin/menu/create?access_token=%s", ""),
@@ -67,10 +69,6 @@ public enum WechatAPI {
     TAGS_MEMBERS_TAGGING(1, "%s/cgi-bin/tags/members/batchtagging?access_token=%s", ""),
     TAGS_MEMBERS_UNTAGGING(1, "%s/cgi-bin/tags/members/batchuntagging?access_token=%s", ""),
     TOKEN(2, "%s/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", ""),
-    UPDATE_NEWS_MATERIAL(1, "%s/cgi-bin/material/update_news?access_token=%s", "修改永久图文"),
-    UPLOAD_MATERIAL_IMG(1, "%s/cgi-bin/media/uploadimg?access_token=%s", "上传永久图片素材"),
-    UPLOAD_NEWS(1, "%s/cgi-bin/media/uploadnews?access_token=%s", "上传永久素材：图文-临时"),
-    UPLOAD_VIDEO(1, "%s/cgi-bin/media/uploadvideo?access_token=%s", "临时素材接口-上传视频"),
     USER_INFO(1, "%s/cgi-bin/user/info?access_token=%s&openid=%s&lang=%s", "用户信息");
 
     private final Integer fmt;

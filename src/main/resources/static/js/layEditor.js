@@ -513,13 +513,13 @@ layui.define(['jquery', 'layer', 'form', 'element', 'upload', 'code', 'face'], f
     let easyeditor = {
         init: function (options) {
             var html = [
-                '<div class="layui-unselect fly-edit ' + (options.style === "fangge" ? "easyeditor-fangge" : "") + '" >',
+                '<div class="layui-unselect fly-edit easyeditor-fangge" >',
                 '<span type="face" title="插入表情"><i class="layui-icon layui-icon-face-smile-b" style="top: 1px;"></i></span>',
                 '<span type="picture" title="插入图片：img[src]"><i class="layui-icon layui-icon-picture"></i></span>',
                 '<span type="href" title="超链接格式：a(href)[text]"><i class="layui-icon layui-icon-link"></i></span>',
                 '<span type="code" title="插入代码"><i class="layui-icon layui-icon-fonts-code" style="top: 1px;"></i></span>',
                 '<span type="yinyong" title="引用"><i class="layui-icon layui-icon-dialogue"></i></span>',
-                '<span type="ul" title="无序列表"><i class="layui-icon-align-center"></i></span>',
+                '<span type="ul" title="无序列表"><i class="layui-icon layui-icon-align-center"></i></span>',
                 '<span type="ol" title="有序列表"><i class="layui-icon layui-icon-align-left"></i></span>',
                 '<span type="table" title="表格"><i class="layui-icon layui-icon-table"></i></span>',
                 '<span type="video" title="视频"><i class="layui-icon layui-icon-video"></i></span>',
@@ -571,20 +571,17 @@ layui.define(['jquery', 'layer', 'form', 'element', 'upload', 'code', 'face'], f
                         success: function (layero, index) {
                             var image = layero.find('input[name="image"]');
 
-                            if (options.uploadUrl == null || options.uploadUrl == '') {
-                                layer.msg('未配置图片上传路径,图片无法保存', {
-                                    icon: 5
-                                });
+                            if (options.uploadUrl == null || options.uploadUrl === '') {
+                                layer.msg('未配置图片上传路径,图片无法保存', {icon: 5});
                             }
                             //执行上传实例
                             upload.render({
-                                elem: '#uploadImg', url: options.uploadUrl, size: options.uploadSize || 1024, done: function (res) {
-                                    if (res.code == 0) {
-                                        image.val(res.url);
+                                elem: '#uploadImg', url: options.uploadUrl, size: options.uploadSize || 1024,
+                                data: {type: 'image'}, done: function (res) {
+                                    if (res.code === 0) {
+                                        image.val(res.data.url);
                                     } else {
-                                        layer.msg(res.msg, {
-                                            icon: 5
-                                        });
+                                        layer.msg(res.msg, {icon: 5});
                                     }
                                 }
                             });
@@ -648,14 +645,8 @@ layui.define(['jquery', 'layer', 'form', 'element', 'upload', 'code', 'face'], f
                     editor.trigger('keyup');
                 }, video: function (editor) {
                     layer.open({
-                        type: 1,
-                        id: 'fly-jie-upload',
-                        title: '插入视频',
-                        shade: false,
-                        area: '465px',
-                        fixed: false,
-                        offset: [editor.offset().top - $(window).scrollTop() + 'px', editor.offset().left + 'px'],
-                        skin: 'layui-layer-border',
+                        type: 1, id: 'fly-jie-upload', title: '插入视频', shade: 0.3, shadeClose: true,
+                        area: '465px', fixed: false, offset: 'auto', skin: 'layui-layer-border',
                         content: [
                             '<ul class="layui-form layui-form-pane" style="margin: 20px;">',
                             '<li class="layui-form-item">', '<label class="layui-form-label">封面图</label>',
@@ -674,45 +665,35 @@ layui.define(['jquery', 'layer', 'form', 'element', 'upload', 'code', 'face'], f
                             var image = layero.find('input[name="image"]'), video = layero.find('input[name="video"]'),
                                 progress = layero.find('#progress');
 
-                            if (options.uploadUrl == null || options.uploadUrl == '') {
-                                layer.msg('未配置图片上传路径,图片无法保存', {
-                                    icon: 5
-                                });
+                            if (options.uploadUrl == null || options.uploadUrl === '') {
+                                layer.msg('未配置图片上传路径,图片无法保存', {icon: 5});
                             }
 
-                            if (options.videoUploadUrl == null || options.videoUploadUrl == '') {
+                            if (options.videoUploadUrl == null || options.videoUploadUrl === '') {
                                 layer.msg('未配置视频上传路径,视频无法保存', {
                                     icon: 5
                                 });
                             }
-
                             //执行上传图片实例
                             upload.render({
-                                elem: '#uploadImg', url: options.uploadUrl, size: options.uploadSize || 1024, done: function (res) {
-                                    if (res.code == 0) {
-                                        image.val(res.url);
+                                elem: '#uploadImg', url: options.uploadUrl, size: options.uploadSize || 1024,
+                                data: {type: 'video'}, done: function (res) {
+                                    if (res.code === 0) {
+                                        image.val(res.data.url);
                                     } else {
-                                        layer.msg(res.msg, {
-                                            icon: 5
-                                        });
+                                        layer.msg(res.msg, {icon: 5});
                                     }
                                 }
                             });
-
                             //执行上传视频实例
                             upload.render({
-                                elem: '#uploadVideo',
-                                accept: 'video',
-                                url: options.videoUploadUrl,
-                                size: options.videoUploadSize || 1024 * 10,
-                                done: function (res) {
-                                    if (res.code == 0) {
+                                elem: '#uploadVideo', accept: 'video', url: options.videoUploadUrl, size: options.videoUploadSize || 1024 * 10,
+                                data: {type: 'video'}, done: function (res) {
+                                    if (res.code === 0) {
                                         progress.css('visibility', 'hidden');
-                                        image.val(res.url);
+                                        image.val(res.data.url);
                                     } else {
-                                        layer.msg(res.msg, {
-                                            icon: 5
-                                        });
+                                        layer.msg(res.msg, {icon: 5});
                                     }
                                 },
                                 progress: function (n) {

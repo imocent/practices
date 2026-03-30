@@ -54,9 +54,13 @@
             cols: [[
                 {type: 'checkbox'},
                 {field: 'account', title: '公众ID', minWidth: 80},
+                {field: 'inputCode', title: '关键字', minWidth: 80},
                 {field: 'title', title: '消息标题', minWidth: 80},
-                {field: 'msgType', title: '消息类型', minWidth: 80},
-                {field: 'inputCode', title: '消息方向', minWidth: 80},
+                {
+                    field: 'mode', title: '图文类型', width: 100, templet: function (res) {
+                        return res.mode === 2 ? "多图片" : res.mode === 1 ? "多图片" : "消息";
+                    }
+                },
                 {field: 'readCount', title: '阅读数', minWidth: 80},
                 {field: 'favourCount', title: '点赞数', minWidth: 80},
                 {fixed: 'right', title: '操作', width: 160, align: 'center', toolbar: '#column-toolbar'}

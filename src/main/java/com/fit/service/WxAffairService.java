@@ -3,6 +3,7 @@ package com.fit.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fit.entity.WxAssetMedia;
+import com.fit.entity.WxMsgNews;
 import com.fit.enums.WechatAPI;
 import com.fit.util.WechatUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class WxAffairService {
     private WxApiTokenService tokenService;
     @Autowired
     private WxAssetMediaService mediaService;
+    @Autowired
+    private WxMsgNewsService newsService;
 
     /**
      * 异步同步所有素材
@@ -92,9 +95,9 @@ public class WxAffairService {
         int count = 20;
         String account = tokenService.getCurrentAccount();
         String token = tokenService.getCurrentToken();
+        JSONObject param = new JSONObject();
         while (true) {
-            // 调用微信接口
-            JSONObject param = new JSONObject();
+            param.clear();
             param.put("type", type);
             param.put("offset", offset);
             param.put("count", count);
@@ -109,15 +112,37 @@ public class WxAffairService {
                 WxAssetMedia bean = mediaService.queryByKey("wx_asset_media", "media_id", item.getString("media_id"));
                 if (bean == null) {
                     WxAssetMedia media = item.toJavaObject(WxAssetMedia.class);
+                    if (media.getUrl().isEmpty()) {
+                        param.clear();
+                        param.put("media_id", item.getString("media_id"));
+                        JSONObject json = WechatUtil.apiPostCall(WechatAPI.MATERIAL_GET.format(token), param);
+                        media.setTitle(json.getString("title"));
+                        media.setMediaId(json.getString("down_url"));
+                    }
                     media.setAccount(account);
                     media.setMediaType(type);
-                    media.setTitle(item.getString("name"));
+                    media.setFileName(item.getString("name"));
                     media.setUpdateTime(item.getDate("update_time"));
                     mediaService.save(media);
                 } else {
                     bean.setUpdateTime(item.getDate("update_time"));
                     bean.setTitle(item.getString("name"));
                     mediaService.update(bean);
+                }
+                if (type.equals("news")) {
+                    JSONArray contents = item.getJSONObject("content").getJSONArray("news_item");
+                    for (int j = 0; j < contents.size(); j++) {
+                        JSONObject content = contents.getJSONObject(j);
+                        WxMsgNews news = this.newsService.queryByKey("wx_msg_news", "title", content.getString("title"));
+                        if (news == null) {
+                            news = content.toJavaObject(WxMsgNews.class);
+                            news.setMode(1);
+                            this.newsService.save(news);
+                        } else {
+                            news.setContent(content.getString("content"));
+                            this.newsService.update(news);
+                        }
+                    }
                 }
             }
             offset += items.size();

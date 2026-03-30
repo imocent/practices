@@ -7,7 +7,7 @@
         <div class="wx-form-list">
             <div class="content">
                 <div class="main" data-t="1">
-                    <img th:src="@{/images/default.png}" width="300px" height="300px"/>
+                    <img th:src="@{/images/default.png}"/>
                     <p>请输入标题</p>
                 </div>
             </div>
@@ -33,14 +33,14 @@
                         <i class="layui-icon layui-icon-upload"></i>
                         <p>点击上传，或将文件拖拽到此处</p>
                     </div>
-                    <input type="checkbox" name="showpic" title="封面图片显示在正文中" lay-skin="primary" id="add_showpic" value="1"/>
+                    <input type="checkbox" name="showCoverPic" id="showCoverPic" title="封面图片显示在正文中" lay-skin="primary" value="1"/>
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">原文链接</label>
                 <div class="layui-input-block">
-                    <input type="text" name="fromUrl" id="fromUrl" placeholder="请输入原文链接" class="layui-input"/>
+                    <input type="text" name="contentSourceUrl" id="contentSourceUrl" placeholder="请输入原文链接" class="layui-input"/>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -57,7 +57,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label"><i class="yadmin-red">* </i>内容</label>
                 <div class="layui-input-block">
-                    <textarea id="introduction" name="introduction" class="layui-textarea" lay-verify="required" lay-vertype="tips"></textarea>
+                    <textarea id="content" name="content" class="layui-textarea" lay-verify="required" lay-vertype="tips"></textarea>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -72,10 +72,9 @@
     layui.use(['jquery', 'layEditor', "upload", 'form'], function ($, editor, upload, form) {
         editor.init({
             elem: '#content',
-            uploadUrl: 'https://upload-z1.qiniup.com',
-            videoUploadUrl: 'https://upload-z1.qiniup.com',
+            uploadUrl: '/admin/wx/media/upload',
+            videoUploadUrl: '/admin/wx/media/upload',
             videoUploadSize: '102400',
-            style: 'fangge',
         });
         //开启关闭留言
         form.on('switch(comment)', function (data) {
@@ -98,7 +97,7 @@
                 layer.msg("请上传封面图", {icon: 5});
                 return false;
             }
-            $.post('/admin/wx/media/save', formData, function (data) {
+            $.post('/admin/wx/message/save', formData, function (data) {
                 advices(data, parent);
             }, 'json').fail(function (event) {
                 toError(event);
@@ -123,7 +122,7 @@
                     $("#uploader").html("<img src='" + result.data.src + "' style='width: 150px;height: 150px;'/><p>点击重新上传，或将文件拖拽到此处</p>");
                     $("#add_picpath").val(result.data.url);
                     $("#mediaId").val(result.data.mediaId);
-                    $(".wx-form-list .main img").attr("src", result.data.url);
+                    $(".wx-form-list .main img").attr("src", result.data.src);
                 } else {
                     layer.msg("上传接口异常", {icon: 5});
                 }

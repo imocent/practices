@@ -4,7 +4,7 @@
 <body style="background-color:#f5f5f5">
 <div class="yadmin-body animated fadeIn" style="padding: 20px;">
     <!-- 图片预览 -->
-    <div th:if="${bean?.mediaType == 'image'}" style="text-align: center;">
+    <div th:if="${bean?.mediaType == 'image' || bean?.mediaType == 'thumb'}" style="text-align: center;">
         <div class="layui-card" style="background: #fff; border-radius: 4px;">
             <div class="layui-card-header" style="border-bottom: 1px solid #f0f0f0; padding: 15px 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="layui-card-body" style="padding: 30px; text-align: center;">
-                <img th:src="${bean?.url}" style="max-width: 100%; max-height: 70vh; box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); border-radius: 4px;"/>
+                <img th:src="${bean?.url ?: bean?.filePath}" style="max-height: 70vh;box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);border-radius: 4px;" referrerPolicy="no-referrer" />
                 <div style="margin-top: 20px; color: #999; font-size: 12px;">
                     <i class="layui-icon layui-icon-tips"></i> 点击图片可查看原图
                 </div>
@@ -100,7 +100,7 @@
     </div>
 
     <!-- 无数据或加载失败提示 -->
-    <div th:if="${bean == null}" style="text-align: center; padding: 100px 20px;">
+    <div th:if="${bean == null||bean?.mediaType==''}" style="text-align: center; padding: 100px 20px;">
         <div class="layui-card" style="background: #fff; border-radius: 4px;">
             <div class="layui-card-body" style="padding: 60px 20px;">
                 <i class="layui-icon layui-icon-face-cry" style="font-size: 80px; color: #FF5722;"></i>
