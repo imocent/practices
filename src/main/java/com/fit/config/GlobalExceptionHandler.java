@@ -1,6 +1,9 @@
 package com.fit.config;
 
+import com.fit.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.session.InvalidSessionException;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -21,6 +26,33 @@ import java.util.Map;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * 处理未认证异常
+     */
+    @ExceptionHandler(UnauthenticatedException.class)
+    public String handleUnauthenticatedException(UnauthenticatedException e, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug("未认证异常：{}", e.getMessage());
+        // 判断是否为Ajax请求
+        if (WebUtil.isAjax(request)) {
+            response.setStatus(401);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write(Collections.singletonMap("请先登录", 401).toString());
+            return null;
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    /**
+     * 处理未授权异常
+     */
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseBody
+    public Map<String, Object> handleAuthorizationException(AuthorizationException e) {
+        log.error("未授权异常：{}", e.getMessage());
+        return Collections.singletonMap("没有权限访问", 403);
+    }
+
     // 处理无权限异常：不要让用户退出，只是提示无权访问
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)

@@ -167,14 +167,4 @@ public class WechatAccountFansController {
     public String mass() {
         return PREFIX + "mass";
     }
-
-    @RequestMapping(value = "/accountFans")
-    @ResponseBody
-    public AjaxResult accountFans(HttpServletRequest request) {
-        Map<String, Object> map = WebUtil.getRequestMap(request);
-        map.put("account", tokenService.getCurrentAccount());
-        List<WxAccountFans> list = service.findList(map);
-        int count = service.findCount(map);
-        return AjaxResult.tables(count, list);
-    }
 }

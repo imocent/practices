@@ -6,7 +6,7 @@
     <div class="layui-card-body">
         <div class="yadmin-body animated fadeIn">
             <div class="layui-form yadmin-search-area input">
-                <form class="layui-form-item">
+                <div class="layui-form-item">
                     <div class="layui-inline">
                         <label for="name" class="layui-form-label">名称</label>
                         <div class="layui-input-inline">
@@ -19,7 +19,12 @@
                             <i class="layui-icon layui-icon-refresh"></i>
                         </button>
                     </div>
-                </form>
+                    <div class="layui-inline" style="float:right">
+                        <button class="layui-btn layui-btn-sm layui-bg-purple" id="batch_sync">
+                            <i class="layui-icon">&#xe674; 同步模板</i>
+                        </button>
+                    </div>
+                </div>
             </div>
             <script type="text/html" id="toolbar">
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
@@ -53,8 +58,7 @@
             smartReloadModel: true,
             cols: [[
                 {type: 'checkbox'},
-                {field: 'tplId', title: '模板ID', minWidth: 80},
-                {field: 'wxTpl', title: '微信模板', minWidth: 80},
+                {field: 'templateId', title: '模板ID', minWidth: 80},
                 {field: 'title', title: '消息标题', minWidth: 80},
                 {field: 'content', title: '模板内容', minWidth: 80},
                 {fixed: 'right', title: '操作', width: 160, align: 'center', toolbar: '#column-toolbar'}
@@ -110,6 +114,19 @@
                 where: form.field
             });
             return false;
+        });
+
+        $("#batch_sync").click(function () {
+            layer.confirm('确认同步模板?', {icon: 7, title: "提示", btn: ['确认', '取消']}, function () {
+                $.post('/admin/wx/template/syncTemplate', function (data) {
+                    advices(data);
+                }, 'json').fail(function (event) {
+                    layer.msg("同步异常");
+                });
+            }, function () {
+                table.reload('table-list');
+                layer.closeAll();
+            });
         });
     });
 </script>

@@ -3,13 +3,12 @@
 <mapper namespace="com.fit.dao.WxAccountFansTagDao">
   <resultMap id="BaseResultMap" type="com.fit.entity.WxAccountFansTag">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="account" jdbcType="VARCHAR" property="account" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, create_time, account, `name`, `count`
+    id, `name`, `count`, create_time
   </sql>
   <select id="get" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -27,28 +26,19 @@
       <if test="id != null">
         id,
       </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="account != null">
-        account,
-      </if>
       <if test="name != null">
         `name`,
       </if>
       <if test="count != null">
         `count`,
       </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="account != null">
-        #{account,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -56,42 +46,39 @@
       <if test="count != null">
         #{count,jdbcType=INTEGER},
       </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <update id="update" parameterType="com.fit.entity.WxAccountFansTag">
     update wx_account_fans_tag
     <set>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="account != null">
-        account = #{account,jdbcType=VARCHAR},
-      </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="count != null">
         `count` = #{count,jdbcType=INTEGER},
       </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <sql id="Base_Where_List">
     <where>
-      <if test="createTime != null ">
-         and create_time &gt;= #{createTime }
-      </if>
-      <if test="createTime != null ">
-         and create_time &lt;= #{createTime } 
-      </if>
-      <if test="account != null and account != ''">
-         and account = #{account,jdbcType=VARCHAR}
-      </if>
       <if test="name != null and name != ''">
          and `name` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
       </if>
       <if test="count != null and count != ''">
          and `count` = #{count,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null ">
+         and create_time &gt;= #{createTime }
+      </if>
+      <if test="createTime != null ">
+         and create_time &lt;= #{createTime } 
       </if>
     </where>
   </sql>
@@ -117,12 +104,10 @@
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
     replace into wx_account_fans_tag (
-      id,create_time,account,name,
-      count
+      id,name,count,create_time
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
-      #{v.id},#{v.createTime},#{v.account},#{v.name},
-      #{v.count}
+      #{v.id},#{v.name},#{v.count},#{v.createTime}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

@@ -16,7 +16,9 @@
         var tableObj = table.render({
             id: 'fans_chose',
             elem: '#fans_chose',
-            url: '/admin/wx/fans/accountFans',
+            url: '/admin/wx/fans/list',
+            method: 'post',
+            dataType: 'JSON',
             align: "center",
             cols: [[
                 {type: 'checkbox'},

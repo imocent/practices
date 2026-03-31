@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.interfaces.RSAPrivateKey;
 import java.util.HashMap;
 
 /**
@@ -34,11 +33,9 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
     @Value("${Fit.captcha-open}")
     private boolean captcha = false;
 
-    private static final String AJAX_HEADER = "X-Requested-With"; //AJAX请求头标识
     public static final String CAPTCHA_REQUIRED_KEY = "shiroCaptchaRequired"; //是否需要验证码
     public static final String CAPTCHA_ERROR_COUNT_KEY = "shiroCaptchaErrorCount"; //验证码错误次数
     public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
-    private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
 
     /**
      * 根据请求动态决定 loginUrl（只支持 /admin/login 与 /login 两种）
@@ -159,7 +156,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         HttpSession session = req.getSession();
         session.setAttribute("tips", getErrorMessage(e));
         // 如果是AJAX请求，返回JSON响应
-        if (isAjaxRequest(req)) {
+        if (WebUtil.isAjax(req)) {
             handleAjaxResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "登录失败", getErrorMessage(e));
             return false;
         }
@@ -196,7 +193,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         log.debug("=== 登录成功重定向 ===");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         // 如果是AJAX请求，返回成功JSON
-        if (isAjaxRequest(httpRequest)) {
+        if (WebUtil.isAjax(httpRequest)) {
             handleAjaxResponse(response, HttpServletResponse.SC_OK, "登录成功", null);
             return;
         }
@@ -286,7 +283,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         // 如果是AJAX请求，返回JSON响应
-        if (isAjaxRequest(httpRequest)) {
+        if (WebUtil.isAjax(httpRequest)) {
             log.debug("=== AJAX请求重定向到登录，返回JSON响应 ===");
             handleAjaxResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "未登录或会话已过期", "请重新登录");
             return;
@@ -344,13 +341,6 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         if (e instanceof ExcessiveAttemptsException) return "登录失败次数过多，请稍后再试";
         if (e instanceof UnknownAccountException) return "用户名不存在";
         return e.getMessage() != null ? e.getMessage() : "登录失败，请稍后重试";
-    }
-
-    /**
-     * 判断是否为AJAX请求
-     */
-    private boolean isAjaxRequest(HttpServletRequest request) {
-        return XML_HTTP_REQUEST.equals(request.getHeader(AJAX_HEADER)) || "application/json".equals(request.getContentType()) || "application/json".equals(request.getHeader("Accept")) || (request.getHeader("Accept") != null && request.getHeader("Accept").contains("application/json"));
     }
 
     /**

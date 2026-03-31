@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fit.entity.WxAssetMedia;
 import com.fit.entity.WxMsgNews;
+import com.fit.entity.WxMsgTemplate;
 import com.fit.enums.WechatAPI;
 import com.fit.util.WechatUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ public class WxAffairService {
     private WxAssetMediaService mediaService;
     @Autowired
     private WxMsgNewsService newsService;
+    @Autowired
+    private WxMsgTemplateService templateService;
 
     /**
      * 异步同步所有素材
@@ -154,5 +157,33 @@ public class WxAffairService {
             }
         }
         log.info("完成同步{}素材", type);
+    }
+
+    @Async("syncExecutor")
+    public CompletableFuture<String> syncTemplates() {
+        log.info("开始同步微信消息模板");
+        long startTime = System.currentTimeMillis();
+        try {
+            String token = tokenService.getCurrentToken();
+            JSONObject call = WechatUtil.apiPostCall(WechatAPI.TEMPLATE_LIST.format(token), null);
+            if (call != null || call.containsKey("template_list")) {
+                JSONArray list = call.getJSONArray("template_list");
+                for (int i = 0; i < list.size(); i++) {
+                    JSONObject obj = list.getJSONObject(i);
+                    WxMsgTemplate bean = this.templateService.queryByKey("wx_msg_template", "template_id", obj.getString("template_id"));
+                    if (bean == null) {
+                        bean = obj.toJavaObject(WxMsgTemplate.class);
+                        bean.setAccount(tokenService.getCurrentAccount());
+                        this.templateService.save(bean);
+                    }
+                }
+            }
+            String result = String.format("同步完成，耗时: %d ms", System.currentTimeMillis() - startTime);
+            log.info(result);
+            return CompletableFuture.completedFuture(result);
+        } catch (Exception e) {
+            log.error("同步失败", e);
+            return CompletableFuture.completedFuture("同步失败: " + e.getMessage());
+        }
     }
 }

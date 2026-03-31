@@ -371,7 +371,28 @@ public class WebUtil {
      * @param request 客户端的请求对象
      */
     public static boolean isAjax(HttpServletRequest request) {
-        return request.getHeader("X-Requested-With") != null && "XMLHttpRequest".equals(request.getHeader("X-Requested-With").toString());
+        // 1. 标准AJAX请求头
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return true;
+        }
+        // 2. 检查Content-Type
+        if ("application/json".equals(request.getContentType())) {
+            return true;
+        }
+        // 3. 检查Accept头
+        String accept = request.getHeader("Accept");
+        if (accept != null && accept.contains("application/json")) {
+            return true;
+        }
+        // 4. 检查是否为fetch请求（通过自定义头）
+        if ("fetch".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
+            return true;
+        }
+        // 5. 检查请求参数（某些框架会在URL中添加参数标识）
+        if ("true".equalsIgnoreCase(request.getParameter("ajax"))) {
+            return true;
+        }
+        return false;
     }
 
     /**

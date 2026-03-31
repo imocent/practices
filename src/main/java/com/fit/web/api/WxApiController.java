@@ -113,7 +113,7 @@ public class WxApiController extends BaseController {
         WxMsgTemplate tplMsg = this.templateService.get(id);
         JSONObject jsObj = new JSONObject();
         jsObj.put("touser", openIds.split(","));
-        jsObj.put("template_id", tplMsg.getTplId());
+        jsObj.put("template_id", tplMsg.getTemplateId());
         jsObj.put("url", "http://weixin.qq.com/download");
         jsObj.put("topcolor", "#FF0000");
         jsObj.put("data", "");

@@ -68,6 +68,8 @@ public enum WechatAPI {
     SEND_CUSTOM_MESSAGE(1, "%s/cgi-bin/message/custom/send?access_token=%s", "发送客服消息"),
     TAGS_MEMBERS_TAGGING(1, "%s/cgi-bin/tags/members/batchtagging?access_token=%s", ""),
     TAGS_MEMBERS_UNTAGGING(1, "%s/cgi-bin/tags/members/batchuntagging?access_token=%s", ""),
+    TEMPLATE_LIST(1, "%s/cgi-bin/template/get_all_private_template?access_token=%s", "获取已选用模板列表"),
+    TEMPLATE_SEND(1, "%s/cgi-bin/message/template/send?access_token=%s", "发送模板消息"),
     TOKEN(2, "%s/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", ""),
     USER_INFO(1, "%s/cgi-bin/user/info?access_token=%s&openid=%s&lang=%s", "用户信息");
 

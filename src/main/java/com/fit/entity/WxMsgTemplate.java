@@ -47,24 +47,34 @@ public class WxMsgTemplate extends BaseEntity<WxMsgTemplate> {
     private Boolean enabled;
 
     /**
-     * 微信模板
-     */
-    private String wxTpl;
-
-    /**
      * 模板ID
      */
-    private String tplId;
+    private String templateId;
 
     /**
-     * 消息标题
+     * 模板标题
      */
     private String title;
 
     /**
-     * 消息内容
+     * 模板内容
      */
     private String content;
+
+    /**
+     * 模板所属行业的一级行业
+     */
+    private String primaryIndustry;
+
+    /**
+     * 模板所属行业的二级行业
+     */
+    private String deputyIndustry;
+
+    /**
+     * 模板示例
+     */
+    private String example;
 
     @Override
     public String toString() {
@@ -81,10 +91,12 @@ public class WxMsgTemplate extends BaseEntity<WxMsgTemplate> {
         sb.append(", readCount=").append(readCount);
         sb.append(", favourCount=").append(favourCount);
         sb.append(", enabled=").append(enabled);
-        sb.append(", wxTpl=").append(wxTpl);
-        sb.append(", tplId=").append(tplId);
+        sb.append(", templateId=").append(templateId);
         sb.append(", title=").append(title);
         sb.append(", content=").append(content);
+        sb.append(", primaryIndustry=").append(primaryIndustry);
+        sb.append(", deputyIndustry=").append(deputyIndustry);
+        sb.append(", example=").append(example);
         sb.append("]");
         return sb.toString();
     }

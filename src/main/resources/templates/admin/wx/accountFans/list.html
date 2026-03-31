@@ -49,24 +49,31 @@
             smartReloadModel: true,
             cols: [[
                 {type: 'checkbox'},
-                {type: "numbers", title: '序号', minWidth: 80, templet: function (index) {return index + 1;}},
+                {
+                    type: "numbers", title: '序号', minWidth: 80, templet: function (index) {
+                        return index + 1;
+                    }
+                },
                 {field: 'nickname', title: '昵称', minWidth: 80},
                 {
-                    field: 'sex',
-                    title: '性别',
-                    minWidth: 80,
-                    templet: function (res) {return res.sex === 2 ? "女" : res.sex === 1 ? "男" : "未知";}
+                    field: 'sex', title: '性别', minWidth: 80, templet: function (res) {
+                        return res.sex === 2 ? "女" : res.sex === 1 ? "男" : "未知";
+                    }
                 },
                 {field: 'province', title: '省份', minWidth: 80},
                 {field: 'city', title: '城市', minWidth: 80},
-                {field: 'subscribeTime', title: '订阅时间', width: 170, templet:function (res) {
-                    return layui.util.toDateString(res.subscribeTime * 1000, 'yyyy-MM-dd HH:mm:ss');
-                }},
+                {
+                    field: 'subscribeTime', title: '订阅时间', width: 170, templet: function (res) {
+                        return layui.util.toDateString(res.subscribeTime * 1000, 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
                 {
                     field: 'subscribe',
                     title: '是否关注',
                     width: 100,
-                    templet: function (res) {return res.subscribe===1 ? "已关注" : "未关注";}
+                    templet: function (res) {
+                        return res.subscribe === 1 ? "已关注" : "未关注";
+                    }
                 },
                 {field: 'notes', title: '备注', minWidth: 80},
                 {fixed: 'right', title: '操作', width: 240, align: 'center', toolbar: '#column-toolbar'}

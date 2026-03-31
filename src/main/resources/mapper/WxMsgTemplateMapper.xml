@@ -11,14 +11,16 @@
     <result column="read_count" jdbcType="INTEGER" property="readCount" />
     <result column="favour_count" jdbcType="INTEGER" property="favourCount" />
     <result column="enabled" jdbcType="BIT" property="enabled" />
-    <result column="wx_tpl" jdbcType="VARCHAR" property="wxTpl" />
-    <result column="tpl_id" jdbcType="VARCHAR" property="tplId" />
+    <result column="template_id" jdbcType="VARCHAR" property="templateId" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="primary_industry" jdbcType="VARCHAR" property="primaryIndustry" />
+    <result column="deputy_industry" jdbcType="VARCHAR" property="deputyIndustry" />
+    <result column="example" jdbcType="VARCHAR" property="example" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, account, msg_type, input_code, `rule`, read_count, favour_count, 
-    enabled, wx_tpl, tpl_id, title, content
+    enabled, template_id, title, content, primary_industry, deputy_industry, example
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -60,17 +62,23 @@
       <if test="enabled != null">
         enabled,
       </if>
-      <if test="wxTpl != null">
-        wx_tpl,
-      </if>
-      <if test="tplId != null">
-        tpl_id,
+      <if test="templateId != null">
+        template_id,
       </if>
       <if test="title != null">
         title,
       </if>
       <if test="content != null">
         content,
+      </if>
+      <if test="primaryIndustry != null">
+        primary_industry,
+      </if>
+      <if test="deputyIndustry != null">
+        deputy_industry,
+      </if>
+      <if test="example != null">
+        example,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -101,17 +109,23 @@
       <if test="enabled != null">
         #{enabled,jdbcType=BIT},
       </if>
-      <if test="wxTpl != null">
-        #{wxTpl,jdbcType=VARCHAR},
-      </if>
-      <if test="tplId != null">
-        #{tplId,jdbcType=VARCHAR},
+      <if test="templateId != null">
+        #{templateId,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="primaryIndustry != null">
+        #{primaryIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="deputyIndustry != null">
+        #{deputyIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="example != null">
+        #{example,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -142,17 +156,23 @@
       <if test="enabled != null">
         enabled = #{enabled,jdbcType=BIT},
       </if>
-      <if test="wxTpl != null">
-        wx_tpl = #{wxTpl,jdbcType=VARCHAR},
-      </if>
-      <if test="tplId != null">
-        tpl_id = #{tplId,jdbcType=VARCHAR},
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="primaryIndustry != null">
+        primary_industry = #{primaryIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="deputyIndustry != null">
+        deputy_industry = #{deputyIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="example != null">
+        example = #{example,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -186,17 +206,23 @@
       <if test="enabled != null and enabled != ''">
          and enabled = #{enabled,jdbcType=BIT}
       </if>
-      <if test="wxTpl != null and wxTpl != ''">
-         and wx_tpl = #{wxTpl,jdbcType=VARCHAR}
-      </if>
-      <if test="tplId != null and tplId != ''">
-         and tpl_id = #{tplId,jdbcType=VARCHAR}
+      <if test="templateId != null and templateId != ''">
+         and template_id = #{templateId,jdbcType=VARCHAR}
       </if>
       <if test="title != null and title != ''">
          and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
       </if>
       <if test="content != null and content != ''">
          and content like CONCAT('%',#{content,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="primaryIndustry != null and primaryIndustry != ''">
+         and primary_industry = #{primaryIndustry,jdbcType=VARCHAR}
+      </if>
+      <if test="deputyIndustry != null and deputyIndustry != ''">
+         and deputy_industry = #{deputyIndustry,jdbcType=VARCHAR}
+      </if>
+      <if test="example != null and example != ''">
+         and example = #{example,jdbcType=VARCHAR}
       </if>
     </where>
   </sql>
@@ -224,12 +250,14 @@
     replace into wx_msg_template (
       id,create_time,account,msg_type,
       input_code,rule,read_count,favour_count,enabled,
-      wx_tpl,tpl_id,title,content
+      template_id,title,content,primary_industry,deputy_industry,
+      example
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
       #{v.id},#{v.createTime},#{v.account},#{v.msgType},
       #{v.inputCode},#{v.rule},#{v.readCount},#{v.favourCount},#{v.enabled},
-      #{v.wxTpl},#{v.tplId},#{v.title},#{v.content}
+      #{v.templateId},#{v.title},#{v.content},#{v.primaryIndustry},#{v.deputyIndustry},
+      #{v.example}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

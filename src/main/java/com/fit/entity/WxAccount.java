@@ -58,7 +58,7 @@ public class WxAccount extends BaseEntity<WxAccount> {
     private String notes;
 
     /**
-     * 是否使用: 0-否,1-是
+     * 默认选中: 0-否,1-是
      */
     private Boolean shift;
 

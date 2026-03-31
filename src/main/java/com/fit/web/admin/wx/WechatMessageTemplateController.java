@@ -2,6 +2,7 @@ package com.fit.web.admin.wx;
 
 import com.fit.base.AjaxResult;
 import com.fit.entity.WxMsgTemplate;
+import com.fit.service.WxAffairService;
 import com.fit.service.WxApiTokenService;
 import com.fit.service.WxMsgTemplateService;
 import com.fit.util.BeanUtil;
@@ -32,6 +33,8 @@ public class WechatMessageTemplateController {
     private WxMsgTemplateService service;
     @Autowired
     private WxApiTokenService tokenService;
+    @Autowired
+    private WxAffairService affairService;
 
     /**
      * 列表页面
@@ -98,5 +101,12 @@ public class WechatMessageTemplateController {
         } else {
             return AjaxResult.error("参数异常");
         }
+    }
+
+    @PostMapping("/syncTemplate")
+    @ResponseBody
+    public Object syncTemplate() {
+        affairService.syncTemplates();
+        return AjaxResult.success();
     }
 }

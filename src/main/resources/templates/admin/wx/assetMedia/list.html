@@ -120,6 +120,9 @@
             layer.confirm('确认同步素材?', {icon: 7, title: "提示", btn: ['确认', '取消']}, function () {
                 $.post('/admin/wx/media/syncMaterial', function (data) {
                     advices(data);
+                    setTimeout(function () {
+                        table.reload('table-list');
+                    }, 30000);
                 }, 'json').fail(function (event) {
                     layer.msg("同步异常");
                 });
