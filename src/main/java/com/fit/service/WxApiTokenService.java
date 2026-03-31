@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -68,21 +69,44 @@ public class WxApiTokenService {
         if (scheduleEnabled) {
             this.scheduler = Executors.newScheduledThreadPool(corePoolSize);
             reloadAccounts();
-            autoSelectDefaultAccount();
+            autoSelectDefaultAccount();  // 自动选择默认公众号（基于shift字段）
             startTokenCheckTask();
             startConfigRefreshTask();
         }
         log.info("chat-token - 初始化完成，定时任务启用状态: {}", scheduleEnabled);
     }
 
+    /**
+     * 自动选择默认公众号
+     * 优先选择 shift=1 的公众号，如果没有则选择第一个
+     */
     private void autoSelectDefaultAccount() {
         if (accountCache.isEmpty()) {
             log.warn("没有可用的公众号配置，无法自动选中默认公众号");
             return;
         }
 
-        String firstAppid = accountCache.keySet().iterator().next();
-        switchTo(firstAppid);
+        // 查找 shift=1 的公众号
+        WxAccount defaultAccount = null;
+        for (WxAccount account : accountCache.values()) {
+            if (account.getShift() != null && account.getShift()) {
+                defaultAccount = account;
+                break;
+            }
+        }
+
+        // 如果没有找到 shift=1 的，则选择第一个
+        if (defaultAccount == null) {
+            String firstAccount = accountCache.keySet().iterator().next();
+            defaultAccount = accountCache.get(firstAccount);
+            log.info("未找到标记为默认的公众号，将选择第一个公众号作为默认");
+        }
+
+        // 切换到选中的公众号
+        if (defaultAccount != null) {
+            switchTo(defaultAccount.getAccount());
+            log.info("自动选中默认公众号: {} - {}, shift={}", defaultAccount.getAccount(), defaultAccount.getName(), defaultAccount.getShift());
+        }
     }
 
     @PreDestroy
@@ -144,6 +168,21 @@ public class WxApiTokenService {
             }
             accountCache.clear();
             accountCache.putAll(newAccountCache);
+
+            // 重新加载后，检查当前选中的公众号是否还存在
+            WxAccount current = currentWxAccount.get();
+            if (current != null) {
+                WxAccount updatedAccount = accountCache.get(current.getAccount());
+                if (updatedAccount == null) {
+                    // 当前选中的公众号已被删除，需要重新选择
+                    log.warn("当前选中的公众号 {} 已被删除，将重新选择默认公众号", current.getAccount());
+                    autoSelectDefaultAccount();
+                } else {
+                    // 更新当前选中的公众号配置
+                    currentWxAccount.set(updatedAccount);
+                    log.debug("当前选中的公众号配置已更新: {}", updatedAccount.getAccount());
+                }
+            }
         } catch (Exception e) {
             log.error("加载公众号配置失败", e);
         } finally {
@@ -381,6 +420,7 @@ public class WxApiTokenService {
         WxAccount currentAccount = getCurrentWxAccount();
         stats.put("currentAppid", currentAccount != null ? currentAccount.getAppid() : null);
         stats.put("currentAccountName", currentAccount != null ? currentAccount.getName() : null);
+        stats.put("currentShift", currentAccount != null ? currentAccount.getShift() : null);
 
         return stats;
     }
@@ -389,14 +429,17 @@ public class WxApiTokenService {
 
     /**
      * 切换当前使用的公众号配置
+     * 会将选中的公众号的 shift 设为 1，其他公众号的 shift 设为 0
      *
      * @param account 公众号ID
      */
+    @Transactional(rollbackFor = Exception.class)
     public void switchTo(String account) {
         if (account == null || account.trim().isEmpty()) {
-            log.error("appId不能为空");
+            log.error("account不能为空");
             return;
         }
+
         // 先从缓存获取
         WxAccount config = accountCache.get(account);
         if (config == null) { // 如果缓存不存在，从数据库查询
@@ -405,11 +448,30 @@ public class WxApiTokenService {
                 accountCache.put(account, config);
             }
         }
+
         if (config == null) {
             log.error("未找到公众号配置: {}", account);
-        } else {
+            return;
+        }
+        // 更新数据库中的 shift 标志
+        try {
+            // 1. 先将所有公众号的 shift 设为 0
+            wxAccountService.updateBySQL("update `wx_account` set `shift`=0 ", null);
+            // 2. 将选中的公众号的 shift 设为 1
+            config.setShift(true);
+            wxAccountService.update(config);
+            // 3. 更新缓存中的 shift 状态
+            for (WxAccount acc : accountCache.values()) {
+                acc.setShift(false);
+            }
+            config.setShift(true);
+            accountCache.put(account, config);
+            // 4. 更新当前选中的公众号
             currentWxAccount.set(config);
-            log.info("切换公众号成功: {} - {}", config.getAccount(), config.getName());
+            log.info("切换公众号成功: {} - {}, shift已更新为1", config.getAccount(), config.getName());
+        } catch (Exception e) {
+            log.error("切换公众号时更新shift标志失败", e);
+            throw new RuntimeException("切换公众号失败", e);
         }
     }
 
@@ -445,9 +507,9 @@ public class WxApiTokenService {
     }
 
     /**
-     * 获取当前选中的公众号appid
+     * 获取当前选中的公众号account
      *
-     * @return 当前选中的公众号appid，如果没有选中则返回null
+     * @return 当前选中的公众号account，如果没有选中则返回null
      */
     public String getCurrentAccount() {
         WxAccount current = currentWxAccount.get();
@@ -456,7 +518,7 @@ public class WxApiTokenService {
         } catch (Exception e) {
             reloadCurrentAccount();
             current = currentWxAccount.get();
-            return current.getAccount();
+            return current != null ? current.getAccount() : null;
         }
     }
 

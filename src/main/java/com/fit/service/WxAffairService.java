@@ -10,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -112,20 +114,20 @@ public class WxAffairService {
                 WxAssetMedia bean = mediaService.queryByKey("wx_asset_media", "media_id", item.getString("media_id"));
                 if (bean == null) {
                     WxAssetMedia media = item.toJavaObject(WxAssetMedia.class);
-                    if (media.getUrl().isEmpty()) {
+                    if (StringUtils.isEmpty(media.getUrl())) {
                         param.clear();
                         param.put("media_id", item.getString("media_id"));
                         JSONObject json = WechatUtil.apiPostCall(WechatAPI.MATERIAL_GET.format(token), param);
                         media.setTitle(json.getString("title"));
-                        media.setMediaId(json.getString("down_url"));
+                        media.setUrl(json.getString("down_url"));
                     }
                     media.setAccount(account);
                     media.setMediaType(type);
                     media.setFileName(item.getString("name"));
-                    media.setUpdateTime(item.getDate("update_time"));
+                    media.setUpdateTime(new Date(item.getLong("update_time") * 1000));
                     mediaService.save(media);
                 } else {
-                    bean.setUpdateTime(item.getDate("update_time"));
+                    bean.setUpdateTime(new Date(item.getLong("update_time") * 1000));
                     bean.setTitle(item.getString("name"));
                     mediaService.update(bean);
                 }
