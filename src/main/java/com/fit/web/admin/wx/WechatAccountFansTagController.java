@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @AUTO 控制器
@@ -104,5 +105,33 @@ public class WechatAccountFansTagController {
         } else {
             return AjaxResult.error("参数异常");
         }
+    }
+
+
+    @PostMapping("/syncFansTagsList")
+    @ResponseBody
+    public Object syncFansTagsList() {
+        WxAccount wxAccount = tokenService.getCurrentWxAccount();
+        String accessToken = WechatUtil.getAccessToken(wxAccount.getAppid(), wxAccount.getAppsecret());
+        JSONObject objs = WechatUtil.getFansTagsList(accessToken);
+        if (objs != null && objs.containsKey("tags")) {
+            JSONArray tags = objs.getJSONArray("tags");
+            for (int i = 0; i < tags.size(); i++) {
+                JSONObject tag = tags.getJSONObject(i);
+                WxAccountFansTag bean = this.service.get(tag.getLong("id"));
+                if (null == bean) {
+                    bean = tag.toJavaObject(WxAccountFansTag.class);
+                    bean.setAccount(this.tokenService.getCurrentAccount());
+                    this.service.save(bean);
+                } else {
+                    if (!tag.getInteger("count").equals(bean.getCount())) {
+                        bean.setCount(tag.getInteger("count"));
+                        this.service.update(bean);
+                    }
+                }
+            }
+            return AjaxResult.success();
+        }
+        return AjaxResult.error("同步获取标签列表错误信息", objs);
     }
 }

@@ -89,6 +89,18 @@ public class WechatUtil {
     /**
      * 获取粉丝列表
      */
+    public static JSONObject getFansTagsList(String access_token) {
+        try {
+            return apiGetCall(WechatAPI.TAGS_LIST.format(access_token));
+        } catch (Exception e) {
+            log.error("获取关注列表异常", e);
+        }
+        return null;
+    }
+
+    /**
+     * 获取粉丝列表
+     */
     public static JSONObject getFansList(String access_token) {
         try {
             return apiGetCall(WechatAPI.FANS_LIST.format(access_token));

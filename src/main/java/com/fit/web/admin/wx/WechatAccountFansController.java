@@ -104,6 +104,25 @@ public class WechatAccountFansController {
         }
     }
 
+    @GetMapping("/info")
+    public String infoView(String id, Model model) {
+        if (OftenUtil.isNotEmpty(id)) {
+            WxAccountFans bean = service.getByObjId(id);
+            model.addAttribute("bean", bean);
+        }
+        return PREFIX + "info";
+    }
+
+    @GetMapping("/send")
+    public String sendView(Long id, String openid, Model model) {
+        if (OftenUtil.isNotEmpty(id)) {
+            WxAccountFans bean = service.get(id);
+            model.addAttribute("bean", bean);
+        }
+        model.addAttribute("openid", openid);
+        return PREFIX + "send";
+    }
+
     /**
      * 同步公众号粉丝列表
      */

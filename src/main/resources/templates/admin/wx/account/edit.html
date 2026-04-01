@@ -5,10 +5,13 @@
 <div class="yadmin-body animated fadeIn">
     <div class="layui-form layui-form-pane">
         <div class="layui-form-item">
-            <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>公众号ID</label>
+            <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>公众号类型</label>
             <div class="layui-input-block">
-                <input type="text" id="account" placeholder="请输入公众号ID" name="account" th:value="${bean?.account}"
-                       lay-verify="required" lay-vertype="tips" class="layui-input"/>
+                <select id="mold" name="mold" lay-verify="required">
+                    <option value="0">未知</option>
+                    <option value="1">公众号</option>
+                    <option value="2">服务号</option>
+                </select>
             </div>
         </div>
         <div class="layui-form-item">
@@ -19,10 +22,19 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="appId" class="layui-form-label"><i class="yadmin-red">* </i>AppID</label>
-            <div class="layui-input-block">
-                <input type="text" id="appId" placeholder="请输入公众号AppID" name="appid" th:value="${bean?.appid}" lay-verify="required"
-                       lay-vertype="tips" class="layui-input"/>
+            <div class="layui-inline">
+                <label for="account" class="layui-form-label"><i class="yadmin-red">* </i>公众号ID</label>
+                <div class="layui-input-block">
+                    <input type="text" id="account" placeholder="请输入公众号ID" name="account" th:value="${bean?.account}" lay-verify="required"
+                           lay-vertype="tips" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label for="appId" class="layui-form-label"><i class="yadmin-red">* </i>AppID</label>
+                <div class="layui-input-block">
+                    <input type="text" id="appId" placeholder="请输入公众号AppID" name="appid" th:value="${bean?.appid}" lay-verify="required"
+                           lay-vertype="tips" class="layui-input"/>
+                </div>
             </div>
         </div>
         <div class="layui-form-item">
@@ -69,6 +81,8 @@
 </div>
 <script>
     layui.use(['jquery', 'form'], function ($, form) {
+        $('select[name=mold] option[value="[[${bean?.mold}]]"]').prop('selected', true);
+        form.render('select');
         form.on('submit(submit-form)', function (obj) {
             $.post('/admin/wx/account/save', obj.field, function (data) {
                 advices(data, parent);

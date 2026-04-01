@@ -1,13 +1,16 @@
 package com.fit.web.admin.wx;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fit.base.AjaxResult;
 import com.fit.entity.WxMsgNews;
 import com.fit.enums.MsgType;
+import com.fit.enums.WechatAPI;
 import com.fit.service.WxApiTokenService;
 import com.fit.service.WxMsgNewsService;
 import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
+import com.fit.util.WechatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -100,5 +103,35 @@ public class WechatMessageController {
         } else {
             return AjaxResult.error("参数异常");
         }
+    }
+
+    /**
+     * @param id      消息ID
+     * @param msgType 消息类型
+     * @param openid  粉丝ID
+     * @return
+     */
+    @PostMapping("/sendMessage")
+    @ResponseBody
+    public Object sendMessage(Long id, String msgType, String openid) {
+        String token = this.tokenService.getCurrentToken();
+        WxMsgNews news = this.service.get(id);
+        JSONObject send = new JSONObject();
+        send.put("touser", openid);
+        send.put("msgtype", msgType);
+        if (msgType.equalsIgnoreCase(MsgType.Text.name())) {
+            JSONObject textObj = new JSONObject();
+            textObj.put("content", news.getContent());
+            send.put("text", textObj);
+        } else {
+            JSONObject media = new JSONObject();
+            media.put("media_id", news.getMediaId());
+            send.put("mpnews", media);
+        }
+        JSONObject call = WechatUtil.apiPostCall(WechatAPI.SEND_CUSTOM_MESSAGE.format(token), send);
+        if (WechatUtil.isWxError(call)) {
+            return AjaxResult.error("发送失败," + call.get("errmsg"), call);
+        }
+        return AjaxResult.success("发送成功");
     }
 }

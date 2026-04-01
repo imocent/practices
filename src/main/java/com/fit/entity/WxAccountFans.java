@@ -7,6 +7,11 @@ import lombok.*;
 @Data
 public class WxAccountFans extends BaseEntity<WxAccountFans> {
     /**
+     * 公众号
+     */
+    private String account;
+
+    /**
      * 每个用户都是唯一的
      */
     private String openId;
@@ -27,7 +32,12 @@ public class WxAccountFans extends BaseEntity<WxAccountFans> {
     private String subscribeScene;
 
     /**
-     * 性别 0-未知；1-男；2-女
+     * 头像
+     */
+    private String headImgUrl;
+
+    /**
+     * 性别: 0-未知;1-男;2-女
      */
     private Integer sex;
 
@@ -52,29 +62,14 @@ public class WxAccountFans extends BaseEntity<WxAccountFans> {
     private String city;
 
     /**
-     * 头像
-     */
-    private String headImgUrl;
-
-    /**
-     * 用户状态 1-可用；0-不可用
-     */
-    private Byte status;
-
-    /**
      * 备注
      */
     private String remark;
 
     /**
-     * 微信号
+     * 用户状态: 0-不可用; 1-可用
      */
-    private String wxId;
-
-    /**
-     * 公众号
-     */
-    private String account;
+    private Boolean status;
 
     /**
      * 创建时间
@@ -103,20 +98,19 @@ public class WxAccountFans extends BaseEntity<WxAccountFans> {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", account=").append(account);
         sb.append(", openId=").append(openId);
         sb.append(", subscribe=").append(subscribe);
         sb.append(", subscribeTime=").append(subscribeTime);
         sb.append(", subscribeScene=").append(subscribeScene);
+        sb.append(", headImgUrl=").append(headImgUrl);
         sb.append(", sex=").append(sex);
         sb.append(", language=").append(language);
         sb.append(", country=").append(country);
         sb.append(", province=").append(province);
         sb.append(", city=").append(city);
-        sb.append(", headImgUrl=").append(headImgUrl);
-        sb.append(", status=").append(status);
         sb.append(", remark=").append(remark);
-        sb.append(", wxId=").append(wxId);
-        sb.append(", account=").append(account);
+        sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", qrScene=").append(qrScene);
         sb.append(", qrSceneStr=").append(qrSceneStr);

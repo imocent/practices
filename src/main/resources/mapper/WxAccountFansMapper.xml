@@ -2,21 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fit.dao.WxAccountFansDao">
   <resultMap id="BaseResultMap" type="com.fit.entity.WxAccountFans">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="subscribe" jdbcType="INTEGER" property="subscribe" />
     <result column="subscribe_time" jdbcType="VARCHAR" property="subscribeTime" />
     <result column="subscribe_scene" jdbcType="VARCHAR" property="subscribeScene" />
+    <result column="head_img_url" jdbcType="VARCHAR" property="headImgUrl" />
     <result column="sex" jdbcType="INTEGER" property="sex" />
     <result column="language" jdbcType="VARCHAR" property="language" />
     <result column="country" jdbcType="VARCHAR" property="country" />
     <result column="province" jdbcType="VARCHAR" property="province" />
     <result column="city" jdbcType="VARCHAR" property="city" />
-    <result column="head_img_url" jdbcType="VARCHAR" property="headImgUrl" />
-    <result column="status" jdbcType="TINYINT" property="status" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="wx_id" jdbcType="VARCHAR" property="wxId" />
-    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="status" jdbcType="BIT" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="qr_scene" jdbcType="INTEGER" property="qrScene" />
     <result column="qr_scene_str" jdbcType="VARCHAR" property="qrSceneStr" />
@@ -25,30 +24,32 @@
     <result column="nickname" jdbcType="VARBINARY" property="nickname" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, subscribe, subscribe_time, subscribe_scene, sex, `language`, country, 
-    province, city, head_img_url, `status`, remark, wx_id, account, create_time, qr_scene, 
-    qr_scene_str
+    id, account, open_id, subscribe, subscribe_time, subscribe_scene, head_img_url, sex, 
+    `language`, country, province, city, remark, `status`, create_time, qr_scene, qr_scene_str
   </sql>
   <sql id="Blob_Column_List">
     nickname
   </sql>
-  <select id="get" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="get" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from wx_account_fans
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="delete" parameterType="java.lang.Integer">
+  <delete id="delete" parameterType="java.lang.Long">
     delete from wx_account_fans
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="save" keyColumn="id" keyProperty="id" parameterType="com.fit.entity.WxAccountFans" useGeneratedKeys="true">
     insert into wx_account_fans
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="account != null">
+        account,
       </if>
       <if test="openId != null">
         open_id,
@@ -61,6 +62,9 @@
       </if>
       <if test="subscribeScene != null">
         subscribe_scene,
+      </if>
+      <if test="headImgUrl != null">
+        head_img_url,
       </if>
       <if test="sex != null">
         sex,
@@ -77,20 +81,11 @@
       <if test="city != null">
         city,
       </if>
-      <if test="headImgUrl != null">
-        head_img_url,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
       <if test="remark != null">
         remark,
       </if>
-      <if test="wxId != null">
-        wx_id,
-      </if>
-      <if test="account != null">
-        account,
+      <if test="status != null">
+        `status`,
       </if>
       <if test="createTime != null">
         create_time,
@@ -107,7 +102,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
       </if>
       <if test="openId != null">
         #{openId,jdbcType=VARCHAR},
@@ -120,6 +118,9 @@
       </if>
       <if test="subscribeScene != null">
         #{subscribeScene,jdbcType=VARCHAR},
+      </if>
+      <if test="headImgUrl != null">
+        #{headImgUrl,jdbcType=VARCHAR},
       </if>
       <if test="sex != null">
         #{sex,jdbcType=INTEGER},
@@ -136,20 +137,11 @@
       <if test="city != null">
         #{city,jdbcType=VARCHAR},
       </if>
-      <if test="headImgUrl != null">
-        #{headImgUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
-      </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="wxId != null">
-        #{wxId,jdbcType=VARCHAR},
-      </if>
-      <if test="account != null">
-        #{account,jdbcType=VARCHAR},
+      <if test="status != null">
+        #{status,jdbcType=BIT},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -168,6 +160,9 @@
   <update id="update" parameterType="com.fit.entity.WxAccountFans">
     update wx_account_fans
     <set>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
       <if test="openId != null">
         open_id = #{openId,jdbcType=VARCHAR},
       </if>
@@ -179,6 +174,9 @@
       </if>
       <if test="subscribeScene != null">
         subscribe_scene = #{subscribeScene,jdbcType=VARCHAR},
+      </if>
+      <if test="headImgUrl != null">
+        head_img_url = #{headImgUrl,jdbcType=VARCHAR},
       </if>
       <if test="sex != null">
         sex = #{sex,jdbcType=INTEGER},
@@ -195,20 +193,11 @@
       <if test="city != null">
         city = #{city,jdbcType=VARCHAR},
       </if>
-      <if test="headImgUrl != null">
-        head_img_url = #{headImgUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        `status` = #{status,jdbcType=TINYINT},
-      </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="wxId != null">
-        wx_id = #{wxId,jdbcType=VARCHAR},
-      </if>
-      <if test="account != null">
-        account = #{account,jdbcType=VARCHAR},
+      <if test="status != null">
+        `status` = #{status,jdbcType=BIT},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -223,10 +212,13 @@
         nickname = #{nickname,jdbcType=VARBINARY},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <sql id="Base_Where_List">
     <where>
+      <if test="account != null and account != ''">
+         and account = #{account,jdbcType=VARCHAR}
+      </if>
       <if test="openId != null and openId != ''">
          and open_id = #{openId,jdbcType=VARCHAR}
       </if>
@@ -238,6 +230,9 @@
       </if>
       <if test="subscribeScene != null and subscribeScene != ''">
          and subscribe_scene = #{subscribeScene,jdbcType=VARCHAR}
+      </if>
+      <if test="headImgUrl != null and headImgUrl != ''">
+         and head_img_url = #{headImgUrl,jdbcType=VARCHAR}
       </if>
       <if test="sex != null and sex != ''">
          and sex = #{sex,jdbcType=INTEGER}
@@ -254,20 +249,11 @@
       <if test="city != null and city != ''">
          and city = #{city,jdbcType=VARCHAR}
       </if>
-      <if test="headImgUrl != null and headImgUrl != ''">
-         and head_img_url = #{headImgUrl,jdbcType=VARCHAR}
-      </if>
-      <if test="status != null and status != ''">
-         and `status` = #{status,jdbcType=TINYINT}
-      </if>
       <if test="remark != null and remark != ''">
          and remark = #{remark,jdbcType=VARCHAR}
       </if>
-      <if test="wxId != null and wxId != ''">
-         and wx_id = #{wxId,jdbcType=VARCHAR}
-      </if>
-      <if test="account != null and account != ''">
-         and account = #{account,jdbcType=VARCHAR}
+      <if test="status != null and status != ''">
+         and `status` = #{status,jdbcType=BIT}
       </if>
       <if test="createTime != null ">
          and create_time &gt;= #{createTime }
@@ -308,16 +294,16 @@
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
     replace into wx_account_fans (
-      id,open_id,subscribe,subscribe_time,
-      subscribe_scene,sex,language,country,province,
-      city,head_img_url,status,remark,wx_id,
-      account,create_time,qr_scene,qr_scene_str,nickname
+      id,account,open_id,subscribe,
+      subscribe_time,subscribe_scene,head_img_url,sex,language,
+      country,province,city,remark,status,
+      create_time,qr_scene,qr_scene_str,nickname
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
-      #{v.id},#{v.openId},#{v.subscribe},#{v.subscribeTime},
-      #{v.subscribeScene},#{v.sex},#{v.language},#{v.country},#{v.province},
-      #{v.city},#{v.headImgUrl},#{v.status},#{v.remark},#{v.wxId},
-      #{v.account},#{v.createTime},#{v.qrScene},#{v.qrSceneStr},#{v.nickname}
+      #{v.id},#{v.account},#{v.openId},#{v.subscribe},
+      #{v.subscribeTime},#{v.subscribeScene},#{v.headImgUrl},#{v.sex},#{v.language},
+      #{v.country},#{v.province},#{v.city},#{v.remark},#{v.status},
+      #{v.createTime},#{v.qrScene},#{v.qrSceneStr},#{v.nickname}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

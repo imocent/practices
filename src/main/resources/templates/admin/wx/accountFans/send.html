@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('详情')"></head>
+<body style="background-color:#fff">
+<div class="yadmin-body animated fadeIn">
+    <div class="layui-container" style="padding: 20px;">
+        <!-- Tabs 卡片风格 -->
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this" data-type="text">文本消息</li>
+                <li data-type="image">图文消息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <table id="messageTable" lay-filter="messageTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['jquery', 'table', 'element'], function ($, table, element) {
+        var tableIns = table.render({
+            elem: '#messageTable',
+            url: '/admin/wx/message/list', // 数据接口
+            method: 'post',
+            where: {msgType: 'text'},
+            cols: [
+                [
+                    {field: 'account', title: '公众ID', minWidth: 80},
+                    {field: 'inputCode', title: '关键字', minWidth: 80},
+                    {field: 'title', title: '消息标题', minWidth: 80},
+                    {
+                        fixed: 'right', title: '操作', width: 160, templet: '<a class="layui-btn layui-btn-xs" lay-event="send">发送</a>'
+                    }]
+            ]
+        });
+
+        table.on('tool(messageTable)', function (obj) {
+            layer.confirm('确认发送该消息?', function (index) {
+                var msgType = $('.layui-tab-title li.layui-this').data('type');
+                $.post('/admin/wx/message/sendMessage', {id: obj.data.id, msgType: msgType, openid: "[[${openid}]]"}, function (result) {
+                    advices(result, index);
+                }, 'json').fail(function (event) {
+                    toError(event);
+                });
+            });
+        });
+
+        // 监听 Tab 切换事件
+        element.on('tab', function (data) {
+            console.log(data)
+            tableIns.reload({where: {msgType: $(this).data('type')}});
+        });
+    });
+</script>
+</html>

@@ -20,19 +20,27 @@
                         </button>
                     </div>
                     <div class="layui-inline" style="float:right">
+                        <button class="layui-btn layui-btn-sm layui-bg-orange" id="fans_tags">
+                            <i class="layui-icon">&#xe66e; 同步标签</i>
+                        </button>
+                    </div>
+                    <div class="layui-inline" style="float:right">
                         <button class="layui-btn layui-btn-sm layui-bg-purple" id="fans_sync">
-                            <i class="layui-icon">&#xe674; 批量同步粉丝</i>
+                            <i class="layui-icon">&#xe674; 同步粉丝</i>
                         </button>
                     </div>
                 </div>
             </div>
             <table class="layui-hide" id="table-list"></table>
             <script type="text/html" id="column-toolbar">
-                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="mass">
+                <button type="button" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="mass">
                     <i class="layui-icon" title="发送消息">&#xe609; 发送消息</i>
                 </button>
+                <button type="button" class="layui-btn layui-btn-xs" lay-event="info">
+                    <i class="layui-icon" title="详情">&#xe66f; 详情</i>
+                </button>
                 <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="sync">
-                    <i class="layui-icon" title="同步粉丝消息">&#xe669; 同步粉丝消息</i>
+                    <i class="layui-icon" title="同步详情">&#xe611; 同步详情</i>
                 </button>
             </script>
         </div>
@@ -49,66 +57,39 @@
             smartReloadModel: true,
             cols: [[
                 {type: 'checkbox'},
-                {
-                    type: "numbers", title: '序号', minWidth: 80, templet: function (index) {
-                        return index + 1;
-                    }
-                },
-                {field: 'nickname', title: '昵称', minWidth: 80},
+                {field: "openId", title: '用户id', minWidth: 80},
                 {
                     field: 'sex', title: '性别', minWidth: 80, templet: function (res) {
                         return res.sex === 2 ? "女" : res.sex === 1 ? "男" : "未知";
                     }
                 },
-                {field: 'province', title: '省份', minWidth: 80},
-                {field: 'city', title: '城市', minWidth: 80},
                 {
                     field: 'subscribeTime', title: '订阅时间', width: 170, templet: function (res) {
                         return layui.util.toDateString(res.subscribeTime * 1000, 'yyyy-MM-dd HH:mm:ss');
                     }
                 },
                 {
-                    field: 'subscribe',
-                    title: '是否关注',
-                    width: 100,
-                    templet: function (res) {
+                    field: 'subscribe', title: '是否关注', width: 100, templet: function (res) {
                         return res.subscribe === 1 ? "已关注" : "未关注";
                     }
                 },
+                {field: 'nickname', title: '昵称', minWidth: 80},
+                {field: 'province', title: '省份', minWidth: 80},
+                {field: 'city', title: '城市', minWidth: 80},
                 {field: 'notes', title: '备注', minWidth: 80},
-                {fixed: 'right', title: '操作', width: 240, align: 'center', toolbar: '#column-toolbar'}
+                {fixed: 'right', title: '操作', width: 300, align: 'center', toolbar: '#column-toolbar'}
             ]]
         });
 
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
             if (event === 'mass') {
-                var pageIndex = openPage({
-                    content: '/admin/wx/fans/mass', title: "发送", yes: function (index) {
-                        if (GLOBAL.chooses.length === 0) {
-                            layer.msg("至少选择1个粉丝");
-                            return false;
-                        }
-                        $.post('/wxapi/sendTemplateMessage', {id: data.id, openIds: GLOBAL.chooses.join(",")}, function (result) {
-                            advices(result, pageIndex);
-                        }, 'json').fail(function (event) {
-                            toError(event);
-                        });
-                    },
-                    end: function () {
-                        GLOBAL.chooses = [];
-                    }
-                });
+                editView('/admin/wx/fans/send?id=' + obj.data.id + '&openid=' + obj.data.openId, '发送消息');
+            } else if (event === 'info') {
+                editView('/admin/wx/fans/info?id=' + obj.data.id, '粉丝详情');
             } else if (event === 'sync') {
-                $.post('/admin/wx/fans/syncAccountFans', {openId: data.openId}, function (data) {
-                    if (data.code === 0) {
-                        showDialog({
-                            title: '粉丝详细信息', template: 'fansInfo', saveUrl: '', width: 400, height: 500, htmlData: result.data
-                            , btn: ["关闭"], yes: function (index, layero) {
-                                layer.close(index);
-                            }
-                        })
-                    }
+                $.post('/admin/wx/fans/syncAccountFans', {openId: data.openId}, function (res) {
+                    advices(res, '');
                 }, 'json').fail(function (event) {
                     layer.msg("同步异常");
                 });
@@ -129,6 +110,10 @@
             }, function () {
                 layer.closeAll();
             });
+        });
+
+        $("#fans_tags").click(function () {
+            openFull('/admin/wx/fans/tag/list', '标签列表');
         });
 
         form.on('submit(search)', function (form) {

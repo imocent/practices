@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('详情')"></head>
+<body style="background-color:#fff">
+<div class="yadmin-body animated fadeIn">
+    <div class="layui-form layui-form-pane">
+        <div style="padding: 20px;">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150"><col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td>昵称</td>
+                    <td th:text="${bean?.nickname}"></td>
+                </tr>
+                <tr>
+                    <td>头像</td>
+                    <td><img th:src="${bean?.headImgUrl}" style="max-width: 100px; max-height: 100px;"></td>
+                </tr>
+                <tr>
+                    <td>性别</td>
+                    <td th:text="${bean?.sex == 1 ? '男' : '女'}"></td>
+                </tr>
+                <tr>
+                    <td>省/市</td>
+                    <td th:text="|${bean?.province}/${bean?.city}|"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

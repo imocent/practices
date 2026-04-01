@@ -12,9 +12,9 @@ public class WxAccount extends BaseEntity<WxAccount> {
     private String account;
 
     /**
-     * 验证时用的url
+     * 账户类型: 0-未知; 1-公众号; 2-服务号
      */
-    private String url;
+    private Integer mold;
 
     /**
      * 公众号名称
@@ -53,12 +53,17 @@ public class WxAccount extends BaseEntity<WxAccount> {
     private Date tokenTime;
 
     /**
+     * 验证时用的url
+     */
+    private String url;
+
+    /**
      * 备注
      */
     private String notes;
 
     /**
-     * 默认选中: 0-否,1-是
+     * 是否使用: 0-否,1-是
      */
     private Boolean shift;
 
@@ -69,7 +74,7 @@ public class WxAccount extends BaseEntity<WxAccount> {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", account=").append(account);
-        sb.append(", url=").append(url);
+        sb.append(", mold=").append(mold);
         sb.append(", name=").append(name);
         sb.append(", appid=").append(appid);
         sb.append(", appsecret=").append(appsecret);
@@ -79,6 +84,7 @@ public class WxAccount extends BaseEntity<WxAccount> {
         sb.append(", advanceRefresh=").append(advanceRefresh);
         sb.append(", expiresIn=").append(expiresIn);
         sb.append(", tokenTime=").append(tokenTime);
+        sb.append(", url=").append(url);
         sb.append(", notes=").append(notes);
         sb.append(", shift=").append(shift);
         sb.append("]");

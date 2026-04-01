@@ -1,7 +1,6 @@
 package com.fit.entity;
 
 import com.fit.base.BaseEntity;
-import java.util.Date;
 import lombok.*;
 
 @Data
@@ -17,9 +16,9 @@ public class WxAccountFansTag extends BaseEntity<WxAccountFansTag> {
     private Integer count;
 
     /**
-     * 创建日期
+     * 公众号
      */
-    private Date createTime;
+    private String account;
 
     @Override
     public String toString() {
@@ -30,7 +29,7 @@ public class WxAccountFansTag extends BaseEntity<WxAccountFansTag> {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", count=").append(count);
-        sb.append(", createTime=").append(createTime);
+        sb.append(", account=").append(account);
         sb.append("]");
         return sb.toString();
     }

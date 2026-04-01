@@ -3,7 +3,7 @@
 <mapper namespace="com.fit.dao.WxAccountDao">
   <resultMap id="BaseResultMap" type="com.fit.entity.WxAccount">
     <id column="account" jdbcType="VARCHAR" property="account" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="mold" jdbcType="INTEGER" property="mold" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="appid" jdbcType="VARCHAR" property="appid" />
     <result column="appsecret" jdbcType="VARCHAR" property="appsecret" />
@@ -13,12 +13,13 @@
     <result column="advance_refresh" jdbcType="INTEGER" property="advanceRefresh" />
     <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
     <result column="token_time" jdbcType="TIMESTAMP" property="tokenTime" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
     <result column="shift" jdbcType="BIT" property="shift" />
   </resultMap>
   <sql id="Base_Column_List">
-    account, url, `name`, appid, appsecret, token, msg_count, refresh_interval, advance_refresh, 
-    expires_in, token_time, notes, shift
+    account, mold, `name`, appid, appsecret, token, msg_count, refresh_interval, advance_refresh, 
+    expires_in, token_time, url, notes, shift
   </sql>
   <select id="get" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -36,8 +37,8 @@
       <if test="account != null">
         account,
       </if>
-      <if test="url != null">
-        url,
+      <if test="mold != null">
+        mold,
       </if>
       <if test="name != null">
         `name`,
@@ -66,6 +67,9 @@
       <if test="tokenTime != null">
         token_time,
       </if>
+      <if test="url != null">
+        url,
+      </if>
       <if test="notes != null">
         notes,
       </if>
@@ -77,8 +81,8 @@
       <if test="account != null">
         #{account,jdbcType=VARCHAR},
       </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
+      <if test="mold != null">
+        #{mold,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -107,6 +111,9 @@
       <if test="tokenTime != null">
         #{tokenTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
       <if test="notes != null">
         #{notes,jdbcType=VARCHAR},
       </if>
@@ -118,8 +125,8 @@
   <update id="update" parameterType="com.fit.entity.WxAccount">
     update wx_account
     <set>
-      <if test="url != null">
-        url = #{url,jdbcType=VARCHAR},
+      <if test="mold != null">
+        mold = #{mold,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
@@ -148,6 +155,9 @@
       <if test="tokenTime != null">
         token_time = #{tokenTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
       <if test="notes != null">
         notes = #{notes,jdbcType=VARCHAR},
       </if>
@@ -162,8 +172,8 @@
       <if test="account != null and account != ''">
          and account = #{account,jdbcType=VARCHAR}
       </if>
-      <if test="url != null and url != ''">
-         and url = #{url,jdbcType=VARCHAR}
+      <if test="mold != null and mold != ''">
+         and mold = #{mold,jdbcType=INTEGER}
       </if>
       <if test="name != null and name != ''">
          and `name` like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
@@ -195,6 +205,9 @@
       <if test="tokenTime != null ">
          and token_time &lt;= #{tokenTime } 
       </if>
+      <if test="url != null and url != ''">
+         and url = #{url,jdbcType=VARCHAR}
+      </if>
       <if test="notes != null and notes != ''">
          and notes = #{notes,jdbcType=VARCHAR}
       </if>
@@ -225,14 +238,14 @@
   </select>
   <insert id="batchAdd" parameterType="java.util.List">
     replace into wx_account (
-      account,url,name,appid,
+      account,mold,name,appid,
       appsecret,token,msg_count,refresh_interval,advance_refresh,
-      expires_in,token_time,notes,shift
+      expires_in,token_time,url,notes,shift
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
-      #{v.account},#{v.url},#{v.name},#{v.appid},
+      #{v.account},#{v.mold},#{v.name},#{v.appid},
       #{v.appsecret},#{v.token},#{v.msgCount},#{v.refreshInterval},#{v.advanceRefresh},
-      #{v.expiresIn},#{v.tokenTime},#{v.notes},#{v.shift}
+      #{v.expiresIn},#{v.tokenTime},#{v.url},#{v.notes},#{v.shift}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">
