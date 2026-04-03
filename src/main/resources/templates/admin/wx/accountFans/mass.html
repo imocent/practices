@@ -31,7 +31,7 @@
                 },
                 {
                     field: 'sex', title: '性别', width: 80, align: 'center', templet: function (d) {
-                        return d.sex === 2 ? "女" : d.sex === 1 ? "男" : "未知";
+                        return d.sex == 2 ? "女" : d.sex == 1 ? "男" : "未知";
                     }
                 },
                 {
@@ -51,7 +51,7 @@
         var GLOBAL = parent.GLOBAL;
         // 选择事件
         table.on('checkbox(fans_chose)', function (obj) {
-            if (obj.type === "all") { //全选
+            if (obj.type == "all") { //全选
                 var data = table.cache["fans_chose"] || [];
                 if (obj.checked) {
                     for (var i = 0; i < data.length; i++) {

@@ -62,7 +62,7 @@
             document.onkeydown = function (e) { // 回车提交表单
                 var theEvent = window.event || e;
                 var code = theEvent.keyCode || theEvent.which;
-                if (code === 13) {
+                if (code == 13) {
                     $("#LAY-submit").trigger("click");
                 }
             }

@@ -48,7 +48,7 @@
 
         dtree.on("node('dTree')", function (obj) {
             let typeDom = $('#pid');
-            if (typeDom.val() === obj.param.nodeId) {
+            if (typeDom.val() == obj.param.nodeId) {
                 typeDom.val('');
                 $('#levels').val(0);
                 $("input[dtree-id='pid']").val('请选择');

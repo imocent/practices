@@ -98,7 +98,7 @@
                 case 'json_repair':
                     try {
                         $.get('/json/repair', {json: $('#json_encrypt').val()}, function (data) {
-                            if (data.code === -1) {
+                            if (data.code == -1) {
                                 $('#json_decrypt').val('Invalid JSON: ' + data.msg);
                             } else {
                                 $('#json_encrypt').val(data.msg);

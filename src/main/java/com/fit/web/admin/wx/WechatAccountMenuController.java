@@ -3,14 +3,19 @@ package com.fit.web.admin.wx;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fit.base.AjaxResult;
+import com.fit.entity.WxAccountFans;
 import com.fit.entity.WxAccountMenu;
+import com.fit.entity.WxMsgNews;
 import com.fit.service.WxAccountMenuService;
 import com.fit.service.WxApiTokenService;
+import com.fit.service.WxMsgNewsService;
+import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
 import com.fit.util.WechatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,6 +44,8 @@ public class WechatAccountMenuController {
     private WxApiTokenService tokenService;
     @Autowired
     private WxAccountMenuService service;
+    @Autowired
+    private WxMsgNewsService newsService;
 
     /**
      * 列表页面
@@ -54,7 +61,10 @@ public class WechatAccountMenuController {
         Map<String, Object> map = WebUtil.getRequestMap(request);
         map.put("account", tokenService.getCurrentAccount());
         List<WxAccountMenu> menus = service.findList(map);
-        return AjaxResult.success(WechatUtil.getMenuJson(menus));
+        String sql = "SELECT * FROM `wx_msg_news` WHERE `id` IN (SELECT `msg_id` FROM `wx_account_menu` WHERE `account`=#{params.account})";
+        JSONObject menuJson = WechatUtil.getMenuJson(menus);
+        menuJson.put("news", newsService.getBySQL(sql, map));
+        return AjaxResult.success(menuJson);
     }
 
     @RequestMapping(value = "/save")
@@ -129,5 +139,11 @@ public class WechatAccountMenuController {
             }
         }
         return AjaxResult.success();
+    }
+
+    @GetMapping("/ventu")
+    public String ventuView(Long id, String openid, Model model) {
+        model.addAttribute("openid", openid);
+        return PREFIX + "ventu";
     }
 }

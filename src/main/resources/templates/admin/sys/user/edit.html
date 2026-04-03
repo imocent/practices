@@ -62,7 +62,7 @@
 
         dtree.on("node('deptTree')", function (obj) {
             let typeDom = $('#deptId');
-            if (typeDom.val() === obj.param.nodeId) {
+            if (typeDom.val() == obj.param.nodeId) {
                 typeDom.val('');
                 $("input[dtree-id='deptTree']").val('请选择');
             } else {

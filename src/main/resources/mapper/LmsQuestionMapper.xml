@@ -16,10 +16,11 @@
     <result column="ENABLED" jdbcType="BIT" property="enabled" />
     <result column="ETIME" jdbcType="TIMESTAMP" property="etime" />
     <result column="EUSER" jdbcType="BIGINT" property="euser" />
+    <result column="CHECKED" jdbcType="BIT" property="checked" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, CTIME, CUSER, EXAM_ROOM_ID, EXAM_ROOM_NAME, MOLD, CONTENT, EXAM_SUBJECT_ID, EXAM_SUBJECT_NAME, 
-    DIFFICULTY, `SHARE`, ENABLED, ETIME, EUSER
+    DIFFICULTY, `SHARE`, ENABLED, ETIME, EUSER, `CHECKED`
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -76,6 +77,9 @@
       <if test="euser != null">
         EUSER,
       </if>
+      <if test="checked != null">
+        `CHECKED`,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -120,6 +124,9 @@
       <if test="euser != null">
         #{euser,jdbcType=BIGINT},
       </if>
+      <if test="checked != null">
+        #{checked,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
   <update id="update" parameterType="com.fit.entity.LmsQuestion">
@@ -163,6 +170,9 @@
       </if>
       <if test="euser != null">
         EUSER = #{euser,jdbcType=BIGINT},
+      </if>
+      <if test="checked != null">
+        `CHECKED` = #{checked,jdbcType=BIT},
       </if>
     </set>
     where ID = #{id,jdbcType=BIGINT}
@@ -214,6 +224,9 @@
       <if test="euser != null and euser != ''">
          and EUSER = #{euser,jdbcType=BIGINT}
       </if>
+      <if test="checked != null and checked != ''">
+         and `CHECKED` = #{checked,jdbcType=BIT}
+      </if>
     </where>
   </sql>
   <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -240,12 +253,14 @@
     replace into lms_question (
       ID,CTIME,CUSER,EXAM_ROOM_ID,
       EXAM_ROOM_NAME,MOLD,CONTENT,EXAM_SUBJECT_ID,EXAM_SUBJECT_NAME,
-      DIFFICULTY,SHARE,ENABLED,ETIME,EUSER
+      DIFFICULTY,SHARE,ENABLED,ETIME,EUSER,
+      CHECKED
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
       #{v.id},#{v.ctime},#{v.cuser},#{v.examRoomId},
       #{v.examRoomName},#{v.mold},#{v.content},#{v.examSubjectId},#{v.examSubjectName},
-      #{v.difficulty},#{v.share},#{v.enabled},#{v.etime},#{v.euser}
+      #{v.difficulty},#{v.share},#{v.enabled},#{v.etime},#{v.euser},
+      #{v.checked}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

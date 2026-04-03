@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: head('详情')"></head>
+<body style="background-color:#fff">
+<div class="yadmin-body animated fadeIn">
+    <div class="layui-container" style="padding: 20px;">
+        <!-- Tabs 卡片风格 -->
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this" data-type="text">文本消息</li>
+                <li data-type="image">图文消息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <table id="select_table" lay-filter="select_table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['jquery', 'table', 'element'], function ($, table, element) {
+        var tableIns = table.render({
+            elem: '#select_table',
+            url: '/admin/wx/message/list', // 数据接口
+            method: 'post',
+            page: true,
+            where: {msgType: 'text'},
+            cols: [
+                [
+                    {field: 'id', title: 'ID', width: 100},
+                    {field: 'title', title: '消息标题', minWidth: 80},
+                    {field: 'msgType', title: '消息类型', minWidth: 80},
+                    {
+                        field: 'lock', title: '操作', width: 100, templet: function (d) {
+                            return '<button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="choose">选择</button>';
+                        }
+                    }
+                ]
+            ],
+            text: {
+                none: '暂无数据'
+            },
+            done: function (res, curr, count) {
+                $('.layui-table-cell').css('text-align', 'center');
+                parent.window.wechatMenuManager.responseData = res.data;
+            }
+        });
+
+        // 表格工具条事件
+        table.on('tool(select_table)', function (obj) {
+            if (obj.event == 'choose') {
+                parent.window.wechatMenuManager.refreshKey(obj.data);
+                parent.layer.close(parent.layer.getFrameIndex(window.name));
+            }
+        });
+
+        // 监听 Tab 切换事件
+        element.on('tab', function (data) {
+            tableIns.reload({where: {msgType: $(this).data('type')}});
+        });
+    });
+</script>
+</html>

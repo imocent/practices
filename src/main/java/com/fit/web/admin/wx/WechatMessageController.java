@@ -80,7 +80,7 @@ public class WechatMessageController {
         if (null == entity) {
             bean.setAccount(tokenService.getCurrentAccount());
             bean.setCreateTime(new Date());
-            bean.setMsgType(MsgType.Text.name());
+            bean.setMsgType(MsgType.Text.name);
             this.service.save(bean);
         } else {
             BeanUtil.copyProperties(bean, entity);

@@ -63,7 +63,7 @@
             if ($btn.hasClass('layui-border-green')) {
                 $.post('/comments/like', {commentId: infoId}, function (res) {
                     advices(res);
-                    if ($btn.text() === "点赞") {
+                    if ($btn.text() == "点赞") {
                         $btn.text("已点赞");
                     } else {
                         $btn.text("点赞");

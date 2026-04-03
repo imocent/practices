@@ -76,26 +76,26 @@
 
         // 工具条点击事件
         table.on('toolbar', function (obj) {
-            if (obj.event === 'image') {
+            if (obj.event == 'image') {
                 openFull("/admin/wx/media/images", "添加图文");
-            } else if (obj.event === 'video') {
+            } else if (obj.event == 'video') {
                 openFull("/admin/wx/media/video", "添加视频");
             }
         });
 
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
-            if (event === 'eye') {
+            if (event == 'eye') {
                 openFull("/admin/wx/media/view?id=" + data.id, "预览");
-            } else if (obj.event === 'down') {
+            } else if (obj.event == 'down') {
                 layer.confirm('确定要下载吗？', {icon: 3, title: '下载确认'}, function (index) {
                     downloadFile(data.url, data.filename);
                     layer.close(index);
                 });
-            } else if (obj.event === 'del') {
+            } else if (obj.event == 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
-                    if (selectData.length === 0) {
+                    if (selectData.length == 0) {
                         selectData.push(data);
                     }
                     let idsArray = [];
@@ -138,7 +138,7 @@
             xhr.open('GET', url, true);
             xhr.responseType = 'blob';
             xhr.onload = function () {
-                if (this.status === 200) {
+                if (this.status == 200) {
                     var link = document.createElement('a');
                     var blobUrl = URL.createObjectURL(this.response);
                     link.href = blobUrl;

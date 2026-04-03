@@ -448,15 +448,15 @@ public class WechatUtil {
             if ("fix".equals(menu.getEventType())) {//fix 消息
                 obj.put("key", "_fix_" + menu.getMsgId());//以 _fix_ 开头
             } else {
-                if (WechatUtil.isEmpty(menu.getInputCode())) {//如果inputcode 为空，默认设置为 subscribe，以免创建菜单失败
+                if (WechatUtil.isEmpty(menu.getInputCode())) {//如果inputCode 为空，默认设置为 subscribe，以免创建菜单失败
                     obj.put("key", "subscribe");
                 } else {
                     obj.put("key", menu.getInputCode());
                 }
             }
-            //存msgtype id
-            obj.put("msgType", menu.getMsgType());
-            obj.put("msgId", menu.getMsgId());//
+            //存msgType和msgId
+            obj.put("msgType", menu.getMsgType() == null ? "" : menu.getMsgType());
+            obj.put("msgId", menu.getMsgId());
         } else {//链接菜单-view
             obj.put("url", menu.getUrl());
         }

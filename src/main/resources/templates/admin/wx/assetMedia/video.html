@@ -47,7 +47,7 @@
     layui.use(['jquery', 'form', "upload"], function ($, form, upload) {
         form.on('submit(submit-form)', function (obj) {
             console.log(obj.field.fileName)
-            if (obj.field.fileName === '') {
+            if (obj.field.fileName == '') {
                 layer.tips("请先上传视频文件", "#uploader", {tips: [1, '#000'], time: 1000});
                 return false;
             }

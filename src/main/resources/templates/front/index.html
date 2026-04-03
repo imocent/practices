@@ -88,7 +88,7 @@
 <script>
     layui.use(['jquery', 'form', 'laypage'], function ($, form) {
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
+            if (e.key == 'Enter' || e.key == ' ') {
                 document.getElementById('search').click();
             }
         });

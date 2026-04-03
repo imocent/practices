@@ -3,174 +3,116 @@
 <head th:include="include :: head('微信公众号菜单')"></head>
 <link rel="stylesheet" type="text/css" th:href="@{/css/wxMenu.css}"/>
 <body style="background-color:#fff">
-<div class="yadmin-body animated fadeIn" id="menu-container">
-    <div class="weixin-menu-setting clear-after" style="min-width: 900px;">
-        <div class="mobile-menu-preview">
-            <div class="mobile-head-title">公众号</div>
-            <ul class="menu-list" id="menu-list">
-                <li class="add-item extra" id="add-item">
-                    <a href="javascript:;" class="menu-link" title="添加菜单">
-                        <i class="weixin-icon add-gray"></i>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="weixin-body">
-            <div class="weixin-content-wrap" style="display:none">
-                <div class="weixin-content">
-                    <div class="item-info">
-                        <form id="form-item" class="form-item" data-value="">
-                            <div class="item-head">
-                                <h4 id="current-item-name">添加子菜单</h4>
-                                <div class="item-delete">
-                                    <a href="javascript:;" id="item_delete">删除菜单</a>
+<div class="weixin-menu-setting" id="menu-container">
+    <div class="mobile-menu-preview">
+        <div class="mobile-head-title">公众号</div>
+        <ul class="menu-list" id="menu-list">
+            <li class="add-item extra" id="add-item">
+                <a href="javascript:;" class="menu-link" title="添加菜单"><i class="weixin-icon add-gray"></i></a>
+            </li>
+        </ul>
+        <small style="color: #FF5722;padding-left: 128px;position: absolute;bottom: -20px;">可直接拖动菜单排序</small>
+    </div>
+    <div class="weixin-body">
+        <div class="weixin-content-wrap" style="display:none">
+            <div class="weixin-content">
+                <div class="item-info">
+                    <form id="form-item" class="form-item" data-value="">
+                        <div class="item-head">
+                            <h4 id="current-item-name">添加子菜单</h4>
+                            <div class="item-delete">
+                                <a href="javascript:;" id="item_delete">删除菜单</a>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <dl>
+                                <dt id="current-item-option"><span class="is-sub-item">子</span>菜单标题：</dt>
+                                <dd>
+                                    <div class="input-box">
+                                        <input id="item_title" name="item-title" type="text" value=""/>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl class="is-item">
+                                <dt id="current-item-type"><span class="is-sub-item">子</span>菜单内容：</dt>
+                                <dd>
+                                    <input id="type1" type="radio" name="type" value="click"/>
+                                    <label for="type1" data-editing="1"> <span class="lbl_content">发送消息</span> </label>
+                                    <input id="type2" type="radio" name="type" value="view"/>
+                                    <label for="type2" data-editing="1"> <span class="lbl_content">跳转网页</span> </label>
+                                    <input id="type3" type="radio" name="type" value="scancode_push"/>
+                                </dd>
+                            </dl>
+                            <div id="menu-content" class="is-item">
+                                <div class="viewbox is-view">
+                                    <p class="menu-content-tips">点击该<span class="is-sub-item">子</span>菜单会跳到以下链接</p>
+                                    <dl>
+                                        <dt>页面地址：</dt>
+                                        <dd>
+                                            <div class="input-box">
+                                                <input type="text" id="url" name="url"/>
+                                            </div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="clickbox is-click" style="display: none;">
+                                    <input type="hidden" name="key" id="key" value=""/>
+                                    <span class="create-click">
+                                        <a href="javascript:void(0);" id="select-resources" style="margin-top: 30px;">
+                                            <i class="weixin-icon big-add-gray"><strong>选择现有资源</strong></i>
+                                        </a>
+                                    </span>
+                                    <span class="create-click" style="display: none;">
+                                        <a href="javascript:void(0);" id="add-resources">
+                                            <i class="weixin-icon big-add-gray"><strong>添加新资源</strong></i>
+                                        </a>
+                                    </span>
                                 </div>
                             </div>
-                            <div style="margin-top: 20px;">
-                                <dl>
-                                    <dt id="current-item-option"><span class="is-sub-item">子</span>菜单标题：</dt>
-                                    <dd>
-                                        <div class="input-box">
-                                            <input id="item_title" name="item-title" type="text" value="">
-                                        </div>
-                                    </dd>
-                                </dl>
-                                <dl class="is-item">
-                                    <dt id="current-item-type"><span class="is-sub-item">子</span>菜单内容：</dt>
-                                    <dd>
-                                        <input id="type1" type="radio" name="type" value="click">
-                                        <label for="type1" data-editing="1">
-                                            <span class="lbl_content">发送消息</span>
-                                        </label>
-                                        <input id="type2" type="radio" name="type" value="view">
-                                        <label for="type2" data-editing="1">
-                                            <span class="lbl_content">跳转网页</span>
-                                        </label>
-                                        <input id="type3" type="radio" name="type" value="scancode_push">
-                                        <label for="type3" data-editing="1">
-                                            <span class="lbl_content">扫码推</span>
-                                        </label>
-                                        <input id="type4" type="radio" name="type" value="scancode_waitmsg">
-                                        <label for="type4" data-editing="1">
-                                            <span class="lbl_content">扫码推提示框</span>
-                                        </label>
-                                        <input id="type5" type="radio" name="type" value="pic_sysphoto">
-                                        <label for="type5" data-editing="1">
-                                            <span class="lbl_content">拍照发图</span>
-                                        </label>
-                                        <input id="type6" type="radio" name="type" value="pic_photo_or_album">
-                                        <label for="type6" data-editing="1">
-                                            <span class="lbl_content">拍照相册发图</span>
-                                        </label>
-                                        <input id="type7" type="radio" name="type" value="pic_weixin">
-                                        <label for="type7" data-editing="1">
-                                            <span class="lbl_content">相册发图</span>
-                                        </label>
-                                        <input id="type8" type="radio" name="type" value="location_select">
-                                        <label for="type8" data-editing="1">
-                                            <span class="lbl_content">地理位置选择</span>
-                                        </label>
-                                    </dd>
-                                </dl>
-                                <div id="menu-content" class="is-item">
-                                    <div class="viewbox is-view">
-                                        <p class="menu-content-tips">点击该<span class="is-sub-item">子</span>菜单会跳到以下链接</p>
-                                        <dl>
-                                            <dt>页面地址：</dt>
-                                            <dd>
-                                                <div class="input-box">
-                                                    <input type="text" id="url" name="url">
-                                                </div>
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                    <div class="clickbox is-click" style="display: none;">
-                                        <input type="hidden" name="key" id="key" value=""/>
-                                        <span class="create-click">
-                                            <a href="javascript:void(0);" id="select-resources" style="margin-top: 30px;">
-                                                <i class="weixin-icon big-add-gray"></i>
-                                                <strong>选择现有资源</strong>
-                                            </a>
-                                        </span>
-                                        <span class="create-click" style="display: none;">
-                                            <a href="javascript:void(0);" id="add-resources">
-                                                <i class="weixin-icon big-add-gray"></i>
-                                                <strong>添加新资源</strong>
-                                            </a>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="layui-btn-container" style="margin-top: 50px;text-align: center">
-                    <button class="layui-btn btn-primary layui-btn-radius" id="menuSave">保存</button>
-                    <button class="layui-btn btn-primary layui-btn-radius" id="menuSyn">发布</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="no-weixin-content"> 点击左侧菜单进行编辑操作</div>
+            <div class="layui-btn-container" style="margin-top: 50px;text-align: center">
+                <button class="layui-btn btn-primary layui-btn-radius" id="menuSave">保存</button>
+                <button class="layui-btn btn-primary layui-btn-radius" id="menuSyn">发布</button>
+            </div>
         </div>
-    </div>
-    <div class="layui-row">
-        <div class="layui-col-md4" style="color: #FF5722;padding-left: 128px;">
-            <small>可直接拖动菜单排序</small>
-        </div>
+        <div class="no-weixin-content">点击左侧菜单进行编辑操作</div>
     </div>
 </div>
-<script type="text/html" id="lockTpl">
-    <button class="layui-btn layui-btn-sm font-primary" lay-event="choose"><i class="layui-icon">&#xe624;</i>选择</button>
-</script>
 <script th:src="@{/js/Sortable.min.js}"></script>
 <script type="text/javascript">
-    layui.use(['layer', 'table', 'form'], function () {
-        var layer = layui.layer;
-        var $ = layui.$;
-        var table = layui.table;
-        var form = layui.form;
-
+    layui.use(['jquery', 'layer', 'table', 'form'], function ($, layer, table, form) {
         // 微信菜单管理类
         var WechatMenuManager = (function () {
             function WechatMenuManager() {
                 this.menu = null;
                 this.responseData = null;
-                this.responseList = {};
-                this.currentEditItem = null;
                 this.init();
             }
 
             WechatMenuManager.prototype.init = function () {
-                console.log("初始化微信菜单管理器");
                 this.getWxMenuData();
             };
 
             WechatMenuManager.prototype.getWxMenuData = function () {
                 var self = this;
-                console.log("获取微信菜单数据");
                 $.ajax({
-                    url: '/admin/wx/menu/list',
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function (result) {
-                        console.log("菜单数据返回:", result);
+                    url: '/admin/wx/menu/list', type: 'POST', dataType: 'json', success: function (result) {
                         if (result.mode) {
                             self.menu = result.data && result.data.button ? result.data.button : [];
-                            self.responseData = result.data && result.data.button ? result.data.button : [];
-                            $.each(self.responseData, function (_, v) {
-                                self.responseList[v.id] = {title: v.title, msgType: v.type};
-                            });
-                            // 数据返回后初始化菜单UI
-                            self.wxMenuInit();
+                            self.responseData = result.data.news || [];
                         } else {
                             console.error("获取菜单数据失败:", result);
                             layer.msg("获取菜单数据失败：" + (result.msg || "未知错误"));
-                            self.wxMenuInit(); // 即使失败也初始化，显示空状态
                         }
+                        self.wxMenuInit();
                     },
                     error: function (error) {
                         console.error("请求菜单数据失败:", error);
                         layer.msg("请求菜单数据失败，请检查网络");
-                        self.wxMenuInit(); // 失败时也初始化，显示空状态
+                        self.wxMenuInit();
                     }
                 });
             };
@@ -185,63 +127,66 @@
                     }
                     return this.slice(start, i + bytes);
                 };
-
                 // 渲染菜单
                 this.renderMenu();
-
                 // 绑定所有事件
                 this.bindEvents();
             };
 
             WechatMenuManager.prototype.renderMenu = function () {
                 var menuData = this.menu || [];
-
-                if (menuData.length === 0) {
+                if (menuData.length == 0) {
                     console.log("没有菜单数据，只显示添加按钮");
                     return;
                 }
 
-                var str = "";
-                var items = menuData;
+                var items = menuData, str = '';
 
-                for (var i in items) {
-                    var type = "", action = "", msgType = "";
+                items.forEach(function (item, i) {
+                    console.log(item)
+                    var type = '', action = '', msgType = '';
+                    if (!item.sub_button) {
+                        type = item.type || '';
+                        if (item.url) action = "url|" + item.url;
+                        if (item.msgId) action = "key|" + item.msgId;
+                        if (item.msgType) msgType = item.msgType;
+                    }
+                    // 构建主菜单 li
+                    str +=
+                        `<li id="menu-${i}" class="menu-item" data-type="${type}" data-msgtype="${msgType}" data-action="${action}" data-name="${item.name}">
+    <a href="javascript:;" class="menu-link"><i class="icon-menu-dot"></i><i class="weixin-icon sort-gray"></i><span class="title">${item.name}</span></a>`;
+                    // 构建子菜单
+                    var subStr = '';
+                    if (item.sub_button) {
+                        item.sub_button.forEach(function (sub, j) {
+                            var subType = sub.type || '';
+                            var subAction = '';
+                            var submsgType = sub.msgType || '';
 
-                    if (items[i]['sub_button'] != undefined) {
-                        type = action = "";
-                    } else {
-                        type = items[i]['type'];
-                        if (items[i]['url'] != undefined)
-                            action = "url|" + items[i]['url'];
-                        if (items[i]['msgId'] != undefined)
-                            action = "key|" + items[i]['msgId'];
-                        if (items[i]['msgType'] != undefined)
-                            msgType = items[i]['msgType'];
+                            if (sub.url) subAction = "url|" + sub.url;
+                            if (sub.msgId) subAction = "key|" + sub.msgId;
+
+                            subStr +=
+                                `<li id="sub-menu-${j}" class="sub-menu-item" data-type="${subType}" data-msgtype="${submsgType}" data-action="${subAction}" data-name="${sub.name}">
+    <a href="javascript:;"><i class="weixin-icon sort-gray"></i><span class="sub-title">${sub.name}</span></a>
+</li>`;
+                        });
                     }
 
-                    str += '<li id="menu-' + i + '" class="menu-item" data-type="' + type + '" data-msgtype="' + msgType + '" data-action="' + action + '" data-name="' + items[i]['name'] + '"> <a href="javascript:;" class="menu-link"> <i class="icon-menu-dot"></i> <i class="weixin-icon sort-gray"></i> <span class="title">' + items[i]['name'] + '</span> </a>';
-
-                    var tem = '';
-                    if (items[i]['sub_button'] != undefined) {
-                        var sub_menu = items[i]['sub_button'];
-                        for (var j in sub_menu) {
-                            type = sub_menu[j]['type'];
-                            if (sub_menu[j]['url'] != undefined)
-                                action = "url|" + sub_menu[j]['url'];
-                            if (sub_menu[j]['key'] != undefined)
-                                action = "key|" + sub_menu[j]['msgId'];
-                            if (sub_menu[j]['msgType'] != undefined)
-                                msgType = sub_menu[j]['msgType'];
-                            tem += '<li id="sub-menu-' + j + '" class="sub-menu-item" data-type="' + type + '" data-msgtype="' + msgType + '" data-action="' + action + '" data-name="' + sub_menu[j]['name'] + '"> <a href="javascript:;"> <i class="weixin-icon sort-gray"></i><span class="sub-title">' + sub_menu[j]['name'] + '</span></a> </li>';
-                        }
-                    }
-
-                    str += '<div class="sub-menu-box" style="' + (i != 0 ? 'display:none;' : '') + '"> <ul class="sub-menu-list">' + tem + '<li class="add-sub-item"><a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a></li> </ul> <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i></div>';
-                    str += '</li>';
-                }
+                    // 子菜单容器
+                    str +=
+                        `    <div class="sub-menu-box" style="${i != 0 ? 'display:none;' : ''}">
+        <ul class="sub-menu-list">
+            ${subStr}
+            <li class="add-sub-item"><a href="javascript:;" title="添加子菜单"><i class="weixin-icon add-gray"></i></a></li>
+        </ul>
+        <i class="arrow arrow-out"></i>
+        <i class="arrow arrow-in"></i>
+    </div>
+</li>`;
+                });
 
                 $("#add-item").before(str);
-
                 // 初始化拖拽排序
                 this.initSortable();
             };
@@ -250,21 +195,10 @@
                 if (typeof Sortable !== 'undefined') {
                     // 主菜单拖拽
                     try {
-                        new Sortable($("#menu-list")[0], {
-                            draggable: 'li.menu-item',
-                            onEnd: function () {
-                                console.log("菜单排序已改变");
-                            }
-                        });
-
+                        new Sortable($("#menu-list")[0], {draggable: 'li.menu-item', onEnd: function () { console.log("菜单排序已改变"); }});
                         // 子菜单拖拽
                         $(".sub-menu-list").each(function () {
-                            new Sortable(this, {
-                                draggable: 'li.sub-menu-item',
-                                onEnd: function () {
-                                    console.log("子菜单排序已改变");
-                                }
-                            });
+                            new Sortable(this, {draggable: 'li.sub-menu-item', onEnd: function () { console.log("子菜单排序已改变"); }});
                         });
                     } catch (e) {
                         console.error("初始化拖拽排序失败:", e);
@@ -277,7 +211,6 @@
             WechatMenuManager.prototype.bindEvents = function () {
                 console.log("绑定事件");
                 var self = this;
-
                 // 添加主菜单
                 $("#menu-container").off('click', '#add-item').on('click', '#add-item', function (e) {
                     e.preventDefault();
@@ -285,7 +218,6 @@
                     self.addMainMenu(this);
                     return false;
                 });
-
                 // 添加子菜单（使用事件委托）
                 $("#menu-container").off('click', '.add-sub-item').on('click', '.add-sub-item', function (e) {
                     e.preventDefault();
@@ -293,46 +225,38 @@
                     self.addSubMenu(this);
                     return false;
                 });
-
                 // 菜单项点击
                 $("#menu-container").off('click', '.menu-item, .sub-menu-item').on('click', '.menu-item, .sub-menu-item', function (e) {
                     e.preventDefault();
                     self.onMenuItemClick(this);
                     return false;
                 });
-
                 // 类型切换
                 $("#menu-container").off('change', 'input[name=type]').on('change', 'input[name=type]', function () {
                     self.refreshType();
                 });
-
                 // 删除菜单
                 $("#menu-container").off('click', '#item_delete').on('click', '#item_delete', function (e) {
                     e.preventDefault();
                     self.deleteMenuItem();
                 });
-
                 // 表单变化
                 $("form#form-item").off('change', "input,textarea").on('change', "input,textarea", function () {
                     self.updateChangeMenu();
                 });
-
                 // 保存菜单
                 $("#menu-container").off('click', "#menuSave").on('click', "#menuSave", function () {
                     self.saveMenu();
                 });
-
                 // 发布菜单
                 $("#menu-container").off('click', "#menuSyn").on('click', "#menuSyn", function () {
                     self.syncMenu();
                 });
-
                 // 选择资源
                 $("#menu-container").off('click', "#select-resources").on('click', "#select-resources", function (e) {
                     e.preventDefault();
                     self.selectResources();
                 });
-
                 // 初始化显示状态
                 this.refreshType();
             };
@@ -344,32 +268,29 @@
                     return;
                 }
 
-                var item = `
-                <li class="menu-item" data-type="click" data-action="key|" data-name="添加菜单" >
-                    <a href="javascript:;" class="menu-link">
-                        <i class="icon-menu-dot"></i> <i class="weixin-icon sort-gray"></i> <span class="title">添加菜单</span>
-                    </a>
-                    <div class="sub-menu-box" style="display:block;">
-                        <ul class="sub-menu-list">
-                            <li class="add-sub-item">
-                                <a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a>
-                            </li>
-                        </ul>
-                        <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i>
-                    </div>
-                </li>`;
+                var item =
+                    `<li class="menu-item" data-type="click" data-action="key|" data-name="添加菜单" >
+    <a href="javascript:;" class="menu-link">
+        <i class="icon-menu-dot"></i> <i class="weixin-icon sort-gray"></i> <span class="title">添加菜单</span>
+    </a>
+    <div class="sub-menu-box" style="display:block;">
+        <ul class="sub-menu-list">
+            <li class="add-sub-item">
+                <a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a>
+            </li>
+        </ul>
+        <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i>
+    </div>
+</li>`;
 
                 var itemDom = $(item);
                 itemDom.insertBefore(target);
                 itemDom.trigger("click");
                 $(".sub-menu-box", itemDom).show();
-
                 // 为新添加的菜单初始化拖拽
                 if (typeof Sortable !== 'undefined') {
                     try {
-                        new Sortable($(".sub-menu-list", itemDom)[0], {
-                            draggable: 'li.sub-menu-item'
-                        });
+                        new Sortable($(".sub-menu-list", itemDom)[0], {draggable: 'li.sub-menu-item'});
                     } catch (e) {
                         console.error("初始化子菜单拖拽失败:", e);
                     }
@@ -382,20 +303,17 @@
                     layer.msg("最多只能添加5个子菜单");
                     return;
                 }
-
-                var item = `
-                <li class="sub-menu-item" data-type="click" data-action="key|" data-name="添加子菜单">
-                    <a href="javascript:;">
-                        <i class="weixin-icon sort-gray"></i>
-                        <span class="sub-title">添加子菜单</span>
-                    </a>
-                </li>
-            `;
+                var item =
+                    `<li class="sub-menu-item" data-type="click" data-action="key|" data-name="添加子菜单">
+    <a href="javascript:;">
+        <i class="weixin-icon sort-gray"></i>
+        <span class="sub-title">添加子菜单</span>
+    </a>
+</li>`;
 
                 var itemDom = $(item);
                 itemDom.insertBefore(target);
                 itemDom.trigger("click");
-
                 if (sub_menu_item_total == 4) {
                     $(target).hide();
                 }
@@ -409,53 +327,42 @@
                 var type = $(item).attr('data-type');
                 var action = $(item).attr('data-action');
                 var title = $(item).attr('data-name');
-                var msgtype = $(item).attr('data-msgtype');
-
-                // 根据点击的是主菜单还是子菜单显示不同的UI
+                var msgType = $(item).attr('data-msgtype');
+                // 显示子菜单或主菜单逻辑
                 if ($(item).hasClass("sub-menu-item")) {
-                    $(".is-item").show();
-                    $(".is-sub-item").show();
-                } else {
-                    // 主菜单
+                    $(".is-item, .is-sub-item").show();
+                } else { // 主菜单
                     $("#menu-list > li").not(item).find(".sub-menu-box").hide();
                     $(".sub-menu-box", item).toggle();
-
                     if ($(".sub-menu-item", item).length == 0) {
-                        $(".is-item").show();
-                        $(".is-sub-item").show();
+                        $(".is-item, .is-sub-item").show();
                     } else {
-                        $(".is-item").hide();
-                        $(".is-sub-item").hide();
+                        $(".is-item, .is-sub-item").hide();
                     }
                 }
-
                 // 填充表单
                 var actions = action.split('|');
                 $("input[name=type][value='" + type + "']").prop("checked", true);
                 $("input[name='item-title']").val(title);
                 $('#current-item-name').text(title);
 
-                if (actions[0] == 'url') {
-                    $('input[name=key]').val('');
-                    $('input[name=url]').val(actions[1]);
-                } else {
+                $("input[name='" + actions[0] + "']").val(actions[1]);
+                if (actions[0] == 'url') $('input[name=key]').val('');
+                if (actions[0] == 'key') {
                     $('input[name=url]').val('');
-                    $('input[name=key]').val(actions[1]);
+                    if (actions[1]) {
+                        var msg = this.getMsgByIdAndType(actions[1], msgType);
+                        console.log(msg)
+                        var keyTitle = msg.title ? msg.title : '无标题';
+                        var cont = $(".is-click .create-click:first");
+                        $(".keyTitle", cont).remove();
+                        cont.append('<div class="keyTitle">资源名:' + keyTitle + '</div>');
+                    }
                 }
-
-                if (actions[0] == 'key' && actions[1]) {
-                    var msg = this.getMsgByIdAndType(actions[1], msgtype);
-                    var keytitle = msg.title ? msg.title : '无标题';
-                    var cont = $(".is-click .create-click:first");
-                    $(".keytitle", cont).remove();
-                    cont.append('<div class="keytitle">资源名:' + keytitle + '</div>');
-                }
-
                 // 显示编辑区域
                 $(".weixin-content-wrap").show();
                 $(".no-weixin-content").hide();
-
-                // 刷新表单渲染
+                // 刷新表单 & 类型
                 form.render();
                 this.refreshType();
             };
@@ -472,9 +379,13 @@
 
             WechatMenuManager.prototype.getMsgByIdAndType = function (mid, mtype) {
                 var d = {};
+                console.log(mid)
+                console.log(mtype)
+                console.log(this.responseData)
                 if (this.responseData) {
                     $.each(this.responseData, function (_, v) {
-                        if (v.id == mid && v.type == mtype) {
+                        console.log(v)
+                        if (v.id == mid && v.msgType == mtype) {
                             d = v;
                             return false;
                         }
@@ -488,38 +399,34 @@
                 var type = $("input[name='type']:checked").val();
                 var key = type == 'view' ? 'url' : 'key';
                 var value = $("input[name='" + key + "']").val();
-                var msgtype = $("input[name='" + key + "']").attr("data-msgtype");
+                var msgType = $("input[name='" + key + "']").attr("data-msgtype");
 
                 if (key == 'key' && value) {
-                    var msg = this.getMsgByIdAndType(value, msgtype);
-                    var keytitle = msg.title ? msg.title : '无标题';
+                    var msg = this.getMsgByIdAndType(value, msgType);
+                    var keyTitle = msg.title ? msg.title : '无标题';
                     var cont = $(".is-click .create-click:first");
-                    $(".keytitle", cont).remove();
-                    cont.append('<div class="keytitle">资源名:' + keytitle + '</div>');
+                    $(".keyTitle", cont).remove();
+                    cont.append('<div class="keyTitle">资源名:' + keyTitle + '</div>');
                 }
 
                 var currentItem = $("#menu-list li.current");
                 if (currentItem.length > 0 && title) {
                     currentItem.attr('data-type', type);
-                    currentItem.attr('data-msgtype', msgtype);
+                    currentItem.attr('data-msgtype', msgType);
                     currentItem.attr('data-action', key + "|" + value);
-
                     // 更新显示标题
                     var titleElement = currentItem.children("a").find(".title, .sub-title");
                     if (titleElement.length) {
                         titleElement.text(title.subByte(0, 16));
                     }
-
                     currentItem.attr('data-name', title);
                     $('#current-item-name').text(title);
                 }
             };
 
             WechatMenuManager.prototype.getMenuList = function () {
-                var menus = [];
-                var sub_button = [];
-                var menu_i = 0;
-                var sub_menu_i = 0;
+                var menus = [], sub_button = [];
+                var menu_i = 0, sub_menu_i = 0;
 
                 $("#menu-list li").each(function (i) {
                     var item = $(this);
@@ -528,7 +435,7 @@
                     var action = item.attr('data-action');
                     var msgType = item.attr('data-msgtype');
 
-                    if (name && name != null) {
+                    if (name) {
                         var actions = action ? action.split('|') : ['', ''];
                         if (item.hasClass('menu-item')) {
                             sub_menu_i = 0;
@@ -563,20 +470,19 @@
 
             WechatMenuManager.prototype.deleteMenuItem = function () {
                 var current = $("#menu-list li.current");
-                if (current.length === 0) {
+                if (current.length == 0) {
                     return;
                 }
 
                 var prev = current.prev("li[data-type]");
                 var next = current.next("li[data-type]");
-                var last;
+                var last = null;
 
-                if (prev.length === 0 && next.length === 0 && $(".sub-menu-box", current).length === 0) {
+                if (prev.length == 0 && next.length == 0 && $(".sub-menu-box", current).length == 0) {
                     last = current.closest(".menu-item");
                 } else if (prev.length > 0 || next.length > 0) {
                     last = prev.length > 0 ? prev : next;
                 } else {
-                    last = null;
                     $(".weixin-content-wrap").hide();
                     $(".no-weixin-content").show();
                 }
@@ -594,19 +500,12 @@
 
             WechatMenuManager.prototype.saveMenu = function () {
                 var menus = this.getMenuList();
-                console.log("保存菜单:", menus);
-
-                if (menus.length === 0) {
+                if (menus.length == 0) {
                     layer.msg("请至少添加一个菜单");
                     return;
                 }
-
                 $.ajax({
-                    url: '/admin/wx/menu/save',
-                    type: 'POST',
-                    data: {"menus": JSON.stringify(menus)},
-                    dataType: 'json',
-                    success: function (result) {
+                    url: '/admin/wx/menu/save', type: 'POST', data: {"menus": JSON.stringify(menus)}, dataType: 'json', success: function (result) {
                         if (result.mode) {
                             layer.msg("菜单保存成功，请点击同步按钮到微信官网！", {icon: 1});
                         } else {
@@ -622,11 +521,7 @@
 
             WechatMenuManager.prototype.syncMenu = function () {
                 $.ajax({
-                    url: '/wxapi/doPublishMenu',
-                    type: 'POST',
-                    data: {},
-                    dataType: 'json',
-                    success: function (result) {
+                    url: '/wxapi/doPublishMenu', type: 'POST', data: {}, dataType: 'json', success: function (result) {
                         if (result.mode) {
                             layer.msg("菜单同步更新成功，生效时间看微信官网说明，或者重新关注微信号！", {icon: 1});
                         } else {
@@ -641,99 +536,11 @@
             };
 
             WechatMenuManager.prototype.selectResources = function () {
-                var self = this;
-
-                // 构建资源选择弹窗
-                var html = '<div style="padding: 20px;">' +
-                    '<div id="msgType_select" style="margin-bottom: 15px;">' +
-                    '<button class="layui-btn layui-btn-primary btn-primary" data-type="text">文本消息</button>' +
-                    '<button class="layui-btn layui-btn-primary" data-type="news">图文消息</button>' +
-                    '</div>' +
-                    '<table id="select_table" class="layui-hide" lay-filter="select_table"></table>' +
-                    '</div>';
-
-                var index = layer.open({
-                    type: 1,
-                    title: '选择资源',
-                    area: ['800px', '500px'],
-                    content: html,
-                    btn: ['取消'],
-                    success: function (layero, index) {
-                        // 初始化表格
-                        self.renderSelectTable('text');
-
-                        // 绑定类型切换事件
-                        $("#msgType_select .layui-btn").on('click', function () {
-                            var type = $(this).data('type');
-                            $(this).addClass("btn-primary").removeClass("layui-btn-primary")
-                                .siblings().removeClass("btn-primary").addClass("layui-btn-primary");
-                            self.renderSelectTable(type);
-                        });
-
-                        // 表格工具条事件
-                        table.on('tool(select_table)', function (obj) {
-                            var data = obj.data;
-                            if (obj.event === 'choose') {
-                                self.refreshKey(data);
-                                layer.close(index);
-                            }
-                        });
-                    }
-                });
-            };
-
-            WechatMenuManager.prototype.renderSelectTable = function (type) {
-                if (!type) {
-                    type = "text";
-                }
-
-                var data = this.getResponseDataByType(type);
-
-                table.render({
-                    id: 'select_table',
-                    elem: '#select_table',
-                    data: data,
-                    cols: [
-                        [
-                            {type: 'numbers', width: 80},
-                            {
-                                field: 'type', title: '类型', width: 120, templet: function (d) {
-                                    return d.type == "text" ? "文本消息" : "图文消息";
-                                }
-                            },
-                            {field: 'title', title: '标题', minWidth: 200},
-                            {field: 'id', title: 'ID', width: 100},
-                            {
-                                field: 'lock', title: '操作', width: 100, templet: function (d) {
-                                    return '<button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="choose">选择</button>';
-                                }
-                            }
-                        ]
-                    ],
-                    page: false,
-                    text: {
-                        none: '暂无数据'
-                    },
-                    done: function (res, curr, count) {
-                        $('.layui-table-cell').css('text-align', 'center');
-                    }
-                });
-            };
-
-            WechatMenuManager.prototype.getResponseDataByType = function (type) {
-                var data = [];
-                if (this.responseData) {
-                    $.each(this.responseData, function (_, v) {
-                        if (v.type == type) {
-                            data.push(v);
-                        }
-                    });
-                }
-                return data;
+                editView('/admin/wx/menu/ventu', '发送消息');
             };
 
             WechatMenuManager.prototype.refreshKey = function (data) {
-                $("input[name=key]").val(data.id).attr("data-msgtype", data.type).trigger("change");
+                $("input[name=key]").val(data.id).attr("data-msgtype", data.msgType).trigger("change");
                 this.updateChangeMenu();
             };
 

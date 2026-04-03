@@ -27,7 +27,7 @@
 <script>
     layui.use(['jquery', 'form'], function ($, form) {
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
+            if (e.key == 'Enter' || e.key == ' ') {
                 form.submit('lay_login_submit');
             }
         });
@@ -37,7 +37,7 @@
             });
 
             $.post('/login', obj.field, function (data) {
-                if (data.code === -1) {
+                if (data.code == -1) {
                     layer.msg(data.msg, {icon: 5, time: 1000});
                 } else {
                     layer.msg(data.msg, {icon: 6, time: 2000, end: function () {parent.window.location.reload();}});

@@ -72,12 +72,12 @@
         });
         // 工具条点击事件
         table.on('toolbar(tables)', function (obj) {
-            if (obj.event === 'add') {
+            if (obj.event == 'add') {
                 let cache = table.cache['tables'] || [];
                 cache.unshift({id: '', questionId: $("#questionId").val(), content: '', verify: 0, _isNew: true});
                 table.renderData('tables');
                 return false;
-            } else if (obj.event === 'del') {
+            } else if (obj.event == 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('tables').data;
                     if (selectData.length > 0) {
@@ -90,7 +90,7 @@
                         layer.close(index);
                     }
                 });
-            } else if (obj.event === 'renew') {
+            } else if (obj.event == 'renew') {
                 console.log(obj.event)
                 table.reload('tables', {where: {questionId: $('#questionId').val(), name: $('#name').val()}});
             }
@@ -98,7 +98,7 @@
 
         function saveField(row) {
             $.post('/admin/lms/question/answer/save', row, function (res) {
-                if (res.code === 0) {
+                if (res.code == 0) {
                     table.reload('tables', {where: {questionId: $('#questionId').val(), name: $('#name').val()}});
                     layer.msg('保存成功', {time: 800});
                 } else {

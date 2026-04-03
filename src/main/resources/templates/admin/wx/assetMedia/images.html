@@ -93,7 +93,7 @@
         //提交
         form.on('submit(submit-form)', function (d) {
             var formData = d.field;
-            if (formData.url === "") {
+            if (formData.url == "") {
                 layer.msg("请上传封面图", {icon: 5});
                 return false;
             }

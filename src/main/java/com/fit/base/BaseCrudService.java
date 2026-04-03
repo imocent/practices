@@ -143,6 +143,10 @@ public abstract class BaseCrudService<D extends BaseCrudDao<T>, T extends BaseEn
         return dao.queryBySQL(sql, params);
     }
 
+    public List<T> getBySQL(String sql, Map<String, Object> params) {
+        return dao.getBySQL(sql, params);
+    }
+
     public T queryByKey(String tableName, String key, Object value) {
         return dao.queryByKey(tableName, key, value);
     }

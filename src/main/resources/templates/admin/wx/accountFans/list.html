@@ -60,7 +60,7 @@
                 {field: "openId", title: '用户id', minWidth: 80},
                 {
                     field: 'sex', title: '性别', minWidth: 80, templet: function (res) {
-                        return res.sex === 2 ? "女" : res.sex === 1 ? "男" : "未知";
+                        return res.sex == 2 ? "女" : res.sex == 1 ? "男" : "未知";
                     }
                 },
                 {
@@ -70,7 +70,7 @@
                 },
                 {
                     field: 'subscribe', title: '是否关注', width: 100, templet: function (res) {
-                        return res.subscribe === 1 ? "已关注" : "未关注";
+                        return res.subscribe == 1 ? "已关注" : "未关注";
                     }
                 },
                 {field: 'nickname', title: '昵称', minWidth: 80},
@@ -83,11 +83,11 @@
 
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
-            if (event === 'mass') {
+            if (event == 'mass') {
                 editView('/admin/wx/fans/send?id=' + obj.data.id + '&openid=' + obj.data.openId, '发送消息');
-            } else if (event === 'info') {
+            } else if (event == 'info') {
                 editView('/admin/wx/fans/info?id=' + obj.data.id, '粉丝详情');
-            } else if (event === 'sync') {
+            } else if (event == 'sync') {
                 $.post('/admin/wx/fans/syncAccountFans', {openId: data.openId}, function (res) {
                     advices(res, '');
                 }, 'json').fail(function (event) {
@@ -101,7 +101,7 @@
             layer.confirm('确认同步粉丝？', {icon: 7, title: "提示", btn: ['确认', '取消']}, function () {
                 $.post('/admin/wx/fans/syncAccountFansList', function (data) {
                     advices(data);
-                    if (data.code === 0) {
+                    if (data.code == 0) {
                         table.reload('table-list');
                     }
                 }, 'json').fail(function (event) {

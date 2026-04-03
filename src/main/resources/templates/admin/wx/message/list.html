@@ -58,7 +58,7 @@
                 {field: 'title', title: '消息标题', minWidth: 80},
                 {
                     field: 'mode', title: '图文类型', width: 100, templet: function (res) {
-                        return res.mode === 2 ? "多图片" : res.mode === 1 ? "多图片" : "消息";
+                        return res.mode == 2 ? "多图片" : res.mode == 1 ? "多图片" : "消息";
                     }
                 },
                 {field: 'readCount', title: '阅读数', minWidth: 80},
@@ -69,9 +69,9 @@
 
         // 工具条点击事件
         table.on('toolbar', function (obj) {
-            if (obj.event === 'add') {
+            if (obj.event == 'add') {
                 editView("/admin/wx/message/edit", "添加");
-            } else if (obj.event === 'del') {
+            } else if (obj.event == 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
                     if (selectData.length > 0) {
@@ -89,10 +89,10 @@
 
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
-            if (event === 'mass') {
+            if (event == 'mass') {
                 var pageIndex = openPage({
                     content: '/admin/wx/fans/mass', title: "群发", yes: function (index) {
-                        if (GLOBAL.chooses.length === 0) {
+                        if (GLOBAL.chooses.length == 0) {
                             layer.msg("至少选择1个粉丝");
                             return false;
                         }
@@ -106,7 +106,7 @@
                         GLOBAL.chooses = [];
                     }
                 });
-            } else if (event === 'edit') {
+            } else if (event == 'edit') {
                 editView("/admin/wx/message/edit?id=" + data.id, "编辑");
             }
         });

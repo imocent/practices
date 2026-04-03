@@ -58,9 +58,9 @@
         });
 
         treeTable.on('toolbar', function (obj) {
-            if (obj.event === 'add') {
+            if (obj.event == 'add') {
                 editView("/admin/res/edit", "添加菜单");
-            } else if (obj.event === 'del') {
+            } else if (obj.event == 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('menu');
                     if (selectData.length > 0) {
@@ -82,7 +82,7 @@
 
         treeTable.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
-            if (event === 'edit') {
+            if (event == 'edit') {
                 editView("/admin/res/edit?id=" + data.id, "编辑菜单");
             }
         });

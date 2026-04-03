@@ -23,7 +23,7 @@
     layui.use(['jquery', 'dtree', 'form'], function ($, dtree, form) {
     dtree.on("node('roleTree')", function (obj) {
         let typeDom = $('#roleId');
-        if (typeDom.val() === obj.param.nodeId) {
+        if (typeDom.val() == obj.param.nodeId) {
             typeDom.val('');
             $("input[dtree-id='roleTree']").val('请选择');
         } else {

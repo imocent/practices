@@ -86,9 +86,9 @@
         });
         // 工具条点击事件
         table.on('toolbar', function (obj) {
-            if (obj.event === 'add') {
+            if (obj.event == 'add') {
                 editView("/admin/dept/edit", "新增部门");
-            } else if (obj.event === 'del') {
+            } else if (obj.event == 'del') {
                 layer.confirm('真的删除行么?', function (index) {
                     let selectData = table.checkStatus('table-list').data;
                     if (selectData.length > 0) {
@@ -107,7 +107,7 @@
         // 行点击事件
         table.on('tool', function (obj) {
             let data = obj.data, event = obj.event;
-            if (event === 'edit') {
+            if (event == 'edit') {
                 editView("/admin/dept/edit?id=" + data.id, "编辑部门");
             }
         });

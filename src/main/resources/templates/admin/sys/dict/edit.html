@@ -54,7 +54,7 @@
     layui.use(['jquery', 'dtree', 'form', 'layer'], function ($, dtree, form, layer) {
     dtree.on("node('dicTree')", function (obj) {
         let typeDom = $('#pid');
-        if (typeDom.val() === obj.param.nodeId) {
+        if (typeDom.val() == obj.param.nodeId) {
             typeDom.val('');
             $("input[dtree-id='pid']").val('请选择');
         } else {

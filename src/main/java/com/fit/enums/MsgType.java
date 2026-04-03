@@ -12,9 +12,9 @@ public enum MsgType {
     SUBSCRIBE("subscribe", "订阅消息", ""), UNSUBSCRIBE("unsubscribe", "取消订阅", ""),
     FILE("file", "普通文件", "txt|pdf|doc|docx|xls|xlsx|ppt|pptx");
 
-    private String name;
-    private String desc;
-    private String extensions;
+    public String name;
+    public String desc;
+    public String extensions;
 
     private MsgType(String name, String desc, String extensions) {
         this.name = name;

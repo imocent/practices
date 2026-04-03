@@ -71,7 +71,7 @@
 
         dtree.on("node('dTree')", function (obj) {
             let tId = $('#examRoomId'), tName = $('#examRoomName');
-            if (tId.val() === obj.param.nodeId) {
+            if (tId.val() == obj.param.nodeId) {
                 tId.val('');
                 tName.val('');
                 $("input[dtree-id='pid']").val('请选择');

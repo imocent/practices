@@ -170,7 +170,7 @@
                     $(this).removeClass('has-error');
                 }
             });
-            return {isValid: ids.length === 0, ids: ids};
+            return {isValid: ids.length == 0, ids: ids};
         }
 
         form.on('submit(sbt_form)', function (obj) {
@@ -187,7 +187,7 @@
                     $("#enabled").val(0);
                 case 'submit':
                     $.post('/user/answerSave', obj.field, function (data) {
-                        if (data.code === -1) {
+                        if (data.code == -1) {
                             layer.msg(data.msg, {icon: 5, time: 1000});
                         } else {
                             layer.msg(data.msg, {icon: 6, time: 2000, end: function () {window.location.reload();}});

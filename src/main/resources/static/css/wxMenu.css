@@ -1,7 +1,6 @@
 .weixin-menu-setting {
-    margin: 0;
-    margin-bottom: 10px;
-    width: 100%;
+    margin: 30px;
+    min-width: 900px;
 }
 
 .mobile-head-title {
@@ -18,9 +17,8 @@
 }
 
 .weixin-body {
+    margin-left: 340px;
     padding: 0;
-    margin: 0;
-    margin-left: 337px;
 }
 
 .weixin-content, .no-weixin-content {
@@ -367,7 +365,7 @@ table.weixin-form td {
     display: block;
 }
 
-.keytitle {
+.keyTitle {
     position: absolute;
     width: 100%;
     text-align: center;

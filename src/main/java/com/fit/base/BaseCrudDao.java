@@ -72,11 +72,15 @@ public interface BaseCrudDao<T> {
 
     int batchAdd(List<T> entities);
 
+    @Select("${sql}")
+    List<Map<String, Object>> queryBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
+
     /**
      * 查询数据列表
      */
+    @ResultMap("BaseResultMap")
     @Select("${sql}")
-    List<Map<String, Object>> queryBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
+    List<T> getBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);
 
     @Delete("${sql}")
     int deleteBySQL(@Param("sql") String sql, @Param("params") Map<String, Object> params);

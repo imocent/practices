@@ -69,6 +69,8 @@ public enum WechatAPI {
     TAGS_LIST(1, "%s/cgi-bin/tags/get?access_token=%s", "获取标签列表"),
     TAGS_MEMBERS_TAGGING(1, "%s/cgi-bin/tags/members/batchtagging?access_token=%s", ""),
     TAGS_MEMBERS_UNTAGGING(1, "%s/cgi-bin/tags/members/batchuntagging?access_token=%s", ""),
+    TEMPLATE_API_ADD(1, "%s/cgi-bin/template/api_add_template?access_token=%s", "选用模板"),
+    TEMPLATE_GET_INDUSTRY(1, "%s/cgi-bin/template/get_industry?access_token=%s", "获取行业信息"),
     TEMPLATE_LIST(1, "%s/cgi-bin/template/get_all_private_template?access_token=%s", "获取已选用模板列表"),
     TEMPLATE_SEND(1, "%s/cgi-bin/message/template/send?access_token=%s", "发送模板消息"),
     TOKEN(2, "%s/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", ""),
