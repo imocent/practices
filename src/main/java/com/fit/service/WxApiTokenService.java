@@ -1,6 +1,9 @@
 package com.fit.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fit.entity.WxAccount;
+import com.fit.enums.WechatAPI;
+import com.fit.util.DateUtils;
 import com.fit.util.WechatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +57,8 @@ public class WxApiTokenService {
     private final Map<String, String> tokenCache = new ConcurrentHashMap<>();
     private final Map<String, Long> tokenExpireTimeCache = new ConcurrentHashMap<>();
     private final Map<String, WxAccount> accountCache = new ConcurrentHashMap<>();
+    private final Map<String, Object> datacubeArticle = new ConcurrentHashMap<>();
+    private final Map<String, Object> datacubeUser = new ConcurrentHashMap<>();
     // ============= 当前公众号配置（ThreadLocal） =============
     private final AtomicReference<WxAccount> currentWxAccount = new AtomicReference<>();
     private ScheduledExecutorService scheduler;
@@ -72,6 +77,8 @@ public class WxApiTokenService {
             autoSelectDefaultAccount();  // 自动选择默认公众号（基于shift字段）
             startTokenCheckTask();
             startConfigRefreshTask();
+            getAccessDatacubeArticle();
+            getAccessDatacubeUser();
         }
         log.info("chat-token - 初始化完成，定时任务启用状态: {}", scheduleEnabled);
     }
@@ -255,6 +262,10 @@ public class WxApiTokenService {
         synchronized (this) {
             return refreshTokenSync(account);
         }
+    }
+
+    public WxAccount getAccess(String account) {
+        return accountCache.get(account);
     }
 
     /**
@@ -520,6 +531,46 @@ public class WxApiTokenService {
             current = currentWxAccount.get();
             return current != null ? current.getAccount() : null;
         }
+    }
+
+    public Map<String, Object> getAccessDatacubeUser() {
+        if (datacubeUser.isEmpty()) {
+            JSONObject param = new JSONObject();
+            param.put("begin_date", DateUtils.getLastWeek());
+            param.put("end_date", DateUtils.nowDateStr());
+            JSONObject call = WechatUtil.apiPostCall(WechatAPI.DATACUBE_GET_USER_CUMULATE.format(getCurrentToken()), param);
+            if (call.containsKey("list")) {
+                param.put("cumulate", call.get("list"));
+            }
+            JSONObject res = WechatUtil.apiPostCall(WechatAPI.DATACUBE_GET_USER_SUMMARY.format(getCurrentToken()), param);
+            if (res.containsKey("list")) {
+                param.put("summary", res.get("list"));
+            }
+            datacubeUser.clear();
+            datacubeUser.putAll(param);
+        }
+
+        return datacubeUser;
+    }
+
+    public Map<String, Object> getAccessDatacubeArticle() {
+        if (datacubeArticle.isEmpty()) {
+            JSONObject param = new JSONObject();
+            param.put("begin_date", DateUtils.getLastWeek());
+            param.put("end_date", DateUtils.nowDateStr());
+            JSONObject call = WechatUtil.apiPostCall(WechatAPI.DATACUBE_GET_ARTICLE_READ.format(getCurrentToken()), param);
+            if (call.containsKey("list")) {
+                param.put("cumulate", call.get("list"));
+            }
+            JSONObject res = WechatUtil.apiPostCall(WechatAPI.DATACUBE_GET_ARTICLE_SHARE.format(getCurrentToken()), param);
+            if (res.containsKey("list")) {
+                param.put("summary", res.get("list"));
+            }
+            datacubeArticle.clear();
+            datacubeArticle.putAll(param);
+        }
+
+        return datacubeArticle;
     }
 
     /**

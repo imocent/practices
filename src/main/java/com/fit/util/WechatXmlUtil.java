@@ -5,13 +5,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 基于JDK的微信XML工具类
@@ -25,11 +30,6 @@ public class WechatXmlUtil {
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
         factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
-        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        factory.setXIncludeAware(false);
-        factory.setExpandEntityReferences(false);
         return factory.newDocumentBuilder();
     }
 
@@ -43,6 +43,80 @@ public class WechatXmlUtil {
         sb.append("<Content><![CDATA[").append(content).append("]]></Content>");
         sb.append("</xml>");
         return sb.toString();
+    }
+
+
+    /**
+     * 解析节点的值
+     *
+     * @param node Node
+     * @return String
+     */
+    private static String parseNodeValue(Node node) {
+        NodeList children = node.getChildNodes();
+
+        // 如果没有子节点，返回空字符串
+        if (children.getLength() == 0) {
+            return "";
+        }
+
+        // 如果只有一个文本子节点，直接返回文本内容
+        if (children.getLength() == 1 && children.item(0).getNodeType() == Node.TEXT_NODE) {
+            return node.getTextContent();
+        }
+
+        // 如果有多个子节点，递归处理
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                sb.append(buildSubXml(child));
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 构建子节点的XML字符串
+     *
+     * @param node Node
+     * @return String
+     */
+    private static String buildSubXml(Node node) {
+        StringBuilder sb = new StringBuilder();
+        String nodeName = node.getNodeName();
+        String nodeValue = node.getTextContent();
+        NodeList children = node.getChildNodes();
+        sb.append("<").append(nodeName).append(">");
+        // 检查是否有子元素节点
+        boolean hasElementChild = false;
+        for (int i = 0; i < children.getLength(); i++) {
+            if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                hasElementChild = true;
+                break;
+            }
+        }
+        if (hasElementChild) {
+            // 有子元素，递归处理
+            for (int i = 0; i < children.getLength(); i++) {
+                Node child = children.item(i);
+                if (child.getNodeType() == Node.ELEMENT_NODE) {
+                    sb.append(buildSubXml(child));
+                }
+            }
+        } else {
+            // 没有子元素，添加文本内容
+            sb.append(nodeValue);
+        }
+        sb.append("</").append(nodeName).append(">");
+        return sb.toString();
+    }
+
+    public static Map<String, Object> xml2Map(HttpServletRequest request) throws Exception {
+        try (BufferedReader reader = request.getReader()) {
+            return xml2Map(reader.lines().collect(Collectors.joining()));
+        }
     }
 
     /**

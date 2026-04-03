@@ -61,17 +61,24 @@ public class DateUtils {
     }
 
     /**
-     * 将时间字符串转换成数据库中datetime可存储的类型
+     * 获取系统当前日期(精确到毫秒)，格式：yyyy-MM-dd
      */
-    public static Timestamp sqlParse(String date) {
-        return new Timestamp(dateParse(date).getTime());
+    public static String nowDateStr() {
+        return dateFormatToString(STR_DATE_FULL);
     }
 
     /**
      * 获取当前timestamp
      */
-    public static String getCurTimeStamp() {
+    public static String nowTimeStamp() {
         return System.currentTimeMillis() + "";
+    }
+
+    /**
+     * 将时间字符串转换成数据库中datetime可存储的类型
+     */
+    public static Timestamp sqlParse(String date) {
+        return new Timestamp(dateParse(date).getTime());
     }
 
     /**
@@ -86,10 +93,6 @@ public class DateUtils {
         Calendar calender = Calendar.getInstance();
         calender.setTime(date);
         return simpleDateFormat.format(calender.getTime());
-    }
-
-    public static String data4ToShortStr(Date date) {
-        return dateFormatToString(date, STR_DATE_SHORT);
     }
 
     /**
@@ -108,13 +111,6 @@ public class DateUtils {
     public static String dateToString(Date date) {
         DateFormat YYYY_MM_DD_MM_HH_SS = new SimpleDateFormat(STR_DATE_FULL);
         return YYYY_MM_DD_MM_HH_SS.format(date);
-    }
-
-    /**
-     * 获取系统当前日期(精确到毫秒)，格式：yyyy-MM-dd
-     */
-    public static String getDateNow() {
-        return dateFormatToString(STR_DATE_FULL);
     }
 
     /**
@@ -205,12 +201,6 @@ public class DateUtils {
         return timestamp;
     }
 
-    /**
-     * 将指定的日期转换成Unix时间戳，格式：yyyy-MM-dd HH:mm:ss
-     */
-    public static long dateToUnixTimestamp(String dateString) {
-        return dateToUnixTimestamp(dateString, STR_DATE_FULL);
-    }
 
     /**
      * 将当前日期零点转换成Unix时间戳
@@ -218,9 +208,15 @@ public class DateUtils {
      * @return long 时间戳
      */
     public static long dateZeroToUnixTimestamp() {
-        String nowDay = dateFormatToString(STR_DATE_SMALL);
-        nowDay += " 00:00:00";
+        String nowDay = getDateNowSMALL() + " 00:00:00";
         return dateToUnixTimestamp(nowDay);
+    }
+
+    /**
+     * 将指定的日期转换成Unix时间戳，格式：yyyy-MM-dd HH:mm:ss
+     */
+    public static long dateToUnixTimestamp(String dateString) {
+        return dateToUnixTimestamp(dateString, STR_DATE_FULL);
     }
 
     /**
@@ -250,8 +246,8 @@ public class DateUtils {
      * @param timestamp 时间戳
      * @return String 日期字符串
      */
-    public static String TimeStamp2Date(long timestamp, String pattern) {
-        return dateFormatToString(new Date(timestamp), pattern);
+    public static String TimeStamp2Date(long timestamp) {
+        return TimeStamp2Date(timestamp, STR_DATE_FULL);
     }
 
     /**
@@ -260,8 +256,8 @@ public class DateUtils {
      * @param timestamp 时间戳
      * @return String 日期字符串
      */
-    public static String TimeStamp2Date(long timestamp) {
-        return TimeStamp2Date(timestamp, STR_DATE_FULL);
+    public static String TimeStamp2Date(long timestamp, String pattern) {
+        return dateFormatToString(new Date(timestamp), pattern);
     }
 
     /**
@@ -273,8 +269,7 @@ public class DateUtils {
         f.clear();
         f.set(Calendar.YEAR, cal.get(Calendar.YEAR));
         f.set(Calendar.MONTH, cal.get(Calendar.MONTH));
-        String firstday = new SimpleDateFormat(STR_DATE_SMALL).format(f.getTime());
-        return firstday;
+        return new SimpleDateFormat(STR_DATE_SMALL).format(f.getTime());
     }
 
     /**
@@ -294,8 +289,7 @@ public class DateUtils {
         l.set(Calendar.YEAR, cal.get(Calendar.YEAR));
         l.set(Calendar.MONTH, cal.get(Calendar.MONTH) + 1);
         l.set(Calendar.MILLISECOND, -1);
-        String lastday = new SimpleDateFormat(STR_DATE_SMALL).format(l.getTime());
-        return lastday;
+        return new SimpleDateFormat(STR_DATE_SMALL).format(l.getTime());
     }
 
     /**
@@ -305,13 +299,21 @@ public class DateUtils {
         return getMonthLastDay() + " 23:59:59";
     }
 
+    public static String getLastWeek() {
+        return dateFormatToString(getDayByNum(-7), STR_DATE_SMALL);
+    }
+
     /**
      * 获取昨天日期
      */
-    public static Date getYesterDay() {
+    public static String getYesterday() {
+        return dateFormatToString(getDayByNum(-1), STR_DATE_SMALL);
+    }
+
+    public static Date getDayByNum(int num) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(nowDate());
-        calendar.add(Calendar.DATE, -1);// 把日期往后增加一天.整数往后推,负数往前移动
+        calendar.add(Calendar.DATE, num);
         return calendar.getTime();
     }
 
@@ -324,8 +326,7 @@ public class DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(nowDate());
         calendar.add(Calendar.YEAR, +year);
-        String theday = new SimpleDateFormat(STR_DATE_FULL).format(calendar.getTime());
-        return theday;
+        return new SimpleDateFormat(STR_DATE_FULL).format(calendar.getTime());
     }
 
     /**
@@ -361,45 +362,24 @@ public class DateUtils {
     /**
      * 获取昨天零点的时间戳
      */
-    public static long getYesterDayZeroUnixTimestamp() {
-        String yesterDay = dateFormatToString(getYesterDay(), STR_DATE_SMALL);
-        yesterDay += " 00:00:00";
-        return dateToUnixTimestamp(yesterDay);
+    public static long getYesterdayZeroUnixTimestamp() {
+        String yesterday = getYesterday() + " 00:00:00";
+        return dateToUnixTimestamp(yesterday);
     }
 
     /**
      * 获取昨天23:59:59的时间戳
      */
-    public static long getYesterDayUnixTimestamp() {
-        String yesterDay = dateFormatToString(getYesterDay(), STR_DATE_SMALL);
-        yesterDay += " 23:59:59";
-        return dateToUnixTimestamp(yesterDay);
-    }
-
-    /**
-     * 获取昨天零点的时间戳
-     */
-    public static long getNowZeroDate() {
-        String now = dateFormatToString(nowDate(), STR_DATE_SMALL);
-        now += " 00:00:00";
-        return dateToUnixTimestamp(now);
-    }
-
-    /**
-     * 获取昨天23:59:59的时间戳
-     */
-    public static long getNowDate() {
-        String now = new SimpleDateFormat(STR_DATE_SMALL).format(nowDate());
-        now += " 23:59:59";
-        return dateToUnixTimestamp(now);
+    public static long getYesterdayUnixTimestamp() {
+        String yesterday = getYesterday() + " 23:59:59";
+        return dateToUnixTimestamp(yesterday);
     }
 
     /**
      * 获取指定日期的零点的时间戳
      */
     public static long getEnactZeroDate(Date date) {
-        String now = new SimpleDateFormat(STR_DATE_SMALL).format(date);
-        now += " 00:00:00";
+        String now = dateFormatToString(date, STR_DATE_SMALL) + " 00:00:00";
         return dateToUnixTimestamp(now);
     }
 
@@ -407,8 +387,7 @@ public class DateUtils {
      * 获取指定日期的23:59:59的时间戳
      */
     public static long getEnactDate(Date date) {
-        String now = new SimpleDateFormat(STR_DATE_SMALL).format(date);
-        now += " 23:59:59";
+        String now = dateFormatToString(date, STR_DATE_SMALL) + " 23:59:59";
         return dateToUnixTimestamp(now);
     }
 }

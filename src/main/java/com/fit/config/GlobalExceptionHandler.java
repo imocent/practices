@@ -77,6 +77,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Map<String, Object> handleGlobalException(HttpServletRequest request, Exception e) {
         // 记录详细日志
+        log.error("请求地址: {}", request.getRequestURI());
         log.error("系统异常: ", e);
         // 返回通用错误码，前端根据code提示
         return Collections.singletonMap("code", 500);

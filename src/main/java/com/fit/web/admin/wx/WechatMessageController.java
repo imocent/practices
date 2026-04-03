@@ -41,7 +41,9 @@ public class WechatMessageController {
      * 列表页面
      */
     @GetMapping("/list")
-    public String index() {
+    public String index(HttpServletRequest request) {
+        Map<String, Object> datacubeArticle = tokenService.getAccessDatacubeArticle();
+        request.setAttribute("datacubeArticle", datacubeArticle);
         return PREFIX + "list";
     }
 

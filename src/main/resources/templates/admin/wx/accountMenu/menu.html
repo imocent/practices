@@ -143,7 +143,6 @@
                 var items = menuData, str = '';
 
                 items.forEach(function (item, i) {
-                    console.log(item)
                     var type = '', action = '', msgType = '';
                     if (!item.sub_button) {
                         type = item.type || '';
@@ -352,7 +351,6 @@
                     $('input[name=url]').val('');
                     if (actions[1]) {
                         var msg = this.getMsgByIdAndType(actions[1], msgType);
-                        console.log(msg)
                         var keyTitle = msg.title ? msg.title : '无标题';
                         var cont = $(".is-click .create-click:first");
                         $(".keyTitle", cont).remove();
@@ -379,12 +377,8 @@
 
             WechatMenuManager.prototype.getMsgByIdAndType = function (mid, mtype) {
                 var d = {};
-                console.log(mid)
-                console.log(mtype)
-                console.log(this.responseData)
                 if (this.responseData) {
                     $.each(this.responseData, function (_, v) {
-                        console.log(v)
                         if (v.id == mid && v.msgType == mtype) {
                             d = v;
                             return false;
@@ -522,7 +516,7 @@
             WechatMenuManager.prototype.syncMenu = function () {
                 $.ajax({
                     url: '/wxapi/doPublishMenu', type: 'POST', data: {}, dataType: 'json', success: function (result) {
-                        if (result.mode) {
+                        if (result.errcode == 0) {
                             layer.msg("菜单同步更新成功，生效时间看微信官网说明，或者重新关注微信号！", {icon: 1});
                         } else {
                             layer.msg("菜单同步失败：" + (result.msg || "未知错误"), {icon: 2});

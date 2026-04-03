@@ -5,12 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.fit.base.AjaxResult;
 import com.fit.entity.WxAccount;
 import com.fit.entity.WxAccountFans;
+import com.fit.enums.WechatAPI;
 import com.fit.service.WxAccountFansService;
 import com.fit.service.WxApiTokenService;
-import com.fit.util.BeanUtil;
-import com.fit.util.OftenUtil;
-import com.fit.util.WebUtil;
-import com.fit.util.WechatUtil;
+import com.fit.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,7 +41,9 @@ public class WechatAccountFansController {
      * 列表页面
      */
     @GetMapping("/list")
-    public String index() {
+    public String index(HttpServletRequest request) {
+        Map<String, Object> datacubeUser = tokenService.getAccessDatacubeUser();
+        request.setAttribute("datacubeUser", datacubeUser);
         return PREFIX + "list";
     }
 

@@ -16,6 +16,7 @@ import com.fit.service.WxMsgTemplateService;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
 import com.fit.util.WechatUtil;
+import com.fit.util.WechatXmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,6 +76,24 @@ public class WxApiController extends BaseController {
         return "error"; //测试失败
     }
 
+    @RequestMapping(value = "/{account}/message", method = RequestMethod.POST)
+    public @ResponseBody String doPost(HttpServletRequest request, @PathVariable String account) {
+        try {
+            WxAccount access = this.tokenService.getAccess(account);
+            Map<String, Object> map = WechatXmlUtil.xml2Map(request);//获取发送的消息
+            String msgType = map.get("MsgType").toString();
+            if (msgType.equals(MsgType.Text.name)) {
+                log.info(map.toString());
+            }
+
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage(), e);
+            return "error";
+        }
+    }
+
     @ResponseBody
     @RequestMapping(value = "/doPublishMenu", method = RequestMethod.POST)
     public Object doPublishMenu(HttpServletRequest request) {
@@ -96,7 +115,7 @@ public class WxApiController extends BaseController {
         WxMsgNews news = this.newsService.get(id);
         JSONObject text = new JSONObject();
         text.put("content", news.getContent());
-        JSONObject call = WechatUtil.bulkMessaging(token, openIds.split(","), MsgType.Text.name(), text);
+        JSONObject call = WechatUtil.bulkMessaging(token, openIds.split(","), MsgType.Text.name, text);
         if (WechatUtil.isWxError(call)) {
             return AjaxResult.error("群发失败", call);
         }
