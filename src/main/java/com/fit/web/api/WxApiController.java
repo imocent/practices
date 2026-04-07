@@ -13,15 +13,13 @@ import com.fit.service.WxAccountMenuService;
 import com.fit.service.WxApiTokenService;
 import com.fit.service.WxMsgNewsService;
 import com.fit.service.WxMsgTemplateService;
-import com.fit.util.OftenUtil;
-import com.fit.util.WebUtil;
-import com.fit.util.WechatUtil;
-import com.fit.util.WechatXmlUtil;
+import com.fit.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -76,17 +74,40 @@ public class WxApiController extends BaseController {
         return "error"; //测试失败
     }
 
+    @ResponseBody
     @RequestMapping(value = "/{account}/message", method = RequestMethod.POST)
-    public @ResponseBody String doPost(HttpServletRequest request, @PathVariable String account) {
+    public String doPost(HttpServletRequest request, @PathVariable String account) {
         try {
             WxAccount access = this.tokenService.getAccess(account);
-            Map<String, Object> map = WechatXmlUtil.xml2Map(request);//获取发送的消息
-            String msgType = map.get("MsgType").toString();
-            if (msgType.equals(MsgType.Text.name)) {
-                log.info(map.toString());
-            }
+            Map<String, Object> map = WechatXmlUtil.xml2Map(request);
+            log.info(map.toString());
 
-            return null;
+            String toUserName = map.get("ToUserName").toString();      // 公众号ID
+            String fromUserName = map.get("FromUserName").toString();  // 用户OpenID
+            String msgType = map.get("MsgType").toString();
+
+            if (msgType.equals(MsgType.Event.name) && map.get("Event").toString().equals(MsgType.SUBSCRIBE.name)) {
+                // 关注：toUser = 用户OpenID, fromUser = 公众号ID
+                return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, "谢谢您的关注!");
+            } else if (msgType.equals(MsgType.Event.name) && map.get("Event").toString().equals(MsgType.UNSUBSCRIBE.name)) {
+                // 取消关注：不回复任何内容
+                return "";
+            } else if (msgType.equals(MsgType.Event.name)) {
+                String id = StringUtils.substringAfterLast(map.get("EventKey").toString());
+                WxMsgNews news = this.newsService.getByObjId(id);
+                if (news != null) {
+                    return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, news.getContent());
+                }
+            } else if (msgType.equals(MsgType.Text.name)) {
+                String content = map.get("Content").toString();
+                String result = "未发现对应关键字";
+                WxMsgNews news = this.newsService.queryByKey("wx_msg_news", "input_code", content);
+                if (news != null) {
+                    result = news.getContent();
+                }
+                return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, result);
+            }
+            return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, "暂无内容");
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage(), e);

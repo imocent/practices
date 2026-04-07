@@ -211,4 +211,19 @@ public class StringUtils {
     public static boolean endsWithCommaOrNewline(String text) {
         return ENDS_WITH_COMMA_OR_NEWLINE_PATTERN.matcher(text).find();
     }
+
+    public static String substringAfterLast(String str) {
+        return substringAfterLast(str, "_");
+    }
+
+    public static String substringAfterLast(String str, String split) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        int lastIndex = str.lastIndexOf(split);
+        if (lastIndex == -1) {
+            return str;
+        }
+        return str.substring(lastIndex + 1);
+    }
 }

@@ -36,11 +36,14 @@
                             <dl class="is-item">
                                 <dt id="current-item-type"><span class="is-sub-item">子</span>菜单内容：</dt>
                                 <dd>
-                                    <input id="type1" type="radio" name="type" value="click"/>
-                                    <label for="type1" data-editing="1"> <span class="lbl_content">发送消息</span> </label>
-                                    <input id="type2" type="radio" name="type" value="view"/>
-                                    <label for="type2" data-editing="1"> <span class="lbl_content">跳转网页</span> </label>
-                                    <input id="type3" type="radio" name="type" value="scancode_push"/>
+                                    <label for="type1" data-editing="1">
+                                        <input id="type1" type="radio" name="type" value="click"/>
+                                        <span class="lbl_content">发送消息</span>
+                                    </label>
+                                    <label for="type2" data-editing="1">
+                                        <input id="type2" type="radio" name="type" value="view"/>
+                                        <span class="lbl_content">跳转网页</span>
+                                    </label>
                                 </dd>
                             </dl>
                             <div id="menu-content" class="is-item">
@@ -49,9 +52,7 @@
                                     <dl>
                                         <dt>页面地址：</dt>
                                         <dd>
-                                            <div class="input-box">
-                                                <input type="text" id="url" name="url"/>
-                                            </div>
+                                            <div class="input-box"><input type="text" id="url" name="url"/></div>
                                         </dd>
                                     </dl>
                                 </div>
@@ -275,7 +276,7 @@
     <div class="sub-menu-box" style="display:block;">
         <ul class="sub-menu-list">
             <li class="add-sub-item">
-                <a href="javascript:;" title="添加子菜单"><span class=" "><i class="weixin-icon add-gray"></i></span></a>
+                <a href="javascript:;" title="添加子菜单"><i class="weixin-icon add-gray"></i><span></span></a>
             </li>
         </ul>
         <i class="arrow arrow-out"></i> <i class="arrow arrow-in"></i>
@@ -304,10 +305,7 @@
                 }
                 var item =
                     `<li class="sub-menu-item" data-type="click" data-action="key|" data-name="添加子菜单">
-    <a href="javascript:;">
-        <i class="weixin-icon sort-gray"></i>
-        <span class="sub-title">添加子菜单</span>
-    </a>
+    <a href="javascript:;"><i class="weixin-icon sort-gray"></i><span class="sub-title">添加子菜单</span></a>
 </li>`;
 
                 var itemDom = $(item);
@@ -326,6 +324,7 @@
                 var type = $(item).attr('data-type');
                 var action = $(item).attr('data-action');
                 var title = $(item).attr('data-name');
+                console.log("点击菜单: " + title);
                 var msgType = $(item).attr('data-msgtype');
                 // 显示子菜单或主菜单逻辑
                 if ($(item).hasClass("sub-menu-item")) {
@@ -349,11 +348,11 @@
                 if (actions[0] == 'url') $('input[name=key]').val('');
                 if (actions[0] == 'key') {
                     $('input[name=url]').val('');
+                    var cont = $(".is-click .create-click:first");
+                    $(".keyTitle", cont).remove();
                     if (actions[1]) {
                         var msg = this.getMsgByIdAndType(actions[1], msgType);
                         var keyTitle = msg.title ? msg.title : '无标题';
-                        var cont = $(".is-click .create-click:first");
-                        $(".keyTitle", cont).remove();
                         cont.append('<div class="keyTitle">资源名:' + keyTitle + '</div>');
                     }
                 }

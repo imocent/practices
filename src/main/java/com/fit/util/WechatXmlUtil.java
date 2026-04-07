@@ -1,5 +1,6 @@
 package com.fit.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  * 基于JDK的微信XML工具类
  * 仅使用JDK原生API，无第三方依赖
  */
+@Slf4j
 public class WechatXmlUtil {
 
     public static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
@@ -42,9 +44,9 @@ public class WechatXmlUtil {
         sb.append("<MsgType><![CDATA[text]]></MsgType>");
         sb.append("<Content><![CDATA[").append(content).append("]]></Content>");
         sb.append("</xml>");
+        log.info(sb.toString());
         return sb.toString();
     }
-
 
     /**
      * 解析节点的值
