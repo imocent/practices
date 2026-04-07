@@ -6,15 +6,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,6 +43,23 @@ public class WechatXmlUtil {
         sb.append("</xml>");
         log.info(sb.toString());
         return sb.toString();
+    }
+
+    public static String buildImagesResponse(String toUser, String fromUser, String picUrl, Long msgId, String mediaId) {
+        StringBuilder sbr = new StringBuilder();
+        sbr.append("<xml>");
+        sbr.append("<ToUserName><![CDATA[").append(toUser).append("]]></ToUserName>");
+        sbr.append("<FromUserName><![CDATA[").append(fromUser).append("]]></FromUserName>");
+        sbr.append("<CreateTime>").append(System.currentTimeMillis() / 1000).append("</CreateTime>");
+        sbr.append("<MsgType><![CDATA[image]]></MsgType>");
+        sbr.append("<PicUrl><![CDATA[").append(picUrl).append("]]></PicUrl>");
+        sbr.append("<MsgId><![CDATA[").append(msgId).append("]]></MsgId>");
+        if (mediaId != null && !mediaId.isEmpty()) {
+            sbr.append("<MediaId><![CDATA[").append(mediaId).append("]]></MediaId>");
+        }
+        sbr.append("</xml>");
+        log.info(sbr.toString());
+        return sbr.toString();
     }
 
     /**

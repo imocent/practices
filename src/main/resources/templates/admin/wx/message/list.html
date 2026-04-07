@@ -22,6 +22,9 @@
                 </form>
             </div>
             <script type="text/html" id="toolbar">
+                <button type="button" class="layui-btn layui-bg-orange layui-btn-xs" lay-event="image">
+                    <i class="layui-icon layui-icon-picture"> 图文</i>
+                </button>
                 <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add">
                     <i class="layui-icon layui-icon-addition">新增</i>
                 </button>
@@ -69,7 +72,9 @@
 
         // 工具条点击事件
         table.on('toolbar', function (obj) {
-            if (obj.event == 'add') {
+            if (obj.event == 'image') {
+                openFull("/admin/wx/message/images", "添加图文");
+            } else if (obj.event == 'add') {
                 editView("/admin/wx/message/edit", "添加");
             } else if (obj.event == 'del') {
                 layer.confirm('真的删除行么?', function (index) {
@@ -107,7 +112,11 @@
                     }
                 });
             } else if (event == 'edit') {
-                editView("/admin/wx/message/edit?id=" + data.id, "编辑");
+                if (data.msgType == 'text') {
+                    editView("/admin/wx/message/edit?id=" + data.id, "编辑");
+                } else {
+                    openFull("/admin/wx/message/edit?id=" + data.id, "编辑");
+                }
             }
         });
 

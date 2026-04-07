@@ -115,12 +115,6 @@ public class WechatAssetMediaController extends BaseController {
         return AjaxResult.success();
     }
 
-
-    @GetMapping("/images")
-    public String images() {
-        return PREFIX + "images";
-    }
-
     @GetMapping("/video")
     public String video() {
         return PREFIX + "video";

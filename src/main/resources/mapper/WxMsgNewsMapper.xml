@@ -19,6 +19,8 @@
     <result column="content_source_url" jdbcType="VARCHAR" property="contentSourceUrl" />
     <result column="thumb_media_id" jdbcType="VARCHAR" property="thumbMediaId" />
     <result column="show_cover_pic" jdbcType="INTEGER" property="showCoverPic" />
+    <result column="need_open_comment" jdbcType="INTEGER" property="needOpenComment" />
+    <result column="only_fans_can_comment" jdbcType="INTEGER" property="onlyFansCanComment" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="thumb_url" jdbcType="VARCHAR" property="thumbUrl" />
     <result column="media_id" jdbcType="VARCHAR" property="mediaId" />
@@ -27,7 +29,8 @@
   <sql id="Base_Column_List">
     id, create_time, account, msg_type, input_code, `rule`, read_count, favour_count, 
     enabled, `mode`, title, author, digest, content, content_source_url, thumb_media_id, 
-    show_cover_pic, url, thumb_url, media_id, news_index
+    show_cover_pic, need_open_comment, only_fans_can_comment, url, thumb_url, media_id, 
+    news_index
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -92,6 +95,12 @@
       </if>
       <if test="showCoverPic != null">
         show_cover_pic,
+      </if>
+      <if test="needOpenComment != null">
+        need_open_comment,
+      </if>
+      <if test="onlyFansCanComment != null">
+        only_fans_can_comment,
       </if>
       <if test="url != null">
         url,
@@ -158,6 +167,12 @@
       <if test="showCoverPic != null">
         #{showCoverPic,jdbcType=INTEGER},
       </if>
+      <if test="needOpenComment != null">
+        #{needOpenComment,jdbcType=INTEGER},
+      </if>
+      <if test="onlyFansCanComment != null">
+        #{onlyFansCanComment,jdbcType=INTEGER},
+      </if>
       <if test="url != null">
         #{url,jdbcType=VARCHAR},
       </if>
@@ -222,6 +237,12 @@
       </if>
       <if test="showCoverPic != null">
         show_cover_pic = #{showCoverPic,jdbcType=INTEGER},
+      </if>
+      <if test="needOpenComment != null">
+        need_open_comment = #{needOpenComment,jdbcType=INTEGER},
+      </if>
+      <if test="onlyFansCanComment != null">
+        only_fans_can_comment = #{onlyFansCanComment,jdbcType=INTEGER},
       </if>
       <if test="url != null">
         url = #{url,jdbcType=VARCHAR},
@@ -291,6 +312,12 @@
       <if test="showCoverPic != null and showCoverPic != ''">
          and show_cover_pic = #{showCoverPic,jdbcType=INTEGER}
       </if>
+      <if test="needOpenComment != null and needOpenComment != ''">
+         and need_open_comment = #{needOpenComment,jdbcType=INTEGER}
+      </if>
+      <if test="onlyFansCanComment != null and onlyFansCanComment != ''">
+         and only_fans_can_comment = #{onlyFansCanComment,jdbcType=INTEGER}
+      </if>
       <if test="url != null and url != ''">
          and url = #{url,jdbcType=VARCHAR}
       </if>
@@ -330,15 +357,15 @@
       id,create_time,account,msg_type,
       input_code,rule,read_count,favour_count,enabled,
       mode,title,author,digest,content,
-      content_source_url,thumb_media_id,show_cover_pic,url,thumb_url,
-      media_id,news_index
+      content_source_url,thumb_media_id,show_cover_pic,need_open_comment,only_fans_can_comment,
+      url,thumb_url,media_id,news_index
     ) values 
     <foreach close=")" collection="list" item="v" open="(" separator=",">
       #{v.id},#{v.createTime},#{v.account},#{v.msgType},
       #{v.inputCode},#{v.rule},#{v.readCount},#{v.favourCount},#{v.enabled},
       #{v.mode},#{v.title},#{v.author},#{v.digest},#{v.content},
-      #{v.contentSourceUrl},#{v.thumbMediaId},#{v.showCoverPic},#{v.url},#{v.thumbUrl},
-      #{v.mediaId},#{v.newsIndex}
+      #{v.contentSourceUrl},#{v.thumbMediaId},#{v.showCoverPic},#{v.needOpenComment},#{v.onlyFansCanComment},
+      #{v.url},#{v.thumbUrl},#{v.mediaId},#{v.newsIndex}
     </foreach>
   </insert>
   <delete id="batchDelete" parameterType="java.util.List">

@@ -81,11 +81,9 @@ public class WxApiController extends BaseController {
             WxAccount access = this.tokenService.getAccess(account);
             Map<String, Object> map = WechatXmlUtil.xml2Map(request);
             log.info(map.toString());
-
             String toUserName = map.get("ToUserName").toString();      // 公众号ID
             String fromUserName = map.get("FromUserName").toString();  // 用户OpenID
             String msgType = map.get("MsgType").toString();
-
             if (msgType.equals(MsgType.Event.name) && map.get("Event").toString().equals(MsgType.SUBSCRIBE.name)) {
                 // 关注：toUser = 用户OpenID, fromUser = 公众号ID
                 return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, "谢谢您的关注!");
@@ -96,16 +94,24 @@ public class WxApiController extends BaseController {
                 String id = StringUtils.substringAfterLast(map.get("EventKey").toString());
                 WxMsgNews news = this.newsService.getByObjId(id);
                 if (news != null) {
-                    return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, news.getContent());
+                    if (news.getMsgType().equals(MsgType.Text.name)) {
+                        return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, news.getContent());
+                    } else if (news.getMsgType().equals(MsgType.Image.name)) {
+                        return WechatXmlUtil.buildImagesResponse(fromUserName, toUserName, news.getUrl(), news.getId(), news.getMediaId());
+                    }
                 }
-            } else if (msgType.equals(MsgType.Text.name)) {
+            } else if (msgType.equals(MsgType.Event.name) || msgType.equals(MsgType.Text.name)) {
                 String content = map.get("Content").toString();
                 String result = "未发现对应关键字";
                 WxMsgNews news = this.newsService.queryByKey("wx_msg_news", "input_code", content);
                 if (news != null) {
-                    result = news.getContent();
+                    if (news.getMsgType().equals(MsgType.Text.name)) {
+                        result = news.getContent();
+                        return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, result);
+                    } else if (news.getMsgType().equals(MsgType.Image.name)) {
+                        return WechatXmlUtil.buildImagesResponse(fromUserName, toUserName, news.getUrl(), news.getId(), news.getMediaId());
+                    }
                 }
-                return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, result);
             }
             return WechatXmlUtil.buildTextResponse(fromUserName, toUserName, "暂无内容");
         } catch (Exception e) {

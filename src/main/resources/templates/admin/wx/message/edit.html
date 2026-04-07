@@ -4,18 +4,19 @@
 <body style="background-color:#fff">
 <div class="yadmin-body animated fadeIn">
     <div class="layui-form layui-form-pane">
-        <input type="hidden" name="id" th:value="${bean?.id}" />
+        <input type="hidden" name="id" th:value="${bean?.id}"/>
+        <input type="hidden" id="msgType" name="msgType" value="text"/>
         <div class="layui-form-item">
             <label for="code" class="layui-form-label"><i class="yadmin-red">* </i>关键字</label>
             <div class="layui-input-block">
-                <input type="text" id="code" name="inputCode" th:value="${bean?.inputCode}" class="layui-input" />
+                <input type="text" id="code" name="inputCode" th:value="${bean?.inputCode}" class="layui-input"/>
                 <p class="layui-bg-red" style="line-height:1.4;padding-left:10px;">如果 关键字 为 subscribe ，那么此消息为订阅消息</p>
             </div>
         </div>
         <div class="layui-form-item">
             <label for="title" class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
             <div class="layui-input-block">
-                <input type="text" id="title" name="title" th:value="${bean?.title}" class="layui-input" />
+                <input type="text" id="title" name="title" th:value="${bean?.title}" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
@@ -34,14 +35,14 @@
 <script>
     layui.use(['jquery', 'dtree', 'form', 'layer'], function ($, dtree, form, layer) {
 
-    form.on('submit(submit-form)', function (obj) {
-        $.post('/admin/wx/message/save', obj.field, function (data) {
-            advices(data, parent);
-        }, 'json').fail(function (event) {
-            toError(event);
+        form.on('submit(submit-form)', function (obj) {
+            $.post('/admin/wx/message/save', obj.field, function (data) {
+                advices(data, parent);
+            }, 'json').fail(function (event) {
+                toError(event);
+            });
         });
     });
-});
 </script>
 </body>
 </html>

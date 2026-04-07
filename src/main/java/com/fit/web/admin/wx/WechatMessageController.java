@@ -11,6 +11,7 @@ import com.fit.util.BeanUtil;
 import com.fit.util.OftenUtil;
 import com.fit.util.WebUtil;
 import com.fit.util.WechatUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @Author AIM
  * @DATE 2026/2/26
  */
+@Slf4j
 @Controller
 @RequestMapping("/admin/wx/message")
 public class WechatMessageController {
@@ -68,6 +70,7 @@ public class WechatMessageController {
         if (OftenUtil.isNotEmpty(id)) {
             WxMsgNews bean = service.getByObjId(id);
             model.addAttribute("bean", bean);
+            return PREFIX + (bean.getMsgType().equals("text") ? "edit" : "images");
         }
         return PREFIX + "edit";
     }
@@ -82,7 +85,22 @@ public class WechatMessageController {
         if (null == entity) {
             bean.setAccount(tokenService.getCurrentAccount());
             bean.setCreateTime(new Date());
-            bean.setMsgType(MsgType.Text.name);
+            JSONObject media = new JSONObject();
+            media.put("title", bean.getTitle());
+            media.put("author", bean.getAuthor());
+            media.put("thumb_media_id", bean.getThumbMediaId());
+            media.put("content", bean.getContent());
+            media.put("content_source_url", bean.getContentSourceUrl());
+            media.put("digest", bean.getDigest());
+            media.put("show_cover_pic", bean.getShowCoverPic());
+            media.put("need_open_comment", bean.getNeedOpenComment());
+            media.put("only_fans_can_comment", bean.getOnlyFansCanComment());
+            JSONObject call = WechatUtil.apiPostCall(WechatAPI.MATERIAL_UPLOAD_IMG.format(tokenService.getCurrentToken()), media);
+            if (null != call) {
+                bean.setMediaId(call.getString("media_id"));
+            } else {
+                log.error("上传图文失败: {}", call.toJSONString());
+            }
             this.service.save(bean);
         } else {
             BeanUtil.copyProperties(bean, entity);
@@ -105,6 +123,11 @@ public class WechatMessageController {
         } else {
             return AjaxResult.error("参数异常");
         }
+    }
+
+    @GetMapping("/images")
+    public String images() {
+        return PREFIX + "images";
     }
 
     /**

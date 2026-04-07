@@ -3,32 +3,35 @@
 <head th:include="include :: head('编辑')"></head>
 <body style="background-color:#fff">
 <div class="yadmin-body animated fadeIn">
-    <div class="layui-form">
-        <div class="wx-form-list">
-            <div class="content">
-                <div class="main" data-t="1">
-                    <img th:src="@{/images/default.png}"/>
-                    <p>请输入标题</p>
-                </div>
-            </div>
+    <div class="layui-col-md2 layui-card">
+        <div class="layui-card-body">
+            <img id="thumbImg" th:src="${bean?.url?:'/images/default.png'}" width="200" height="200" referrerPolicy="no-referrer"/>
+            <p id="thumbTxt" style="padding-top:5px">请输入标题</p>
         </div>
+    </div>
+    <div class="layui-col-md10 layui-form">
         <div class="wx-form-lg" id="add_form" style="overflow: hidden;" data-t="1">
+            <input type="hidden" name="id" th:value="${bean?.id}"/>
+            <input type="hidden" id="msgType" name="msgType" value="image"/>
+            <input type="hidden" id="mediaId" name="mediaId" th:value="${bean?.mediaId}"/>
             <div class="layui-form-item">
                 <label class="layui-form-label"><i class="yadmin-red">* </i>标题</label>
                 <div class="layui-input-block">
-                    <input type="text" name="title" id="title" lay-verify="required" placeholder="请输入标题" class="layui-input"/>
+                    <input type="text" name="title" id="title" th:value="${bean?.title}" lay-verify="required" placeholder="请输入标题"
+                           class="layui-input"/>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label"><i class="yadmin-red">* </i>作者</label>
                 <div class="layui-input-block">
-                    <input type="text" name="author" id="add_auth" lay-verify="required" placeholder="请输入作者" class="layui-input"/>
+                    <input type="text" name="author" id="add_auth" th:value="${bean?.author}" lay-verify="required" placeholder="请输入作者"
+                           class="layui-input"/>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label"><i class="yadmin-red">* </i>封面图</label>
                 <div class="layui-input-block">
-                    <input type="hidden" name="url" id="add_picpath" value="">
+                    <input type="hidden" name="url" id="pic_url" th:value="${bean?.url}">
                     <div class="layui-upload-drag" id="uploader">
                         <i class="layui-icon layui-icon-upload"></i>
                         <p>点击上传，或将文件拖拽到此处</p>
@@ -36,28 +39,31 @@
                     <input type="checkbox" name="showCoverPic" id="showCoverPic" title="封面图片显示在正文中" lay-skin="primary" value="1"/>
                 </div>
             </div>
-
             <div class="layui-form-item">
                 <label class="layui-form-label">原文链接</label>
                 <div class="layui-input-block">
-                    <input type="text" name="contentSourceUrl" id="contentSourceUrl" placeholder="请输入原文链接" class="layui-input"/>
+                    <input type="text" name="contentSourceUrl" id="contentSourceUrl" th:value="${bean?.contentSourceUrl}" placeholder="请输入原文链接"
+                           class="layui-input"/>
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">留言</label>
+                <label class="layui-form-label">评论</label>
                 <div class="layui-input-block">
-                    <input type="checkbox" name="open_comment" value="1" lay-skin="switch" lay-text="开启|关闭"
-                           checked lay-filter="comment" id="add_open_comment">
-                    <div class="layui-inline" id="add_comment_type" style="margin-bottom:0;">
-                        <input type="radio" name="fans_can_comment" value="0" title="所有人可留言" checked>
-                        <input type="radio" name="fans_can_comment" value="1" title="仅粉丝可留言">
+                    <div class="layui-col-xs3">
+                        <input type="checkbox" id="add_open_comment" name="onlyFansCanComment" value="1" lay-skin="switch" lay-text="开启|关闭"
+                               lay-filter="comment" th:checked="${bean?.onlyFansCanComment}"/>
+                    </div>
+                    <div class="layui-col-xs9" id="add_comment_type" th:styleappend="${bean?.onlyFansCanComment == 1} ? 'display: block' : 'display: none'">
+                        <input type="radio" name="needOpenComment" value="0" title="不评论" checked/>
+                        <input type="radio" name="needOpenComment" value="1" title="可评论"/>
                     </div>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label"><i class="yadmin-red">* </i>内容</label>
                 <div class="layui-input-block">
-                    <textarea id="content" name="content" class="layui-textarea" lay-verify="required" lay-vertype="tips"></textarea>
+                    <textarea id="content" name="content" class="layui-textarea" th:text="${bean?.content}" lay-verify="required"
+                              lay-vertype="tips"></textarea>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -76,20 +82,23 @@
             videoUploadUrl: '/admin/wx/media/upload',
             videoUploadSize: '102400',
         });
+        //同步标题
+        $("#title").keyup(function () {
+            var v = $(this).val();
+            $("#thumbTxt").html(v ? v : "请输入标题")
+        });
         //开启关闭留言
         form.on('switch(comment)', function (data) {
             if (data.elem.checked) {
                 $("#add_comment_type").show();
+                $("#add_open_comment").val('1');
             } else {
                 $("#add_comment_type").hide();
+                $("#add_open_comment").val('0');
             }
         });
-
-        //同步标题
-        $("#title").keyup(function () {
-            var v = $(this).val();
-            $(".wx-form-list .main p").html(v ? v : "请输入标题")
-        });
+        $('input:radio[name=needOpenComment][value="[[${bean?.needOpenComment}]]"]').prop("checked", true);
+        form.render('radio');
         //提交
         form.on('submit(submit-form)', function (d) {
             var formData = d.field;
@@ -120,9 +129,9 @@
                 layer.closeAll('loading');
                 if (result.mode) {
                     $("#uploader").html("<img src='" + result.data.src + "' style='width: 150px;height: 150px;'/><p>点击重新上传，或将文件拖拽到此处</p>");
-                    $("#add_picpath").val(result.data.url);
+                    $("#pic_url").val(result.data.url);
                     $("#mediaId").val(result.data.mediaId);
-                    $(".wx-form-list .main img").attr("src", result.data.src);
+                    $("#thumbImg").attr("src", result.data.src);
                 } else {
                     layer.msg("上传接口异常", {icon: 5});
                 }

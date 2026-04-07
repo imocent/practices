@@ -87,6 +87,16 @@ public class WxMsgNews extends BaseEntity<WxMsgNews> {
     private Integer showCoverPic;
 
     /**
+     * 是否打开评论: 0-不打开，1-打开
+     */
+    private Integer needOpenComment;
+
+    /**
+     * 是否粉丝才可评论: 0-所有人可评论，1-粉丝才可评论
+     */
+    private Integer onlyFansCanComment;
+
+    /**
      * 图文消息原文链接
      */
     private String url;
@@ -129,6 +139,8 @@ public class WxMsgNews extends BaseEntity<WxMsgNews> {
         sb.append(", contentSourceUrl=").append(contentSourceUrl);
         sb.append(", thumbMediaId=").append(thumbMediaId);
         sb.append(", showCoverPic=").append(showCoverPic);
+        sb.append(", needOpenComment=").append(needOpenComment);
+        sb.append(", onlyFansCanComment=").append(onlyFansCanComment);
         sb.append(", url=").append(url);
         sb.append(", thumbUrl=").append(thumbUrl);
         sb.append(", mediaId=").append(mediaId);
