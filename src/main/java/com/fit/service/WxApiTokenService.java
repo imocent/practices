@@ -59,6 +59,7 @@ public class WxApiTokenService {
     private final Map<String, WxAccount> accountCache = new ConcurrentHashMap<>();
     private final Map<String, Object> datacubeArticle = new ConcurrentHashMap<>();
     private final Map<String, Object> datacubeUser = new ConcurrentHashMap<>();
+    private final Map<String, Object> industries = new ConcurrentHashMap<>();
     // ============= 当前公众号配置（ThreadLocal） =============
     private final AtomicReference<WxAccount> currentWxAccount = new AtomicReference<>();
     private ScheduledExecutorService scheduler;
@@ -79,6 +80,7 @@ public class WxApiTokenService {
             startConfigRefreshTask();
             getAccessDatacubeArticle();
             getAccessDatacubeUser();
+            getIndustry();
         }
         log.info("chat-token - 初始化完成，定时任务启用状态: {}", scheduleEnabled);
     }
@@ -571,6 +573,17 @@ public class WxApiTokenService {
         }
 
         return datacubeArticle;
+    }
+
+    public Map<String, Object> getIndustry() {
+        if (industries.isEmpty()) {
+            JSONObject call = WechatUtil.apiGetCall(WechatAPI.TEMPLATE_GET_INDUSTRY.format(getCurrentToken()));
+            if (!WechatUtil.isWxError(call)) {
+                industries.clear();
+                industries.putAll(call);
+            }
+        }
+        return industries;
     }
 
     /**

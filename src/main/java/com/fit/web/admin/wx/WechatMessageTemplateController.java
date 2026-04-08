@@ -66,6 +66,7 @@ public class WechatMessageTemplateController {
             WxMsgTemplate bean = service.getByObjId(id);
             model.addAttribute("bean", bean);
         }
+        model.addAttribute("industry", this.tokenService.getIndustry());
         return PREFIX + "edit";
     }
 

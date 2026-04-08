@@ -166,14 +166,14 @@ function openPage(params) {
 
 /**
  * 处理操作结果
- * @param {Object} data - 返回数据
+ * @param {Object} answer - 返回数据
  * @param {Object} tier - 层级对象
  */
-function advices(data, tier) {
-    if (!data) return;
+function advices(answer, tier) {
+    if (!answer) return;
 
-    if (data.code === 0) {
-        layer.msg(data.msg || '操作成功', {icon: 6}, function () {
+    if (answer.code === 0) {
+        layer.msg(answer.msg || '操作成功', {icon: 6}, function () {
             if (tier) {
                 const index = tier.layer ? tier.layer.getFrameIndex(window.name) : null;
                 if (index) {
@@ -183,7 +183,15 @@ function advices(data, tier) {
             }
         });
     } else {
-        layer.msg(data.msg || '操作失败', {icon: 5});
+        layer.msg(answer.msg || '操作失败', {icon: 5}, function () {
+            if (answer.redirect) {
+                if (answer.url) {
+                    window.location.href = answer.url;
+                } else {
+                    parent.window.location.reload();
+                }
+            }
+        });
     }
 }
 
@@ -195,10 +203,15 @@ function toError(answer) {
     if (!answer) return;
 
     if (answer.status === 401) {
-        layer.msg("登录超时", {icon: 5, time: 2000});
-        if (parent && parent.window) {
-            parent.window.location.reload();
-        }
+        layer.msg("登录超时", {icon: 5, time: 2000}, function () {
+            if (answer.redirect) {
+                if (answer.url) {
+                    window.location.href = answer.url;
+                } else {
+                    parent.window.location.reload();
+                }
+            }
+        });
     } else {
         const msg = answer.responseText || '请求失败';
         layer.msg(msg, {icon: 5, time: 1000});

@@ -121,7 +121,7 @@
                 $.post('/admin/wx/template/syncTemplate', function (data) {
                     advices(data);
                 }, 'json').fail(function (event) {
-                    layer.msg("同步异常");
+                    toError(event);
                 });
             }, function () {
                 table.reload('table-list');

@@ -1,5 +1,6 @@
 package com.fit.config.shiro;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fit.util.SecureUtils;
 import com.fit.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 
 /**
  * 支持动态 loginUrl 的自定义表单认证拦截器
@@ -135,7 +135,7 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
                 throw new AuthenticationException("系统错误，请刷新页面重试");
             }
             String decryptPwd = SecureUtils.rsaDecrypt(reqPwd, privateKey);
-            token = new DefaultVerifyToken(username, reqPwd, rememberMe);
+            token = new DefaultVerifyToken(username, decryptPwd, rememberMe);
             // 一次性使用
             session.removeAttribute("privateKey");
         } catch (Exception e) {
@@ -290,11 +290,10 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         }
         // 保存原始请求（Shiro 会在 session 中保存 SavedRequest）
         super.saveRequest(request);
-        // 获取刚保存的请求
-        SavedRequest savedRequest = WebUtils.getSavedRequest(request);
         // 动态 loginUrl
         String loginUrl = resolveLoginUrl(httpRequest);
-
+        // 获取刚保存的请求
+        SavedRequest savedRequest = WebUtils.getSavedRequest(request);
         if (savedRequest != null) {
             String requestUrl = savedRequest.getRequestUrl();
             if (StringUtils.hasLength(requestUrl) && !requestUrl.contains("/login")) {
@@ -351,22 +350,15 @@ public class DefaultAuthenticationFilter extends FormAuthenticationFilter {
         httpResponse.setStatus(code == 0 ? HttpServletResponse.SC_OK : code);
         httpResponse.setContentType("application/json;charset=UTF-8");
         httpResponse.setCharacterEncoding("UTF-8");
-
         try (PrintWriter out = httpResponse.getWriter()) {
-            HashMap<String, Object> json = new HashMap<String, Object>();
+            JSONObject json = new JSONObject();
             json.put("code", code);
             json.put("msg", msg);
             json.put("data", obj);
             if (code == HttpServletResponse.SC_UNAUTHORIZED) {
                 json.put("redirect", true); // 告诉前端需要重定向到登录页
             }
-            StringBuilder sb = new StringBuilder("{");
-            for (String key : json.keySet()) {
-                sb.append("\"").append(key).append("\":\"").append(json.get(key)).append("\",");
-            }
-            sb.deleteCharAt(sb.length() - 1);
-            sb.append("}");
-            out.print(sb.toString());
+            out.print(json.toJSONString());
             out.flush();
         } catch (IOException e) {
             log.error("写入AJAX响应失败: {}", e.getMessage(), e);

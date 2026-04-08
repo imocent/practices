@@ -358,31 +358,22 @@ public class WechatUtil {
                     log.error("读取错误响应异常：", ex);
                 }
             }
-        } finally {
-            // 关闭资源
+        } finally { // 关闭资源
             if (scanner != null) {
                 scanner.close();
             }
-            if (inputStream != null) {
-                try {
+            try {
+                if (inputStream != null) {
                     inputStream.close();
-                } catch (Exception e) {
-                    log.error("关闭输入流异常", e);
                 }
-            }
-            if (outputStream != null) {
-                try {
+                if (outputStream != null) {
                     outputStream.close();
-                } catch (Exception e) {
-                    log.error("关闭输出流异常", e);
                 }
-            }
-            if (dops != null) {
-                try {
+                if (dops != null) {
                     dops.close();
-                } catch (Exception e) {
-                    log.error("关闭数据输出流异常", e);
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
             if (httpUrlConn != null) {
                 httpUrlConn.disconnect();
