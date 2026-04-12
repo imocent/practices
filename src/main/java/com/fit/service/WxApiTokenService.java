@@ -75,12 +75,13 @@ public class WxApiTokenService {
         if (scheduleEnabled) {
             this.scheduler = Executors.newScheduledThreadPool(corePoolSize);
             reloadAccounts();
-            autoSelectDefaultAccount();  // 自动选择默认公众号（基于shift字段）
-            startTokenCheckTask();
-            startConfigRefreshTask();
-            getAccessDatacubeArticle();
-            getAccessDatacubeUser();
-            getIndustry();
+            if (autoSelectDefaultAccount()) {
+                startTokenCheckTask();
+                startConfigRefreshTask();
+                getAccessDatacubeArticle();
+                getAccessDatacubeUser();
+                getIndustry();
+            }
         }
         log.info("chat-token - 初始化完成，定时任务启用状态: {}", scheduleEnabled);
     }
@@ -89,12 +90,11 @@ public class WxApiTokenService {
      * 自动选择默认公众号
      * 优先选择 shift=1 的公众号，如果没有则选择第一个
      */
-    private void autoSelectDefaultAccount() {
+    private boolean autoSelectDefaultAccount() {
         if (accountCache.isEmpty()) {
             log.warn("没有可用的公众号配置，无法自动选中默认公众号");
-            return;
+            return false;
         }
-
         // 查找 shift=1 的公众号
         WxAccount defaultAccount = null;
         for (WxAccount account : accountCache.values()) {
@@ -103,7 +103,6 @@ public class WxApiTokenService {
                 break;
             }
         }
-
         // 如果没有找到 shift=1 的，则选择第一个
         if (defaultAccount == null) {
             String firstAccount = accountCache.keySet().iterator().next();
@@ -116,6 +115,7 @@ public class WxApiTokenService {
             switchTo(defaultAccount.getAccount());
             log.info("自动选中默认公众号: {} - {}, shift={}", defaultAccount.getAccount(), defaultAccount.getName(), defaultAccount.getShift());
         }
+        return true;
     }
 
     @PreDestroy

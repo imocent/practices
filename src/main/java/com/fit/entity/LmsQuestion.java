@@ -71,8 +71,6 @@ public class LmsQuestion extends BaseEntity<LmsQuestion> {
      */
     private Long euser;
 
-    private Boolean checked;
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -93,7 +91,6 @@ public class LmsQuestion extends BaseEntity<LmsQuestion> {
         sb.append(", enabled=").append(enabled);
         sb.append(", etime=").append(etime);
         sb.append(", euser=").append(euser);
-        sb.append(", checked=").append(checked);
         sb.append("]");
         return sb.toString();
     }
